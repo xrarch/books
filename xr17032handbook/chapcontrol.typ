@@ -365,3 +365,15 @@ When a TB miss exception occurs, the low 22 bits of this control register are fi
 The TB miss routine can load this control register into a general purpose register and use the contents as a virtual address with which to load the 32-bit PTE directly from the virtually linear page table. If the table page happens to be resident in the DTB already, this will succeed immediately. Otherwise, a nested DTB miss may be taken. See @tbmiss for more details.
 
 ], width: 100%)
+
+== NMI Masking Events
+
+A problem with non-maskable interrupts (NMIs) arises on RISC architectures. If an NMI is delivered while an exception handler is saving or restoring critical state, then this can be a fatal condition.
+
+Therefore, in order to maximize the usefulness of NMIs, the XR/17032 architecture specifies several events which delay NMI delivery for at least 64 cycles. Each occurrence of one of these events resets an internal counter that decrements once per cycle, and NMIs can only be delivered while this counter is equivalent to zero.
+
+The following events mask NMIs for a short period of at least 64 cycles:
+
+1. An exception is taken.
+2. The *MTCR* instruction is executed.
+3. The *MFCR* instruction is executed.
