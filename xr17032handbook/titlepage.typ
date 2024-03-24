@@ -1,5 +1,5 @@
 #page([
- #image("coverideasmaller.png", fit: "stretch")
+ #image("coverideasmaller.png", fit: "stretch", width: 100%, height: 100%)
 ], margin: (
   top: 0cm,
   bottom: 0cm,
