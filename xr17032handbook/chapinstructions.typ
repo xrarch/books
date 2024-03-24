@@ -239,7 +239,7 @@ The *BGT* instruction performs a relative jump if the contents of *Register A* a
 #rect([
 *BLE RA, IMM21* \
 _Branch Less Than Or Equal_ \
-Opcode: *011101* (0x15)
+Opcode: *011101* (0x1D)
 ```
 IF Reg[RA] & 0x80000000 OR Reg[RA] == 0 THEN
   PC += SignExtend(IMM21)
@@ -257,7 +257,7 @@ The *BLE* instruction performs a relative jump if the contents of *Register A* a
 #rect([
 *BGE RA, IMM21* \
 _Branch Greater Than Or Equal_ \
-Opcode: *010101* (0x1D)
+Opcode: *010101* (0x15)
 ```
 IF NOT (Reg[RA] & 0x80000000) THEN
   PC += SignExtend(IMM21)
