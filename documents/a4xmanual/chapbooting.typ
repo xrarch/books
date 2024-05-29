@@ -120,7 +120,9 @@ A pointer to an API table is passed to the bootstrap program. The API table cons
     IN buffer : ^VOID,
     IN sector : ULONG,
     IN count : ULONG,
-) : UWORD```],
+) : UWORD```
+
+*NOTE:* The buffer base address MUST be aligned to a sector size.],
   [*PutString*], [```FNPTR FwApiPutStringF (
     IN str : ^UBYTE,
 )```],
