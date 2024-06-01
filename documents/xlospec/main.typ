@@ -3,9 +3,9 @@
 #set page(header: hydra(paper: "us-letter"), paper: "us-letter")
 
 #set document(title: "XLO File Format")
-#set text(font: "IBM Plex Mono", size: 12pt)
+#set text(font: "IBM Plex Mono", size: 9pt)
 #show math.equation: set text(font: "Fira Math")
-#show raw: set text(font: "Cascadia Code", size: 12pt)
+#show raw: set text(font: "Cascadia Code", size: 9pt)
 #set heading(numbering: "1.")
 #set par(justify: true)
 

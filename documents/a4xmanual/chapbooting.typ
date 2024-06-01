@@ -1,10 +1,11 @@
 #import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
 
+#box([
 = Booting
 
-This section describes the boot protocol used by the A4X firmware. The old A3X boot protocol is also supported via an embedded A3X firmware which is chain-loaded when a legacy operating system is selected, but will not be documented.
+This section describes the boot protocol used by the *A4X* firmware. The old A3X boot protocol is also supported via an embedded A3X firmware which is chain-loaded when a legacy operating system is selected, but will not be documented here.
 
-Note that all of the client-facing structures and services described here (in general, everything prefixed with `Fw`) can be found in the `Headers/a4xClient.hjk` header file located in the `a4x` source tree, which should be included in order to access them.
+Note that all of the client-facing structures and services described here (in general, everything prefixed with `Fw`) can be found in the `Headers/a4xClient.hjk` header file, which should be included in order to access them from programs written in Jackal.
 
 A partition is bootable if it contains a valid OS record at an offset of 1 sector from the partition base (bytes 512-1023 within the partition). The OS record sector has the following layout:
 
@@ -25,12 +26,13 @@ STRUCT AptOsRecord
     BootstrapCount : ULONG,
 END
 ```
+])
 
 If a valid OS record is found, the partition is assumed to be bootable. In the following sector (sector 2), a 64x64 monochrome bitmap is located. This is used as an icon in the boot picker.
 
 == The Bootstrap Program
 
-When booting from a partition, the bootstrap sectors are loaded in sequence off the disk into physical memory beginning at address 0x3000. The first 32 bits of the bootstrap must read 0x676F646E in order to be considered valid. Control is then transferred to address 0x3004, through the Jackal function pointer with the following signature:
+When booting from a partition, the bootstrap sectors are loaded in sequence off the disk into physical memory beginning at address 0x3000. The first 32 bits of the bootstrap must be 0x676F646E in order to be considered valid. Control is then transferred to address 0x3004 through the Jackal function pointer with the following signature:
 
 #box([
 ```
@@ -43,9 +45,9 @@ FNPTR FwBootstrapEntrypoint (
 ```
 ])
 
-That is, as per the Jackal ABI for XR/17032, a pointer to the *DeviceDatabase* is supplied in register *a0*, a pointer to the *ApiTable* is supplied in register *a1*, a handle to the boot partition is supplied in register *a2*, and an argument string is supplied in register *a3*. The bootstrap program can return a value in register *a3*.
+That is, as per the Jackal ABI for XR/17032, a pointer to the *DeviceDatabase* is supplied in register `a0`, a pointer to the *ApiTable* is supplied in register `a1`, a handle to the boot partition is supplied in register `a2`, and an argument string is supplied in register `a3`. The bootstrap program can return a value in register `a3`.
 
-Note that memory in the range of 0x0 through 0x2FFF should _not_ be modified until A4X services will no longer be called, as this region is used to store its runtime data (such as the initial stack).
+Note that memory in the range of 0x0 through 0x2FFF should _not_ be modified until *A4X* services will no longer be called, as this region is used to store its runtime data (such as the initial stack). After this region is trashed, *A4X* may only be re-entered through a system reset (which can be accomplished by jumping to physical address 0xFFFE1000 with virtual addressing disabled).
 
 == The Device Database
 
@@ -94,8 +96,9 @@ STRUCT FwDeviceDatabaseRecord
 END
 ```
 
-Note that the `Headers/a4xClient.hjk` header file located in the `a4x` source tree should be used to access the device database and other A4X structures - this incomplete information is only provided here for quick reference.
+Note that the `Headers/a4xClient.hjk` header file should be used to access the device database and other *A4X* structures - this incomplete information is only provided here for quick reference.
 
+#box([
 == The API Table
 
 A pointer to an API table is passed to the bootstrap program. The API table consists of function pointers that can be called to receive services from the firmware. The currently defined APIs follow:
@@ -109,8 +112,7 @@ STRUCT FwApiTableRecord
     KickProcessor : FwApiKickProcessorF,
 END
 ```
-
-#pagebreak(weak: true)
+])
 
 === PutCharacter
 

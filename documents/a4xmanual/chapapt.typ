@@ -1,10 +1,11 @@
 #import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
 
+#box([
 = A3X Partition Table
 
-The partition table format understood by this firmware is the *A3X Partition Table* format, or APT. The following is an overview of this format.
+The partition table format understood by this firmware is the A3X Partition Table format, or *APT*. The following is an overview of this format.
 
-If a disk is formatted with APT, sector 0 (bytes 0-511 on disk) will contain the partition table with the following layout:
+If a disk is formatted with *APT*, sector 0 (bytes 0-511 on disk) will contain the partition table with the following layout:
 
 ```
 STRUCT AptBootBlock
@@ -37,3 +38,4 @@ STRUCT AptEntry
     Status : ULONG,
 END
 ```
+])
