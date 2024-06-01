@@ -15,15 +15,15 @@ _The appearance of the A4X Boot Picker._
 
 == Command Monitor
 
-The command monitor is available both graphically via an extremely simplistic terminal emulator, and over the serial port. It can be entered graphically via striking ESC at the boot picker, or over Serial Port A by performing a headless boot (i.e. with no displays attached) with either zero or multiple bootable partitions installed.
+The command monitor is available both graphically via an extremely simplistic terminal emulator, and over the serial port. It can be entered graphically via striking ESC at the boot picker, or over Serial Port A by performing a headless boot (i.e. with no displays attached) with either zero or more than one bootable partition installed.
 
 Note that partitions are named in the format *dksXsY*, where *X* is the integer identifier of the disk device, and *Y* is the integer identifier of the partition. If *Y* is 8, such as in *dks0s8*, the entire disk is addressed.
 
+#box([
 A list of commands available at the time of writing is provided:
 
-#box([
 #tablex(
-  columns: (1fr, 5fr),
+  columns: (1fr, 7fr),
   cellx([
     #set text(fill: white)
     #set align(center)
