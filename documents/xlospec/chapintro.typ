@@ -2,9 +2,9 @@
 
 = Overview
 
-The *XR/SDK Linkable Object (XLO)* file format is the native object file format of the *XR/SDK* suite of tools. It is the only file format emitted by the *XR/ASM* assembler, and is the only file format accepted by the *XR/LINK* linker. It is suitable for use as an intermediate object code format, as an executable file format, as a static library format, and as a dynamic library format.
+The XR/SDK Linkable Object *(XLO)* file format is the native object file format of the XR/SDK suite of tools. It is the only file format emitted by the XR/ASM assembler, and is the only file format accepted by the XR/LINK linker. It is suitable for use as an intermediate object code format, as an executable file format, as a static library format, and as a dynamic library format.
 
-XLO is a portable format, with current support for the RISC *XR/17032* and CISC *fox32* architectures, and with planned support for the *APHELION* 64-bit architecture.
+XLO is a portable format, with current support for the RISC XR/17032 and CISC fox32 architectures, and with planned support for the Aphelion 64-bit architecture.
 
 The format is simple, and architecture-specific details are limited to the definition of new relocation entry types. It is designed for flexibility, with the ability to specify arbitrary sections. The tables are laid out for rapid iteration of relevant entries during the process of load-time program relocation and dynamic linking, and an "optimistic" relocation scheme helps avoid both of these costs entirely.
 
