@@ -137,7 +137,8 @@ This field contains up to 32 flags indicating characteristics of the module file
     #set align(center)
     *Meaning*
   ], fill: rgb(0,0,0,255)),
-  [0], [*XLO_FILE_FRAGMENT*], [This file is a fragment; it has an extended header and is not yet suitable for relocation or dynamic linking. These files are produced directly by the assembler.]
+  [0], [*XLO_FILE_FRAGMENT*], [This file is a fragment; it has an extended header and is not yet suitable for relocation or dynamic linking. These files are produced directly by the assembler.],
+  [1], [*XLO_FILE_STRIPPED*], [This file was stripped of its internal relocations. Its sections cannot be loaded elsewhere in the address space.]
 )
 ])
 
@@ -251,11 +252,11 @@ FixupTableOffset contains the file pointer of a "fixup table", containing all of
 
 There are several "relocation tables" within the *XLO* format:
 
-- The per-section relocation tables, containing all of the "internal" relocations that must be performed in all sections if that section is moved in the virtual address space.
+- The per-section relocation tables, describing all of the "internal" relocations that must be performed if that section is moved in the virtual address space.
+- The unresolved fixup table, containing all of the external relocations that must be performed against the value of extern symbols that are still of totally unknown origin. These are common in fragment modules that have just been produced by an assembler and are destined to be linked into an executable or library.
 - The per-import fixup tables, containing all of the "external" relocations that must be performed if that imported dynamic library is of an unexpected version, or if it fails to load at its preferred base address.
-- The unresolved fixup table, containing all of the external relocations that must be performed against the value of extern symbols that are still of totally unknown origin.
 
-The entries of each kind of table share a format, which they each use somewhat differently:
+The entries of the per-section relocation tables and the unresolved fixup table share a common format:
 
 ```
 STRUCT XloRelocEntry
@@ -267,6 +268,24 @@ END
 ```
 ])
 
+#box([
+The import fixup table entries are the same, except they have an *OriginalValue* field:
+
+```
+STRUCT XloImportFixupEntry
+    SectionOffset : ULONG,
+    ExternIndex : UINT,
+    Type : UBYTE,
+    SectionIndex : UBYTE,
+    OriginalValue : ULONG,
+END
+```
+])
+
+It's important to note that all relocations except for import fixups are performed relative to the value that is already encoded in that location. For instance, if a section is relocated from virtual address 0x10000000 to 0x10010000, the relocations in that section's table will be performed by adding the difference (0x10000) to all of the values already encoded there.
+
+Import fixups are performed by calculating the address of the referenced symbol, adding the sign-extended contents of the *OriginalValue* field of the fixup to it, and replacing the value entirely.
+
 == SectionOffset
 
 Indicates the offset within the "target section" of the pointer that must be relocated.
@@ -275,11 +294,11 @@ Indicates the offset within the "target section" of the pointer that must be rel
 
 Indicates the 16-bit index (range [0, 65535]) of the entry within the extern table that describes the external symbol this relocation relies upon. This field has no meaning and is unused if this is an internal (i.e. per-section table) relocation.
 
+#box([
 == Type
 
 Indicates the 8-bit type code (range [0, 255]) of the pointer that must be relocated. The currently defined types are:
 
-#box([
 #tablex(
   columns: (5fr, 14fr, 48fr),
   cellx([
@@ -304,6 +323,7 @@ Indicates the 8-bit type code (range [0, 255]) of the pointer that must be reloc
   [0x05], [*XR17032_FAR_LONG*], [An XR/17032 far-long access pseudo-instruction.],
   [0x06], [*FOX32_CALL*], [A fox32 *CALL* instruction.]
 )
+])
 ])
 
 == SectionIndex
@@ -432,9 +452,10 @@ Up to 32 flags that indicate characteristics of the section. Currently defined f
     #set align(center)
     *Meaning*
   ], fill: rgb(0,0,0,255)),
-  [0], [*XLO_SECTION_ZERO*], [The section has no on-disk data and should be zeroed out in memory at load time (i.e., it is a "bss" section).],
+  [0], [*XLO_SECTION_ZERO*], [The section has no on-disk data and is full of zeroes. This flag is primarily a hint to the linker.],
   [1], [*XLO_SECTION_CODE*], [The section contains code and should be mapped as executable.],
-  [2], [*XLO_SECTION_MAP*], [The section has in-memory presence at load time. If this isn't set, it only has on-disk data such as debug information.]
+  [2], [*XLO_SECTION_MAP*], [The section has in-memory presence at load time. If this isn't set, it only has on-disk data such as debug information.],
+  [3], [*XLO_SECTION_PAGED*], [The section is pageable. This is only relevant to the _MINTIA_ Executive and modules thereof.]
 )
 ])
 ])
