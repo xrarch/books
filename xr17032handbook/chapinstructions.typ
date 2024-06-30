@@ -1067,7 +1067,7 @@ Reg[RA] = Load32(Reg[RB])
 
 This instruction is used to implement atomic sequences. It loads the 32-bit contents of a naturally-aligned memory address within *Register B* into *Register A*. It also sets two "registers" associated with the current processor: a "locked" flag is set to TRUE, and a "locked address" is set to the physical address being accessed. Though it is implementation-dependent, these "registers" likely do not reside on the processor itself, and may be implemented in any way as long as it provides the same semantics.
 
-If the *RFE* _Return From Exception_ instruction is executed on the current processor, the "locked" flag is cleared, causing a future *SC* instruction on this processor to fail. This is the only required behavior in a uniprocessor system. In a multiprocessor system, if any other processor performs an *SC* _Store Conditional_ instruction to this processor's "locked address", this processor's "locked" flag is cleared. This can be used to implement atomic sequences in non-privileged (i.e. usermode) code.
+If the *RFE* _Return From Exception_ instruction is executed on the current processor, the "locked" flag is cleared, causing a future *SC* instruction on this processor to fail. This is the only required behavior in a uniprocessor system. In a multiprocessor system, if any other processor performs a store instruction to this processor's "locked address", this processor's "locked" flag is cleared. This can be used to implement atomic sequences in non-privileged (i.e. usermode) code.
 
 #line(length: 100%)
 
@@ -1082,14 +1082,13 @@ _Store Conditional_ \
 Function Code: *1000* (0x8)
 ```
 IF Locked THEN
-  ClearOtherLockedFlags(Translate(Reg[RC]))
   Store32(Reg[RB], Reg[RC])
 END
 Reg[RA] = Locked
 ```
 ], width: 100%)])
 
-This instruction stores the current value of the processor's "locked" flag to *Register A*. If the "locked" flag is set, it stores the contents of *Register C* to the address contained within *Register B*, and clears the "locked" flag of any other processor with the same physical address locked by the *LL* _Load Locked_ instruction.
+This instruction stores the current value of the processor's "locked" flag to *Register A*. If the "locked" flag is set, it stores the contents of *Register C* to the address contained within *Register B*, and (like any other store instruction) clears the "locked" flag of any other processor with the same physical address locked by the *LL* _Load Locked_ instruction.
 
 #line(length: 100%)
 
