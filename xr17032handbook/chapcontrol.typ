@@ -299,7 +299,13 @@ Writes to *ITBCTRL* and *DTBCTRL* can be used to invalidate entries in the ITB o
     #set align(center)
     *10*
   ], fill: rgb(0,0,0,255)),
-  [Clear all private entries from the TB, i.e., all entries with the *G* bit clear. This is safe to do while virtual address translation is enabled, as long as the wired entry that maps the exception block has the *G* bit set.],
+  [Clear all non-wired private entries from the TB, i.e., non-wired entries with the *G* bit clear.],
+  cellx([
+    #set text(fill: white)
+    #set align(center)
+    *01*
+  ], fill: rgb(0,0,0,255)),
+  [Clear all non-wired entries from the TB, including global entries.],
   cellx([
     #set text(fill: white)
     #set align(center)
