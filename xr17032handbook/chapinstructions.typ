@@ -1098,6 +1098,29 @@ This instruction stores the current value of the processor's "locked" flag to *R
 
 #align(center, [
 #rect([
+*PAUSE* \
+_Pause_ \
+Function Code: *0110* (0x8)
+```
+// Possible implementation.
+PauseCount += 1
+IF PauseCount >= 256 THEN
+  PauseCount = 0
+  Yield()
+END
+```
+], width: 100%)])
+
+On multiprocessor systems, this instruction should be executed on each iteration of a spin-wait loop for another processor to do something (release a spinlock, acknowledge an IPI, etc). It serves as a hint that the processor isn't doing useful work, which can be used to optimize emulation software among other things.
+
+#line(length: 100%)
+
+], width: 100%)
+
+#box([
+
+#align(center, [
+#rect([
 *MB* \
 _Memory Barrier_ \
 Function Code: *0011* (0x3)
