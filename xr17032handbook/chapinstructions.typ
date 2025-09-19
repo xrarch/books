@@ -648,11 +648,11 @@ _Jump And Link, Register_ \
 Opcode: *111000* (0x38)
 ```
 Reg[RA] = PC + 4
-PC = Reg[RB] + (SignExtend(IMM16) << 2)
+PC = Reg[RB] + (IMM16 << 2)
 ```
 ], width: 100%)])
 
-The *JALR* instruction provides a lightweight means of calling through a function pointer. The next program counter (PC + 4) is saved in *Register A*, and then the PC is set to the contents of *Register B* plus a 16-bit sign-extended immediate value shifted left by two.
+The *JALR* instruction provides a lightweight means of calling through a function pointer. The next program counter (PC + 4) is saved in *Register A*, and then the PC is set to the contents of *Register B* plus a 16-bit zero-extended immediate value shifted left by two.
 
 This instruction can also be used to jump to the contents of a register in general, by setting the destination register to the *zero* register, thereby discarding the results.
 
