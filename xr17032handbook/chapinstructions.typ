@@ -1223,7 +1223,7 @@ This instruction moves the contents of the specified control register into *Regi
 _Move To Control Register_ \
 Function Code: *1110* (0xE)
 ```
-ControlReg[CR] = Reg[RA]
+ControlReg[CR] = Reg[RB]
 ```
 ], width: 100%)])
 
