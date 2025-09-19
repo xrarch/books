@@ -43,6 +43,7 @@ The XR/17032 architecture features only four instruction formats, and each are 3
 - *MOV INT [RA + IMM16], IMM5* _Store Int, Small Immediate_
 - *MOV LONG [RA + IMM16], IMM5* _Store Long, Small Immediate_
 - *JALR RA, RB, IMM16* _Jump And Link, Register_
+- *ADR RA, IMM16* _Compute Relative Address_
 
 === Register Operate Instructions Summary
 
@@ -655,6 +656,26 @@ PC = Reg[RB] + (IMM16 << 2)
 The *JALR* instruction provides a lightweight means of calling through a function pointer. The next program counter (PC + 4) is saved in *Register A*, and then the PC is set to the contents of *Register B* plus a 16-bit zero-extended immediate value shifted left by two.
 
 This instruction can also be used to jump to the contents of a register in general, by setting the destination register to the *zero* register, thereby discarding the results.
+
+#line(length: 100%)
+
+], width: 100%)
+
+#box([
+
+#align(center, [
+#rect([
+*ADR RA, IMM16* \
+_Compute Relative Address_ \
+Opcode: *110000* (0x30)
+```
+Reg[RA] = PC + (IMM16 << 16)
+```
+], width: 100%)])
+
+The *ADR* instruction adds the current program counter and a 16-bit immediate value shifted left by 16. The result is stored in *Register A*. This instruction is useful for PC-relative addressing modes.
+
+Unlike other immediate operate format instructions, this instruction's *Register B* field must be zero.
 
 #line(length: 100%)
 
