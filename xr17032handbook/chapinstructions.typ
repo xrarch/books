@@ -824,7 +824,7 @@ This instruction stores the contents of *Register A* as a 32-bit value to the ad
 _Various Shift By Register Amount_ \
 Function Code: *1000* (0x8)
 ```
-Reg[RA] = Reg[RC] xSH Reg[RB]
+Reg[RA] = Reg[RC] xSH (Reg[RB] & 31)
 ```
 ], width: 100%)])
 
