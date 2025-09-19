@@ -72,6 +72,7 @@ The XR/17032 architecture features only four instruction formats, and each are 3
 - *MOD RA, RB, RC* _Modulo_
 - *LL RA, RB* _Load Locked_
 - *SC RA, RB, RC* _Store Conditional_
+- *PAUSE* _Pause_
 - *MB* _Memory Barrier_
 - *WMB* _Write Memory Barrier_
 - *BRK* _Breakpoint_
@@ -1100,7 +1101,7 @@ This instruction stores the current value of the processor's "locked" flag to *R
 #rect([
 *PAUSE* \
 _Pause_ \
-Function Code: *0110* (0x8)
+Function Code: *0110* (0x6)
 ```
 // Possible implementation.
 PauseCount += 1
