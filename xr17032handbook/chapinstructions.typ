@@ -53,10 +53,10 @@ The XR/17032 architecture features only four instruction formats, and each are 3
 - *MOV BYTE [RB + RC xSH IMM5], RA* _Store Byte, Register Offset_
 - *MOV INT [RB + RC xSH IMM5], RA* _Store Int, Register Offset_
 - *MOV LONG [RB + RC xSH IMM5], RA* _Store Long, Register Offset_
-- *LSH RA, RB, RC* _Left Shift By Register Amount_
-- *RSH RA, RB, RC* _Logical Right Shift By Register Amount_
-- *ASH RA, RB, RC* _Arithmetic Right Shift By Register Amount_
-- *ROR RA, RB, RC* _Rotate Right By Register Amount_
+- *LSH RA, RC, RB* _Left Shift By Register Amount_
+- *RSH RA, RC, RB* _Logical Right Shift By Register Amount_
+- *ASH RA, RC, RB* _Arithmetic Right Shift By Register Amount_
+- *ROR RA, RC, RB* _Rotate Right By Register Amount_
 - *ADD RA, RB, RC xSH IMM5* _Add Register_
 - *SUB RA, RB, RC xSH IMM5* _Subtract Register_
 - *SLT RA, RB, RC xSH IMM5* _Set Less Than Register_
