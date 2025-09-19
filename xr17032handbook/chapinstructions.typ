@@ -1132,7 +1132,7 @@ RetireAllLoads()
 ```
 ], width: 100%)])
 
-This instruction need not be executed in a uniprocessor system. In a multiprocessor system, it ensures that, from the perspective of all other processors and I/O devices in the system, all prior writes performed by this processor have completed, as have all reads. One example of the usage of this instruction is to ensure data coherency after acquiring a spinlock.
+This instruction ensures that, from the perspective of all other processors and I/O devices in the system, no reads or writes performed by this processor are reordered across the *MB* instruction in either direction.
 
 #line(length: 100%)
 
@@ -1151,7 +1151,7 @@ FlushWriteBuffer()
 ```
 ], width: 100%)])
 
-This instruction ensures that, from the perspective of all other processors and I/O devices in the system, all writes performed by this processor have completed. One example of this instruction on a uniprocessor system is to ensure that a device has seen a sequence of writes to its registers before asking it to perform a command. An example on a multiprocessor system is to ensure data coherency before releasing a spinlock.
+This instruction ensures that, from the perspective of all other processors and I/O devices in the system, no writes performed by this processor before the *WMB* instruction are reordered after the *WMB* instruction. One example of this instruction on a uniprocessor system is to ensure that a device has seen a sequence of writes to its registers before asking it to perform a command. An example on a multiprocessor system is to ensure data coherency before releasing a spinlock.
 
 #line(length: 100%)
 
