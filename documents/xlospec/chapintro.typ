@@ -324,7 +324,6 @@ Indicates the 8-bit type code (range [0, 255]) of the pointer that must be reloc
   [0x06], [*FOX32_CALL*], [A fox32 *CALL* instruction.]
 )
 ])
-])
 
 == SectionIndex
 
