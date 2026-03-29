@@ -1,5 +1,3 @@
-#import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
-
 = Overview
 == Introduction
 The XR/computer platform is a general hardware design that is shared by the XR/station uniprocessor desktop workstation, and the XR/MP multiprocessor deskside server.
@@ -8,19 +6,23 @@ The platform is designed around the 32-bit XR/17032 RISC microprocessor, which i
 
 The product range encompassed by the XR/computer platform consists of:
 
-#tablex(
+#table(
   columns: (1fr, 1fr),
-  auto-vlines: false,
-  cellx([
+  table.vline(stroke: 0pt),
+  table.hline(stroke: 0pt),
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *XR/MP*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.hline(stroke: 0pt),
+  table.vline(stroke: 0pt),
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *XR/station*
   ], fill: rgb(0,0,0,255)),
+  table.vline(stroke: 0pt),
   [Deskside Server],
   [Desktop Workstation],
   [\$30K-120K],
@@ -31,7 +33,7 @@ The product range encompassed by the XR/computer platform consists of:
   [4MB-64MB RAM],
   [1-8 200MB-1GB Hard Disks],
   [1-2 200MB-1GB Hard Disks],
-  cellx([
+  table.cell([
     #set align(center)
     1024x768 \@ 8-bit Color
   ], colspan: 2),
@@ -115,17 +117,17 @@ END
 
 The following is a table of the currently defined board identifiers:
 
-#tablex(
+#table(
   columns: (0.8fr, 1fr, 1fr),
   align: center,
-  cellx([
+  table.cell([
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *BoardId*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Name*

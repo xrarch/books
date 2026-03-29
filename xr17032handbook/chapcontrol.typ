@@ -1,8 +1,9 @@
-#import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
 
 = Processor Control <control>
 
-=== Introduction
+// #counter(heading.where(level: 1)).update(1)
+
+== Introduction
 
 The behavior of the processor is primarily controlled by a small set of control registers (CRs). They are summarized by a table in @controlregs, and are explored in much more detail below.
 
@@ -35,36 +36,36 @@ The reason that this stack is three-deep is to account for this case:
 The mode bits are defined as follows when set:
 
 #set align(center)
-#tablex(
+#table(
   columns: (auto, auto),
   align: horizon,
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
-  ], fill: rgb(0,0,0,255)), cellx([
+  ], fill: rgb(0,0,0,255)), table.cell([
     #set text(fill: white)
     #set align(center)
     *Function*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *U*
   ], fill: rgb(0,0,0,255)),
   [Usermode is active. Privileged instructions, which all have a major opcode of *101001*, are forbidden and will produce a privilege violation exception if executed.],
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *I*
   ], fill: rgb(0,0,0,255)),
   "External device interrupts are enabled.",
-    cellx([
+    table.cell([
     #set text(fill: white)
     #set align(center)
     *M*
   ], fill: rgb(0,0,0,255)),
   [Paged virtual addressing is enabled. The ITB and DTB are looked up to translate instruction fetches and data accesses, respectively (see @mmu).],
-    cellx([
+    table.cell([
     #set text(fill: white)
     #set align(center)
     *T*
@@ -111,28 +112,29 @@ A table of all defined exception causes follows:
 ], width: 100%)
 
 #set align(center)
-#tablex(
+#table(
   columns: (auto, auto, auto, auto),
   align: horizon,
-  repeat-header: true,
-  cellx([
-    #set text(fill: white)
-    #set align(center)
-    *\#*
-  ], fill: rgb(0,0,0,255)),
-  cellx([
-    #set text(fill: white)
-    #set align(center)
-    *EB*
-  ], fill: rgb(0,0,0,255)), cellx([
-    #set text(fill: white)
-    #set align(center)
-    *Name*
-  ], fill: rgb(0,0,0,255)), cellx([
-    #set text(fill: white)
-    #set align(center)
-    *Occurrence*
-  ], fill: rgb(0,0,0,255)),
+  table.header(
+    table.cell([
+      #set text(fill: white)
+      #set align(center)
+      *\#*
+    ], fill: rgb(0,0,0,255)),
+    table.cell([
+      #set text(fill: white)
+      #set align(center)
+      *EB*
+    ], fill: rgb(0,0,0,255)), table.cell([
+      #set text(fill: white)
+      #set align(center)
+      *Name*
+    ], fill: rgb(0,0,0,255)), table.cell([
+      #set text(fill: white)
+      #set align(center)
+      *Occurrence*
+    ], fill: rgb(0,0,0,255))
+  ),
   "1", "+100", "INT", "An external interrupt has occurred.",
   "2", "+200", "SYS", [A *SYS* instruction has been executed.],
   "4", "+400", "BUS", "A bus error has occurred, usually caused by a non-existent physical address being accessed.",
@@ -204,42 +206,42 @@ The low 32 bits of a TB entry are its "value", indicating the page frame that th
 The PTE bits are defined as follows when set:
 
 #set align(center)
-#tablex(
+#table(
   columns: (auto, auto),
   align: horizon,
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
-  ], fill: rgb(0,0,0,255)), cellx([
+  ], fill: rgb(0,0,0,255)), table.cell([
     #set text(fill: white)
     #set align(center)
     *Function*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *V*
   ], fill: rgb(0,0,0,255)),
   "The translation is valid. If this bit is clear, accesses within the page will result in the appropriate page fault exception.",
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *W*
   ], fill: rgb(0,0,0,255)),
   [The page is writable. If this bit is clear, any write within the page will result in a *PFW* (Page Fault Write) exception.],
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *K*
   ], fill: rgb(0,0,0,255)),
   "The page may only be accessed while the processor is in kernel mode. Accesses from user mode will result in the appropriate page fault exception.",
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *N*
   ], fill: rgb(0,0,0,255)),
   "Accesses within this page should bypass the caches and go directly to the bus. This is most useful for memory-mapped IO.",
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *G*
@@ -277,36 +279,36 @@ Writes to *ITBCTRL* and *DTBCTRL* can be used to invalidate entries in the ITB o
 ], width: 100%)
 
 #set align(center)
-#tablex(
+#table(
   columns: (auto, auto),
   align: horizon,
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
-  ], fill: rgb(0,0,0,255)), cellx([
+  ], fill: rgb(0,0,0,255)), table.cell([
     #set text(fill: white)
     #set align(center)
     *Function*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *11*
   ], fill: rgb(0,0,0,255)),
   [Every entry in the TB is cleared, including entries with the *G* bit set. Note that in general, this should not be done while virtual address translation is enabled, as this may clear wired entries like the exception block, and any TB miss taken will then be fatal.],
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *10*
   ], fill: rgb(0,0,0,255)),
   [Clear all non-wired private entries from the TB, i.e., non-wired entries with the *G* bit clear.],
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *01*
   ], fill: rgb(0,0,0,255)),
   [Clear all non-wired entries from the TB, including global entries.],
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *00*
@@ -330,24 +332,24 @@ Reads from the *ICACHECTRL* and *DCACHECTRL* control registers yield a 32-bit va
 Writes to the *ICACHECTRL* and *DCACHECTRL* control registers cause various invalidations to occur. The 32-bit value written to the control register should be in one of the two formats enumerated above, distinguished by the low two bits. Any other combination of low bits will yield unpredictable results. The action of each format is as follows:
 
 #set align(center)
-#tablex(
+#table(
   columns: (auto, auto),
   align: horizon,
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
-  ], fill: rgb(0,0,0,255)), cellx([
+  ], fill: rgb(0,0,0,255)), table.cell([
     #set text(fill: white)
     #set align(center)
     *Function*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *11*
   ], fill: rgb(0,0,0,255)),
   [Every line in the cache is invalidated. This is useful for, for example, keeping the Icache coherent after things like dynamic linking that modify the instruction stream in ways that are hard to predict.],
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *10*
