@@ -1,18 +1,16 @@
-#import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
-
 = NVRAM
 
 XR/computer systems all contain a 4KB non-volatile RAM (NVRAM) which is used by the system firmware to store persistent information in "NVRAM variables". These can be viewed and set by the user from the command monitor. All NVRAM variable contents are ASCII strings, but the internal format is undocumented and liable to change. A table of the currently defined NVRAM variables follows:
 
 #box([
-#tablex(
+#table(
   columns: (1fr, 6fr),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Name*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Function*

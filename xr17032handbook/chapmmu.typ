@@ -1,5 +1,3 @@
-#import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
-
 = Virtual Addressing <mmu>
 == Introduction
 For many reasons, it is useful to be able to dynamically re-map sections of the address space to other regions of physical memory, thereby creating a "virtual address space". A few such reasons are listed below:
@@ -83,21 +81,27 @@ The behavior of the processor when a TB miss occurs is contingent on whether the
 
 #box([
 
-#tablex(
+#table(
   columns: (1fr, 1fr),
   align: horizon,
-  width: 100%,
-  auto-vlines: false,
-  cellx([
+  // width: 100%,
+  // auto-vlines: false,
+  table.vline(stroke: 0pt),
+  table.hline(stroke: 0pt),
+  table.cell([
     #set align(center)
     #set text(fill: white)
     *TB Miss Exception Behavior*
   ], fill: rgb(0,0,0,255), colspan: 2),
-  cellx([
+  table.vline(stroke: 0pt),
+  table.hline(stroke: 0pt),
+  table.cell([
     #set text(fill: white)
     *T=0*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.vline(stroke: 0pt),
+  table.hline(stroke: 0pt),
+  table.cell([
     #set text(fill: white)
     *T=1*
   ], fill: rgb(0,0,0,255)),
@@ -127,21 +131,25 @@ There are also some special cases for page faults that occur while the *T* bit i
 
 #box([
 
-#tablex(
+#table(
   columns: (1fr, 1fr),
   align: horizon,
-  width: 100%,
-  auto-vlines: false,
-  cellx([
+  table.vline(stroke: 0pt),
+  table.hline(stroke: 0pt),
+  table.cell([
     #set align(center)
     #set text(fill: white)
     *Page Fault Exception Behavior*
   ], fill: rgb(0,0,0,255), colspan: 2),
-  cellx([
+  table.hline(stroke: 0pt),
+  table.vline(stroke: 0pt),
+  table.cell([
     #set text(fill: white)
     *T=0*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.hline(stroke: 0pt),
+  table.vline(stroke: 0pt),
+  table.cell([
     #set text(fill: white)
     *T=1*
   ], fill: rgb(0,0,0,255)),

@@ -1,19 +1,17 @@
-#import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
-
 = Kinnow Framebuffer
 == Introduction
 
 The Kinnow framebuffer card provides a very simple linear 1024x768 framebuffer with 8-bit pixels. The slot space is laid out as follows:
 
-#tablex(
+#table(
   columns: (1fr, 5fr),
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Offset*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Purpose*
@@ -26,15 +24,15 @@ The Kinnow framebuffer card provides a very simple linear 1024x768 framebuffer w
 
 There are two 32-bit read-only device registers:
 
-#tablex(
+#table(
   columns: (1fr, 5fr),
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Offset*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Purpose*

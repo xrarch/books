@@ -1,5 +1,3 @@
-#import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
-
 = Amtsu Peripheral Bus
 == Introduction
 
@@ -17,15 +15,15 @@ Note that when interrupts are enabled for an Amtsu peripheral, the IRQ number is
 
 The following is a table of the currently defined Amtsu model identifiers:
 
-#tablex(
+#table(
   columns: (1fr, 3fr),
   align: center,
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Name*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *MID*
@@ -38,15 +36,15 @@ When ID 0 is selected, the Amtsu controller itself accepts commands through the 
 
 #box([
   
-#tablex(
+#table(
   columns: (1fr, 14fr),
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *\#*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Function*
@@ -68,15 +66,15 @@ When the IRQ for a keyboard device is enabled in the Amtsu controller, an interr
 
 When selected in the Amtsu interface, this device presents several commands:
 
-#tablex(
+#table(
   columns: (1fr, 14fr),
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *\#*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Function*
@@ -109,15 +107,15 @@ When the IRQ for a mouse device is enabled in the Amtsu controller, an interrupt
 
 When selected in the Amtsu interface, this device presents several commands:
 
-#tablex(
+#table(
   columns: (1fr, 14fr),
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *\#*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Function*
@@ -136,24 +134,24 @@ When selected in the Amtsu interface, this device presents several commands:
 
 When command 0x1 is written to the command port, information from the last mouse event is latched into data ports *A* and *B*. The event types reported in data port *A* have the following meaning:
 
-#tablex(
+#table(
   columns: (1fr, 14fr),
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *0x1*
   ], fill: rgb(0,0,0,255)),
   [Button pressed.],
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *0x2*
   ], fill: rgb(0,0,0,255)),
   [Button released.],
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *0x3*
@@ -167,24 +165,24 @@ When command 0x1 is written to the command port, information from the last mouse
 
 When the event type indicates a button press or release, data port *B* reports a number representing the mouse button:
 
-#tablex(
+#table(
   columns: (1fr, 14fr),
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *0x1*
   ], fill: rgb(0,0,0,255)),
   [Left button.],
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *0x2*
   ], fill: rgb(0,0,0,255)),
   [Right button.],
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *0x3*
