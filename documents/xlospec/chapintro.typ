@@ -1,5 +1,3 @@
-#import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
-
 = Overview
 
 The XR/SDK Linkable Object *(XLO)* file format is the native object file format of the XR/SDK suite of tools. It is the only file format emitted by the XR/ASM assembler, and is the only file format accepted by the XR/LINK linker. It is suitable for use as an intermediate object code format, as an executable file format, as a static library format, and as a dynamic library format.
@@ -18,7 +16,7 @@ An maximal module file might have the following layout:
 
 ```
 +--------+---------------+-------------------+--------------+--------------+------------
-| Header | Section Table | Relocation Tables | Symbol Table | Extern Table | Unr. Fixups 
+| Header | Section Table | Relocation Tables | Symbol Table | Extern Table | Unr. Fixups
 +--------+---------------+-------------------+--------------+--------------+------------
 -+--------------+--------+--------------+--------------+--------------+
  | Import Table | Fixups | String Table | Text Section | Data Section |
@@ -87,14 +85,14 @@ StringTableOffset contains the file pointer of the "string table", which is the 
 This field contains the 32-bit "architecture code" indicating which instruction set the code within the module is for. Currently defined codes are:
 
 #box([
-#tablex(
+#table(
   columns: (1fr, 8fr),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Code*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Architecture*
@@ -120,19 +118,19 @@ ImportTableOffset contains the file pointer of the "import table", a flat array 
 This field contains up to 32 flags indicating characteristics of the module file. Currently defined flags are:
 
 #box([
-#tablex(
+#table(
   columns: (1fr, 5fr, 16fr),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Bit*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Name*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Meaning*
@@ -186,25 +184,25 @@ The 8-bit index (range [0, 255]) into the section table of the section that this
 The 8-bit type code indicating properties of the symbol. Currently defined types are:
 
 #box([
-#tablex(
+#table(
   columns: (1fr, 1fr, 8fr),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Code*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Name*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Meaning*
   ], fill: rgb(0,0,0,255)),
   [0x01], [*GLOBAL*], [This symbol is visible to other modules in a statically linked compilation unit, but will not be included in the symbol table of a final executable or dynamic library.],
-  [0x02], [*EXPORT*], [This symbol is visible to other modules in both a statically and dynamically linked unit. Is included in a final symbol table after linking.]
+  [0x02], [*EXPORT*], [This symbol is visible to other modules in both a statically and dynamically linked unit. Is included in a final symbol table after linking.],
 )
 ])
 
@@ -299,19 +297,19 @@ Indicates the 16-bit index (range [0, 65535]) of the entry within the extern tab
 
 Indicates the 8-bit type code (range [0, 255]) of the pointer that must be relocated. The currently defined types are:
 
-#tablex(
+#table(
   columns: (5fr, 14fr, 48fr),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Code*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Name*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Meaning*
@@ -355,19 +353,19 @@ The offset from the base of the string table at which the null-terminated ASCII 
 The 8-bit type code indicating properties of the extern. Currently defined types are:
 
 #box([
-#tablex(
+#table(
   columns: (2fr, 6fr, 30fr),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Type*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Name*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Meaning*
@@ -434,19 +432,19 @@ RelocTableOffset contains the file pointer of the section's relocation table, co
 Up to 32 flags that indicate characteristics of the section. Currently defined flags are:
 
 #box([
-#tablex(
+#table(
   columns: (1fr, 5fr, 12fr),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Bit*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Name*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Meaning*

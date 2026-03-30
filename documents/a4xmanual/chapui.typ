@@ -1,4 +1,3 @@
-#import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
 
 = User Interface
 
@@ -22,14 +21,14 @@ Note that partitions are named in the format *dksXsY*, where *X* is the integer 
 #box([
 A list of commands available at the time of writing is provided:
 
-#tablex(
+#table(
   columns: (1fr, 7fr),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Command*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Function*

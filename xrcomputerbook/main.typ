@@ -1,6 +1,6 @@
-#import "@preview/hydra:0.2.0": hydra
+#import "@preview/hydra:0.6.2": hydra
 
-#set page(header: hydra(paper: "iso-b5"), paper: "iso-b5")
+#set page(header: context hydra(), paper: "iso-b5")
 
 #set document(title: "XR/computer Platform Handbook")
 #set text(font: "IBM Plex Mono", size: 9pt)

@@ -1,5 +1,3 @@
-#import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
-
 = Overview
 == Introduction
 XR/17032 is a 32-bit RISC architecture. This document describes it informally and is meant to be used as a reference handbook; it is intended for readers who are already somewhat familiar with computer architecture, or who are at least familiar with computer programming and have good independent research skills.
@@ -15,23 +13,24 @@ In the interest of supporting fancy operating system design, XR/17032 supports p
 The architecture defines 32 general purpose registers (GPRs), usable by any instruction that takes register operands. They are each 32 bits wide. The zeroth GPR, zero, almost always reads as zero and ignores writes. This is a common RISC design tactic that simplifies the encoding of many instructions. A table of GPRs follows:
 
 #set align(center)
-#tablex(
+#table(
   columns: (auto, auto, auto),
   align: horizon,
-  repeat-header: true,
-  cellx([
-    #set text(fill: white)
-    #set align(center)
-    *\#*
-  ], fill: rgb(0,0,0,255)), cellx([
-    #set text(fill: white)
-    #set align(center)
-    *Name*
-  ], fill: rgb(0,0,0,255)), cellx([
-    #set text(fill: white)
-    #set align(center)
-    *ABI Assignment*
-  ], fill: rgb(0,0,0,255)),
+  table.header(
+    table.cell([
+      #set text(fill: white)
+      #set align(center)
+      *\#*
+    ], fill: rgb(0,0,0,255)), table.cell([
+      #set text(fill: white)
+      #set align(center)
+      *Name*
+    ], fill: rgb(0,0,0,255)), table.cell([
+      #set text(fill: white)
+      #set align(center)
+      *ABI Assignment*
+    ], fill: rgb(0,0,0,255)),
+  ),
   "0", "zero", "Always reads as zero, ignores writes.",
   "1-6", "t0-5", "6 temporary registers (caller-saved).",
   "7-10", "a0-3", "First 4 arguments and return values (caller-saved).",
@@ -46,23 +45,24 @@ The architecture defines 32 general purpose registers (GPRs), usable by any inst
 The architecture defines 32 control registers (CRs). They are each 32 bits wide. As their name suggests, CRs are used to control the behavior of the processor, and are therefore only accessible via the privileged kernel mode instructions *MTCR* and *MFCR*. A table containing a summary of all defined control registers follows:
 
 #set align(center)
-#tablex(
+#table(
   columns: (auto, auto, auto),
   align: horizon,
-  repeat-header: true,
-  cellx([
-    #set text(fill: white)
-    #set align(center)
-    *\#*
-  ], fill: rgb(0,0,0,255)), cellx([
-    #set text(fill: white)
-    #set align(center)
-    *Name*
-  ], fill: rgb(0,0,0,255)), cellx([
-    #set text(fill: white)
-    #set align(center)
-    *Function*
-  ], fill: rgb(0,0,0,255)),
+  table.header(
+    table.cell([
+      #set text(fill: white)
+      #set align(center)
+      *\#*
+    ], fill: rgb(0,0,0,255)), table.cell([
+      #set text(fill: white)
+      #set align(center)
+      *Name*
+    ], fill: rgb(0,0,0,255)), table.cell([
+      #set text(fill: white)
+      #set align(center)
+      *Function*
+    ], fill: rgb(0,0,0,255)),
+  ),
   "0", "RS", "Current and previous processor mode bits.",
   "1", "WHAMI", "Unique ID for this processor in a multiprocessor system.",
   "5", "EB", "Exception block base address.",
