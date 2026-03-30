@@ -459,10 +459,10 @@ Up to 32 flags that indicate characteristics of the section. Currently defined f
 ])
 ])
 
-=== Subsections <section-subsections>
+== Subsections <section-subsections>
 
-If a section has the *XLO_SECTION_SPLIT* flag enabled, the section is safe to be split into subsections, such that each subsection starts at a symbol definition and ends before the next symbol definition (or the end of the section itself). If a subsection's associated symbol is not *EXPORT*-typed and is unreferenced after symbol resolution, it is safe to be removed altogether.
+If a section has the *XLO_SECTION_SPLIT* flag enabled, the section is safe to be split into subsections, such that each subsection starts at a symbol definition and ends before the next symbol definition (or the end of the section itself). If a subsection's associated symbol has a type other than *EXPORT* and is unreferenced after symbol resolution, it is safe to be removed altogether.
 
-This feature is an designed to support link-time dead code elimination and, in combination with the *WEAK* symbol flag, de-duplication of "generic" entities in high-level compiled languages. 
+This feature is designed to support link-time dead code elimination and, in combination with the *WEAK* symbol flag, de-duplication of "generic" entities in high-level compiled languages. 
 
-*XLO_SECTION_SPLIT* is technically safe to ignore, though unnecessarily-large binaries may be produced by tools that make heavy use of it.
+Linkers are technically safe to ignore the *XLO_SECTION_SPLIT* flag, though this may lead to an excess of dead code and data in objects that use it.
