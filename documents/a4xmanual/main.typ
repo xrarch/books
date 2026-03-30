@@ -1,6 +1,6 @@
-#import "@preview/hydra:0.2.0": hydra
+#import "@preview/hydra:0.6.2": hydra
 
-#set page(header: hydra(paper: "us-letter"), paper: "us-letter")
+#set page(header: context hydra(), paper: "us-letter")
 
 #set document(title: "A4X Firmware Manual")
 #set text(font: "IBM Plex Mono", size: 9pt)

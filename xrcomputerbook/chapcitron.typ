@@ -1,5 +1,3 @@
-#import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
-
 = Citron Interface
 == Introduction
 
@@ -21,15 +19,15 @@ The RTC uses two Citron ports, a single command port (0x20) and a single data po
 
 #box([
 
-#tablex(
+#table(
   columns: (1fr, 14fr),
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *\#*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Function*
@@ -61,15 +59,15 @@ The accepted commands are as follows:
 
 #box([
 
-#tablex(
+#table(
   columns: (1fr, 14fr),
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *\#*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Function*
@@ -94,15 +92,15 @@ The IRQ number for the disk controller is 0x03.
 
 The accepted commands are as follows:
   
-#tablex(
+#table(
   columns: (1fr, 14fr),
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *\#*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Function*

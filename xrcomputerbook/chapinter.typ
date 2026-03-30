@@ -1,5 +1,3 @@
-#import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
-
 = Interrupt Architecture
 == Introduction
 
@@ -9,45 +7,45 @@ Interrupts on the XR/computer platform are mediated between the devices and the 
 
 The LSIC has 64 interrupt inputs. They are assigned as follows on the XR/computer platform:
 
-#tablex(
+#table(
   columns: (1fr, 6fr),
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *0x02*
   ], fill: rgb(0,0,0,255)),
   [Interval Timer],
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *0x03*
   ], fill: rgb(0,0,0,255)),
   [Disk Controller],
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *0x04*
   ], fill: rgb(0,0,0,255)),
   [Serial Port A],
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *0x05*
   ], fill: rgb(0,0,0,255)),
   [Serial Port B],
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *0x28-0x2E*
   ], fill: rgb(0,0,0,255)),
   [Expansion Boards],
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *0x30-0x33*
@@ -61,20 +59,20 @@ The LSIC registers' behavior on write and read is enumerated below:
 
 #box([
 
-#tablex(
+#table(
   columns: (1fr, 1fr, 6fr),
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Name*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Offset*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Function on Write*
@@ -91,20 +89,20 @@ The LSIC registers' behavior on write and read is enumerated below:
 
 #box([
 
-#tablex(
+#table(
   columns: (1fr, 1fr, 6fr),
 
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Name*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Offset*
   ], fill: rgb(0,0,0,255)),
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *Return on Read*

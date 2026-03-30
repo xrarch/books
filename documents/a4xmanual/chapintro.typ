@@ -1,5 +1,3 @@
-#import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
-
 = Overview
 
 The *A4X* firmware forms the contents of the boot ROM of XR/computer platforms.#footnote([See the _XR/computer Systems Handbook_ for more information.]) This is the first code that executes in the system after processor reset, and is responsible for initializing the integral devices and enabling the user to select a boot device.

@@ -1,4 +1,3 @@
-#import "@preview/tablex:0.0.6": tablex, cellx, colspanx, rowspanx
 
 = Instructions
 == Instruction Formats Summary
@@ -697,28 +696,28 @@ All privileged instructions are in this format and are function codes of the las
 The value of Register C is shifted in the manner specified by the shift type, by the amount specified by the shift amount. A table of shift types follows:
 
 #set align(center)
-#tablex(
+#table(
   columns: (auto, auto),
   align: horizon,
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *00*
   ], fill: rgb(0,0,0,255)),
   [*LSH* Left shift.],
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *01*
   ], fill: rgb(0,0,0,255)),
   [*RSH* Logical right shift.],
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *10*
   ], fill: rgb(0,0,0,255)),
   [*ASH* Arithmetic right shift.],
-  cellx([
+  table.cell([
     #set text(fill: white)
     #set align(center)
     *11*
