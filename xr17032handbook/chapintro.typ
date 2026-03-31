@@ -15,7 +15,7 @@ The architecture defines 32 general purpose registers (GPRs), usable by any inst
 #set align(center)
 #table(
   columns: (auto, auto, auto),
-  align: horizon,
+  align: horizon + left,
   table.header(
     table.cell([
       #set text(fill: white)
@@ -47,7 +47,7 @@ The architecture defines 32 control registers (CRs). They are each 32 bits wide.
 #set align(center)
 #table(
   columns: (auto, auto, auto),
-  align: horizon,
+  align: horizon + left,
   table.header(
     table.cell([
       #set text(fill: white)
