@@ -203,6 +203,7 @@ The 8-bit type code indicating properties of the symbol. Currently defined types
   ], fill: rgb(0,0,0,255)),
   [0x01], [*GLOBAL*], [This symbol is visible to other modules in a statically linked compilation unit, but will not be included in the symbol table of a final executable or dynamic library.],
   [0x02], [*EXPORT*], [This symbol is visible to other modules in both a statically and dynamically linked unit. Is included in a final symbol table after linking.],
+  [0x03], [*WEAK*], [This symbol is visible to other modules in a statically linked compilation unit, but will not be included in the symbol table of a final executable or dynamic library. References to this symbol may be redirected to references to another symbol with the same name.],
 )
 ])
 
@@ -452,7 +453,16 @@ Up to 32 flags that indicate characteristics of the section. Currently defined f
   [0], [*XLO_SECTION_ZERO*], [The section has no on-disk data and is full of zeroes. This flag is primarily a hint to the linker.],
   [1], [*XLO_SECTION_CODE*], [The section contains code and should be mapped as executable.],
   [2], [*XLO_SECTION_MAP*], [The section has in-memory presence at load time. If this isn't set, it only has on-disk data such as debug information.],
-  [3], [*XLO_SECTION_PAGED*], [The section is pageable. This is only relevant to the _MINTIA_ Executive and modules thereof.]
+  [3], [*XLO_SECTION_PAGED*], [The section is pageable. This is only relevant to the _MINTIA_ Executive and modules thereof.],
+  [4], [*XLO_SECTION_SPLIT*], [The section is safe to be split into subsections on symbol boundaries. See @section-subsections for more information.],
 )
 ])
 ])
+
+== Subsections <section-subsections>
+
+If a section has the *XLO_SECTION_SPLIT* flag enabled, the section is safe to be split into subsections, such that each subsection starts at a symbol definition and ends before the next symbol definition (or the end of the section itself). If a subsection's associated symbol has a type other than *EXPORT* and is unreferenced after symbol resolution, it is safe to be removed altogether.
+
+This feature is designed to support link-time dead code elimination and, in combination with the *WEAK* symbol flag, de-duplication of "generic" entities in high-level compiled languages. 
+
+Linkers are technically safe to ignore the *XLO_SECTION_SPLIT* flag, though this may lead to an excess of dead code and data in objects that use it.

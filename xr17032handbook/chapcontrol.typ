@@ -38,7 +38,7 @@ The mode bits are defined as follows when set:
 #set align(center)
 #table(
   columns: (auto, auto),
-  align: horizon,
+  align: horizon + left,
   table.cell([
     #set text(fill: white)
     #set align(center)
@@ -114,7 +114,7 @@ A table of all defined exception causes follows:
 #set align(center)
 #table(
   columns: (auto, auto, auto, auto),
-  align: horizon,
+  align: horizon + left,
   table.header(
     table.cell([
       #set text(fill: white)
@@ -208,7 +208,7 @@ The PTE bits are defined as follows when set:
 #set align(center)
 #table(
   columns: (auto, auto),
-  align: horizon,
+  align: horizon + left,
   table.cell([
     #set text(fill: white)
     #set align(center)
@@ -281,7 +281,7 @@ Writes to *ITBCTRL* and *DTBCTRL* can be used to invalidate entries in the ITB o
 #set align(center)
 #table(
   columns: (auto, auto),
-  align: horizon,
+  align: horizon + left,
   table.cell([
     #set text(fill: white)
     #set align(center)
@@ -334,7 +334,7 @@ Writes to the *ICACHECTRL* and *DCACHECTRL* control registers cause various inva
 #set align(center)
 #table(
   columns: (auto, auto),
-  align: horizon,
+  align: horizon + left,
   table.cell([
     #set text(fill: white)
     #set align(center)

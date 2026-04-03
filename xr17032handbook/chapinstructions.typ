@@ -698,7 +698,7 @@ The value of Register C is shifted in the manner specified by the shift type, by
 #set align(center)
 #table(
   columns: (auto, auto),
-  align: horizon,
+  align: horizon + left,
   table.cell([
     #set text(fill: white)
     #set align(center)

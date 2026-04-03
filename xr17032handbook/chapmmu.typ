@@ -83,7 +83,7 @@ The behavior of the processor when a TB miss occurs is contingent on whether the
 
 #table(
   columns: (1fr, 1fr),
-  align: horizon,
+  align: horizon + left,
   // width: 100%,
   // auto-vlines: false,
   table.vline(stroke: 0pt),
@@ -133,7 +133,7 @@ There are also some special cases for page faults that occur while the *T* bit i
 
 #table(
   columns: (1fr, 1fr),
-  align: horizon,
+  align: horizon + left,
   table.vline(stroke: 0pt),
   table.hline(stroke: 0pt),
   table.cell([
