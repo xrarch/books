@@ -71,8 +71,8 @@ The IRQ number for the disk controller is 0x03.
 
   [], [Function],
   [1], [Select the disk number specified in data port A.],
-  [2], [Start a READ transfer from the selected disk beginning at the sector number specified in data port A.],
-  [3], [Start a WRITE transfer to the selected disk beginning at the sector number specified in data port A.],
+  [2], [Start a READ from the selected disk beginning at the sector number specified in data port A.],
+  [3], [Start a WRITE to the selected disk beginning at the sector number specified in data port A.],
   [4], [Set data port B to a bit set of disks whose transfer has completed since the last time this port was read. Atomically clears the bit set.],
   [5], [Read information about the disk whose number is in data port A. Data port A is set to 1 if the disk is present, 0 otherwise. Data port B is set to a 32 bit count of sectors in the disk.],
   [6], [Enable the transfer completion interrupt.],
