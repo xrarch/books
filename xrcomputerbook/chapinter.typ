@@ -21,7 +21,7 @@ The LSIC has 64 interrupt inputs. They are assigned as follows on the XR/compute
   [0x30-0x33], [Amtsu Devices],
 )
 
-Each LSIC has several 32-bit registers which control its behavior. The zeroth LSIC is located at 0xF8030000 in the physical address space, and successive LSICs are arranged at offsets of 32 bytes. In effect, there is an "array" of LSICs which is indexed by the corresponding processor's number (which can be found in the WHAMI control register on that processor, and is in the range of [0-3] on XR/computer systems).
+Each LSIC has several 32-bit registers which control its behavior. The zeroth LSIC is located at 0xF8030000 in the physical address space, and successive LSICs are arranged at offsets of 32 bytes. In effect, there is an "array" of LSICs which is indexed by the corresponding processor's number (which can be found in the WHAMI control register on that processor, and is in the range of [0, 3] on XR/computer systems).
 
 The LSIC registers' behavior on write and read is enumerated below:
 
