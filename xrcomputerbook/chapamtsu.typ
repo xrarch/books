@@ -43,6 +43,8 @@ When ID 0 is selected, the Amtsu controller itself accepts commands through the 
 
 ]
 
+#pagebreak(weak: true)
+
 #aGroup[
 
 == Keyboard
@@ -70,6 +72,8 @@ When the IRQ for a keyboard device is enabled in the Amtsu controller, an interr
 
 #caption[The layout of the keyboard. Scancodes for each key are labeled in the center of the key.]
 
+#pagebreak(weak: true)
+
 == Mouse
 
 There is a standard mouse device for the Amtsu bus. The mouse is a simple pointing input device. There are three buttons.
@@ -77,8 +81,6 @@ There is a standard mouse device for the Amtsu bus. The mouse is a simple pointi
 When the IRQ for a mouse device is enabled in the Amtsu controller, an interrupt will be signaled whenever the mouse moves, and whenever one of the buttons is pressed or released.
 
 #aGroup[
-
-When selected in the Amtsu interface, this device presents several commands:
 
 #roundedTable(
   columns: (auto, 1fr),

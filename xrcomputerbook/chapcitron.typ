@@ -1,6 +1,6 @@
 #import "config.typ": *
 
-= Citron Interface
+= Citron Interface <citron>
 == Introduction
 
 The Citron interface is a small memory-mapped region of 32-bit ports.#footnote([Historically, this was the port I/O space of a previous CISC processor architecture.]) Many of the integral devices of the XR/computer platform are exposed through this interface. It begins at the physical address `0xF8000000`. For example, Citron Port 0x20 would be found at the offset 0x20 \* 4 = 0x80 within this space, or `0xF8000080`.
@@ -11,13 +11,15 @@ Device ports have some standard behavior in order to simplify drivers somewhat. 
 
 "Data ports" may have any device-specific action on reads and writes.
 
+#pagebreak(weak: true)
+
 === RTC
 
 There is a simple Real Time Clock (RTC) that is responsible for tracking time and for asserting the interval timer interrupt. The time is tracked as a 32-bit Unix epoch timestamp, along with a millisecond part. The current time is stored persistently in a small battery-backed memory. The interval timer can be programmed to periodically interrupt at any 32-bit count of milliseconds.
 
 The IRQ number for the interval timer is 0x02.
 
-The RTC uses two Citron ports, a single command port (0x20) and a single data port (0x21). The data port is readable and writable as a 32-bit datum. The accepted commands are as follows:
+The RTC uses two Citron ports, a single command port (0x20) and a single data port (0x21). The data port is readable and writable as a 32-bit datum.
 
 #roundedTable(
   columns: (auto, 1fr),
@@ -29,6 +31,10 @@ The RTC uses two Citron ports, a single command port (0x20) and a single data po
   [4], [Sets the current epoch time seconds part from the contents of the data port.],
   [5], [Sets the current epoch time milliseconds part from the contents of the data port.],
 )
+
+#caption[Accepted RTC commands.]
+
+#pagebreak(weak: true)
 
 === Serial Ports
 
@@ -44,8 +50,6 @@ Writing to the data port will enqueue a character into the transmit buffer. If t
 
 The IRQ numbers for serial ports A and B are 0x04 and 0x05 respectively.
 
-The accepted commands are as follows:
-
 #roundedTable(
   columns: (auto, 1fr),
 
@@ -53,6 +57,10 @@ The accepted commands are as follows:
   [3], [Enable the interrupt for this serial port.],
   [4], [Disable the interrupt for this serial port.],
 )
+
+#caption[Accepted serial port commands.]
+
+#pagebreak(weak: true)
 
 === Disk Controller
 

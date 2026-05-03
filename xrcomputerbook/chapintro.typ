@@ -52,43 +52,48 @@ The Kinnow framebuffer card is part of the default configuration of all models, 
 
 Note that since the XR/17032 architecture specifies non-mapped accesses to physical addresses above `0xC0000000` (3GB) to be noncached, all memory mapped device registers are placed above this address by this platform. Additionally, the machine is entirely little-endian.
 
+== Physical Address Space
+
 #aGroup[
 
-== Memory
+#microHeading("Memory")
 
-There is a memory subsystem which contains up to 4 slots that may each hold one memory stick. A memory stick can have a capacity of 4MB, 8MB, 16MB, or 32MB. The slots are sequentially placed into the physical address space at offsets of 32MB starting at address zero, and the contents of a single stick are presented in a physically contiguous manner beginning at the base of the slot area. That is, the zeroth slot resides at `0x00000000`, the first slot resides at `0x02000000`, the second is at `0x04000000`, etc. This creates a 128MB region in the low physical address space in which memory can be found.
+There is a memory subsystem which contains up to 4 slots that may each hold one memory stick. A memory stick can have a capacity of 4MB, 8MB, 16MB, or 32MB. The slots are sequentially placed into the physical address space at offsets of 32MB starting at address `0x00000000`, and the contents of a single stick are presented in a physically contiguous manner beginning at the base of the slot area. That is, the zeroth slot resides at `0x00000000`, the first slot resides at `0x02000000`, the second is at `0x04000000`, etc. This creates a 128MB region in the low physical address space in which memory can be found.
 
 ]
 
 Memory sticks need not be placed into the slots in a manner that is physically contiguous. For instance, it is possible to place a 4MB stick in slot 0 and another 4MB stick in slot 1, leaving a 28MB gap inbetween them in the physical address space. The system software will deal with this correctly. However, slot 0 must always contain some memory for use by the system ROM code.
 
-=== Probing the Size of Memory
 
-Accesses to empty memory slots will produce bus error exceptions after a short timeout. Therefore, the size of the memory stick in each slot (or absence thereof) can be determined by probing along the slot area until either the end of the slot is reached or a bus error occurs.
+Accesses to empty memory slots will produce bus error exceptions after a short timeout. Therefore, the size of the memory stick in each slot (or absence thereof) can be determined by probing along the slot area until either the end of the slot is reached or a bus error occurs. Note that the system PROM code will do this automatically, and should be consulted to acquire a map of physical memory at boot time if required.
 
-Note that the system PROM code will do this automatically, and should be consulted to acquire a map of physical memory at boot time if required.
+#aGroup[
 
-== System PROM
+#microHeading("System PROM")
 
 The 128KB system PROM is placed into the final 128KB of the physical address space (starting at `0xFFFE0000`) and contains the reset vector for the XR/17032 microprocessor. This is the first code that runs in the system during startup and is responsible for presenting a simple interface that allows the user to select a boot device, and for booting the operating system.#footnote([The A4X boot firmware contained within the system PROM is described in the A4X Firmware Manual.])
 
-== NVRAM
+]
+
+#aGroup[
+
+#microHeading("NVRAM")
 
 Beginning at `0xF8001000`, there is a small 4KB battery-backed non-volatile RAM (NVRAM). This is used by the boot firmware to store certain persistent variables, such as the user's preferred boot device. 
 
-== S-cache
+]
 
-The secondary cache, or S-cache, is only found on multiprocessor XR/computer systems.
+#aGroup[
 
-It is a large cache of recently accessed memory, which is much faster to access than the main DRAM but is still significantly slower than the on-chip primary caches aboard the XR/17032 microprocessors (which can be accessed in a single cycle). It is also used as a single source of truth by the cache coherency protocol.
-
-There is no way to directly access the S-cache, and its existence is completely transparent to system software, as it is kept coherent with external device activity via a snooping write-update scheme. However, the primary caches are not kept coherent with the S-cache or with the rest of the system's autonomous activity (i.e. DMA) and must be manually invalidated by system software in certain situations.
-
-== Expansion Slots
+#microHeading("Expansion Slots")
 
 There are 7 slots for expansion cards which can be inserted into an XR/computer system to extend its functionality. Each slot is mapped sequentially into the physical address space at offsets of 128MB beginning at `0xC0000000`, and accesses into these 128MB regions are serviced directly by the card. If a card is not present in a slot, an access will result in a short timeout followed by a bus error exception. This can be used to detect if a card is present in a slot or not.
 
-Each slot has only one interrupt line, whose IRQ number is 0x28 + N where N is the slot number from [0, 6]. The usage of this interrupt line is up to the logic on the card. Additionally, the layout and function of the slot space is completely the province of the hardware on the card, except that it must present the following read-only data structure starting at offset zero within its slot space:
+]
+
+Each slot has only one interrupt line, whose IRQ number is 0x28 + N where N is the slot number from [0, 6]. The usage of this interrupt line is up to the logic on the card. Additionally, the layout and function of the slot space is completely the province of the hardware on the card, except that it must present a particular read-only data structure known as the SlotInfo starting at offset zero within its slot space.
+
+#aGroup[
 
 ```
 STRUCT SlotInfo
@@ -107,7 +112,11 @@ STRUCT SlotInfo
 END
 ```
 
-The following is a table of the currently defined board identifiers:
+#caption[The definition of the SlotInfo structure.]
+
+]
+
+#aGroup[
 
 #roundedTable(
   columns: (auto, auto, 1fr),
@@ -117,12 +126,48 @@ The following is a table of the currently defined board identifiers:
   [kinnowfb,8],
 )
 
-== Reset Register
+#caption[The defined board identifiers.]
+
+]
+
+#aGroup[
+
+#microHeading("Reset Register")
 
 Writing the magical 32-bit value `0xAABBCCDD` into the "reset register" located at 0xF8800000 will assert the reset line on the bus for several cycles, inducing all devices to enter a quiescent (i.e. non-interrupting) state. Nothing else about the state of the devices may be assumed except that they will not produce an interrupt until again instructed that they may do so, in whatever device-specific manner. Expansion cards must be sure to respect this.
 
 Note that this is already done by the system PROM at startup time and need not be done again under normal circumstances.
 
-== Revision Register
+]
+
+#aGroup[
+
+#microHeading("Revision Register")
 
 Reading from the "revision register" located at `0xF8000800` yields a 32-bit revision code for the motherboard which is divided into two 16-bit components. The upper 16 bits indicate the "major" revision, and the low 16 bits indicate the "minor" revision.
+
+]
+
+#aGroup[
+
+#microHeading("Citron Bus")
+
+Beginning at physical address `0xF8000000` is an array of device registers, described in @citron.
+
+]
+
+#aGroup[
+
+#microHeading("LSICs")
+
+Beginning at physical address `0xF8030000` is an array of interrupt controllers known as LSICs, described in @lsic.
+
+]
+
+== S-cache
+
+The secondary cache, or S-cache, is only found on multiprocessor XR/computer systems.
+
+It is a large cache of recently accessed memory, which is much faster to access than the main DRAM but is still significantly slower than the on-chip primary caches aboard the XR/17032 microprocessors (which can be accessed in a single cycle). It is also used as a single source of truth by the cache coherency protocol.
+
+There is no way to directly access the S-cache, and its existence is completely transparent to system software, as it is kept coherent with external device activity via a snooping write-update scheme. However, the primary caches are not kept coherent with the S-cache or with the rest of the system's autonomous activity (i.e. DMA) and must be manually invalidated by system software in certain situations.

@@ -1,6 +1,6 @@
 #import "config.typ": *
 
-= Interrupt Architecture
+= Interrupt Architecture <lsic>
 == Introduction
 
 Interrupts on the XR/computer platform are mediated between the devices and the processors by the Local Symmetric Interrupt Controller (LSIC), of which there is one for each processor in the system. The XR/17032 microprocessor provides only one IRQ line, which causes a trap to the operating system for interrupt handling when it is asserted. As there is no direct way to determine which device caused the interrupt, an external interrupt controller is required.
