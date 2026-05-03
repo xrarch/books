@@ -1,6 +1,6 @@
-*XR/station Project* \
-*XLO File Format Specification* \
+#import "config.typ": *
 
-_Revision 1.0, May 29, 2024_
-
-_Revision 2.0, June 26, 2024_
+#aTitle("XLO", 100pt, [
+Revision 1.0, May 29, 2024 \
+Revision 2.0, June 26, 2024
+])
