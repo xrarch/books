@@ -156,13 +156,8 @@
   show table: it => pad(left: paragraphOffset, it)
 
   set table(
-    fill: (_, y) => if y == 0 { tableHeadingColor },
-    stroke: (
-      top: none,
-      left: 1pt + tableHeadingColor,
-      right: 1pt + tableHeadingColor,
-      bottom: 1pt + tableHeadingColor,
-    ),
+    fill: (_, y) => if y == 0 { headingColor.darken(50%) },
+    stroke: 1pt + headingColor.darken(50%),
   )
 
   show table.cell.where(y: 0): set text(fill: white)

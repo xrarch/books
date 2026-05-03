@@ -2,9 +2,9 @@
 
 = Overview
 == Introduction
-The XR/computer platform is a general hardware design that is shared by the XR/station uniprocessor desktop workstation, and the XR/MP multiprocessor deskside server.
+The XR/computer platform is a general hardware design that is shared by the XR/station desktop workstation and the XR/MP multiprocessor deskside server.
 
-The platform is designed around the 32-bit XR/17032 RISC microprocessor, which itself is described in the XR/17032 Architecture Handbook. This document describes the platform as it is seen from the perspective of a system software writer; that is, details such as physical design and electrical characteristics are not discussed.
+The platform is based upon the 32-bit XR/17032 RISC microprocessor, which itself is described in the XR/17032 Architecture Handbook. This document describes the platform as it is seen from the perspective of a system software writer; that is, details such as physical design and electrical characteristics are not discussed.
 
 The product range encompassed by the XR/computer platform consists of:
 
