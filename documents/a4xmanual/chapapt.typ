@@ -1,9 +1,8 @@
-#box([
+#import "config.typ": *
+
 = A3X Partition Table
 
-The partition table format understood by this firmware is the A3X Partition Table format, or *APT*. The following is an overview of this format.
-
-If a disk is formatted with *APT*, sector 0 (bytes 0-511 on disk) will contain the partition table with the following layout:
+The partition table format understood by this firmware is the A3X Partition Table format, or APT. The following is an overview of this format.
 
 ```
 STRUCT AptBootBlock
@@ -36,4 +35,4 @@ STRUCT AptEntry
     Status : ULONG,
 END
 ```
-])
+#caption[If a disk is formatted with APT, sector 0 (bytes 0-511 on disk) will contain the partition table with this layout.]

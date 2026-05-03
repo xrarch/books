@@ -1,3 +1,4 @@
+#import "config.typ": *
 
 = User Interface
 
@@ -7,32 +8,24 @@ The firmware contains both a textual user interface (TUI) and a simple graphical
 
 The boot picker appears at system startup when the firmware detects more than one bootable partition is available, and a display adapter is attached. It provides a simple way for the user to select which partition should be booted.
 
-#set align(center)
-#image("bootpicker.png", width: 50%)
-_The appearance of the A4X Boot Picker._
-#set align(left)
+#align(center)[
+  #box[
+    #image("bootpicker.png")
+  ]
+]
+#caption[The appearance of the A4X boot picker.]
+
 
 == Command Monitor
 
 The command monitor is available both graphically via an extremely simplistic terminal emulator, and over the serial port. It can be entered graphically via striking ESC at the boot picker, or over Serial Port A by performing a headless boot (i.e. with no displays attached) with either zero or more than one bootable partition installed.
 
-Note that partitions are named in the format *dksXsY*, where *X* is the integer identifier of the disk device, and *Y* is the integer identifier of the partition. If *Y* is 8, such as in *dks0s8*, the entire disk is addressed.
+Note that partitions are named in the format dksXsY, where X is the integer identifier of the disk device, and Y is the integer identifier of the partition. If Y is 8, such as in dks0s8, the entire disk is addressed.
 
-#box([
-A list of commands available at the time of writing is provided:
-
+#aGroup[
 #table(
-  columns: (1fr, 7fr),
-  table.cell([
-    #set text(fill: white)
-    #set align(center)
-    *Command*
-  ], fill: rgb(0,0,0,255)),
-  table.cell([
-    #set text(fill: white)
-    #set align(center)
-    *Function*
-  ], fill: rgb(0,0,0,255)),
+  columns: (auto, 1fr),
+  [], [Function],
   [*help*], [Display help text about all commands.],
   [*autoboot*], [Boot with default parameters.],
   [*reset*], [Reset the system.],
@@ -44,4 +37,5 @@ A list of commands available at the time of writing is provided:
   [*listdisk*], [List all disks, their bootable partitions, and any operating systems installed.],
   [*clear*], [Clear the command monitor.]
 )
-])
+#caption[A list of commands currently available.]
+]

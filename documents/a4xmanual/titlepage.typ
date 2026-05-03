@@ -1,3 +1,5 @@
-*XR/station Project* \
-*A4X Firmware Manual (Preliminary & Incomplete)* \
+#import "config.typ": *
+
+#aTitle("A4X", 100pt, [
 _Revision 1.0, May 29, 2024_
+])
