@@ -22,8 +22,6 @@ The header of an XLO file contains general information about the module file, an
 
 In future revisions, extra fields may be added beyond the end of the extended header, but the header's length will always remain 64-bit aligned.
 
-== Header Fields
-
 ```
 STRUCT XloHeader
     Magic : ULONG,
@@ -161,8 +159,6 @@ These two entries reside in the extended header and therefore only exist in frag
 
 The symbol table is an array of symbol entries, each representing a named value that is exposed by the module. This structure is essential for linking (both static and dynamic) and debugging (for stack traces, etc). A symbol normally corresponds to a function, variable, or data structure defined in a high-level language like Jackal.
 
-== Symbol Entry Fields
-
 ```
 STRUCT XloSymbolEntry
     SectionIndex : UBYTE,
@@ -222,8 +218,6 @@ NameOffset is the offset from the base of the string table at which the null-ter
 
 The import table is the array of entries that describe the dynamic libraries upon which this module depends at runtime. The loader must walk this table and load all dependent libraries.
 
-== Import Entry Fields
-
 ```
 STRUCT XloImportEntry
     NameOffset : ULONG,
@@ -272,8 +266,6 @@ The entries of the per-section relocation tables and the unresolved fixup table 
 It's important to note that all relocations except for import fixups are performed relative to the value that is already encoded in that location. For instance, if a section is relocated from virtual address 0x10000000 to 0x10010000, the relocations in that section's table will be performed by adding the difference (0x10000) to all of the values already encoded there.
 
 Import fixups are performed by calculating the address of the referenced symbol, adding the sign-extended contents of the OriginalValue field of the fixup to it, and replacing the value entirely.
-
-== Relocation Entry Fields
 
 ```
 STRUCT XloRelocEntry
@@ -347,8 +339,6 @@ OriginalValue is a field exclusive to the import fixup entry structure (it is no
 
 The extern table is an array of "external symbol" entries, each representing a named value that is external to, but depended upon by the module. This structure is essential for linking. An extern normally corresponds to a function, variable, or data structure defined in a high-level language like Jackal.
 
-== Extern Entry Fields
-
 ```
 STRUCT XloExternEntry
     NameOffset : ULONG,
@@ -395,8 +385,6 @@ ImportIndex contains the 16-bit index [0, 65535] of the import table entry that 
 = Section Table
 
 The section table is a flat array of "section headers" that describe hunks of data and code contained by this module. The file pointer of the section table must be 64-bit aligned as the section header contains a 64-bit field.
-
-== Section Header Fields
 
 ```
 STRUCT XloSectionHeader
