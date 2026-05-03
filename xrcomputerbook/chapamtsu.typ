@@ -64,11 +64,11 @@ When the IRQ for a keyboard device is enabled in the Amtsu controller, an interr
 
 ]
 
-The layout of the keyboard is shown below. Scancodes for each key are labeled in the center of the key:
-
 #box[
 #image("layout.png")
 ]
+
+#caption[The layout of the keyboard. Scancodes for each key are labeled in the center of the key.]
 
 == Mouse
 
