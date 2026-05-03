@@ -3,7 +3,7 @@
 = Citron Interface
 == Introduction
 
-The Citron interface is a small memory-mapped region of 32-bit ports.#footnote([Historically, this was the port I/O space of a previous CISC processor architecture.]) Many of the integral devices of the XR/computer platform are exposed through this interface. It begins at the physical address 0xF8000000. For example, Citron Port 0x20 would be found at the offset 0x20 \* 4 = 0x80 within this space, or 0xF8000080.
+The Citron interface is a small memory-mapped region of 32-bit ports.#footnote([Historically, this was the port I/O space of a previous CISC processor architecture.]) Many of the integral devices of the XR/computer platform are exposed through this interface. It begins at the physical address `0xF8000000`. For example, Citron Port 0x20 would be found at the offset 0x20 \* 4 = 0x80 within this space, or `0xF8000080`.
 
 === Ports
 
@@ -38,7 +38,7 @@ Each serial port uses two Citron ports, one command port and one data port. The 
 
 The serial controller collects incoming bytes in a 32-byte receive buffer, and accumulates outgoing characters in a 16-byte transmit buffer. The bytes in the transmit buffer are asynchronously transmitted at 9600 baud.
 
-Reading from the data port will dequeue the next character from the receive buffer. If the receive buffer is empty, 0xFFFF is returned. There is an optional interrupt that is asserted by the serial controller when a character is received.
+Reading from the data port will dequeue the next character from the receive buffer. If the receive buffer is empty, `0xFFFF` is returned. There is an optional interrupt that is asserted by the serial controller when a character is received.
 
 Writing to the data port will enqueue a character into the transmit buffer. If the transmit buffer is full, reading from the command port will yield a non-zero value. This should be done before attempting to push a character. There is an optional interrupt that is asserted by the serial controller when the transmit buffer has some space available.
 

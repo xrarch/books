@@ -50,13 +50,13 @@ Note that this diagram shows a four-processor XR/MP 1500 model, the maximum exte
 
 The Kinnow framebuffer card is part of the default configuration of all models, and is therefore described in this document, but can be excluded by order if the customer only requires a headless machine (for a discount!).
 
-Note that since the XR/17032 architecture specifies accesses to physical addresses above 0xC0000000 (3GB) to be noncached, all memory mapped device registers are placed above this address by this platform. Additionally, the machine is entirely little-endian.
+Note that since the XR/17032 architecture specifies non-mapped accesses to physical addresses above `0xC0000000` (3GB) to be noncached, all memory mapped device registers are placed above this address by this platform. Additionally, the machine is entirely little-endian.
 
 #aGroup[
 
 == Memory
 
-There is a memory subsystem which contains up to 4 slots that may each hold one memory stick. A memory stick can have a capacity of 4MB, 8MB, 16MB, or 32MB. The slots are sequentially placed into the physical address space at offsets of 32MB starting at address zero, and the contents of a single stick are presented in a physically contiguous manner beginning at the base of the slot area. That is, the zeroth slot resides at 0x00000000, the first slot resides at 0x02000000, the second is at 0x04000000, etc. This creates a 128MB region in the low physical address space in which memory can be found.
+There is a memory subsystem which contains up to 4 slots that may each hold one memory stick. A memory stick can have a capacity of 4MB, 8MB, 16MB, or 32MB. The slots are sequentially placed into the physical address space at offsets of 32MB starting at address zero, and the contents of a single stick are presented in a physically contiguous manner beginning at the base of the slot area. That is, the zeroth slot resides at `0x00000000`, the first slot resides at `0x02000000`, the second is at `0x04000000`, etc. This creates a 128MB region in the low physical address space in which memory can be found.
 
 ]
 
@@ -70,11 +70,11 @@ Note that the system PROM code will do this automatically, and should be consult
 
 == System PROM
 
-The 128KB system PROM is placed into the final 128KB of the physical address space (starting at 0xFFFE0000) and contains the reset vector for the XR/17032 microprocessor. This is the first code that runs in the system during startup and is responsible for presenting a simple interface that allows the user to select a boot device, and for booting the operating system.#footnote([The A4X boot firmware contained within the system PROM is described in the A4X Firmware Manual.])
+The 128KB system PROM is placed into the final 128KB of the physical address space (starting at `0xFFFE0000`) and contains the reset vector for the XR/17032 microprocessor. This is the first code that runs in the system during startup and is responsible for presenting a simple interface that allows the user to select a boot device, and for booting the operating system.#footnote([The A4X boot firmware contained within the system PROM is described in the A4X Firmware Manual.])
 
 == NVRAM
 
-Beginning at 0xF8001000, there is a small 4KB battery-backed non-volatile RAM (NVRAM). This is used by the boot firmware to store certain persistent variables, such as the user's preferred boot device. 
+Beginning at `0xF8001000`, there is a small 4KB battery-backed non-volatile RAM (NVRAM). This is used by the boot firmware to store certain persistent variables, such as the user's preferred boot device. 
 
 == S-cache
 
@@ -86,7 +86,7 @@ There is no way to directly access the S-cache, and its existence is completely 
 
 == Expansion Slots
 
-There are 7 slots for expansion cards which can be inserted into an XR/computer system to extend its functionality. Each slot is mapped sequentially into the physical address space at offsets of 128MB beginning at 0xC0000000, and accesses into these 128MB regions are serviced directly by the card. If a card is not present in a slot, an access will result in a short timeout followed by a bus error exception. This can be used to detect if a card is present in a slot or not.
+There are 7 slots for expansion cards which can be inserted into an XR/computer system to extend its functionality. Each slot is mapped sequentially into the physical address space at offsets of 128MB beginning at `0xC0000000`, and accesses into these 128MB regions are serviced directly by the card. If a card is not present in a slot, an access will result in a short timeout followed by a bus error exception. This can be used to detect if a card is present in a slot or not.
 
 Each slot has only one interrupt line, whose IRQ number is 0x28 + N where N is the slot number from [0, 6]. The usage of this interrupt line is up to the logic on the card. Additionally, the layout and function of the slot space is completely the province of the hardware on the card, except that it must present the following read-only data structure starting at offset zero within its slot space:
 
@@ -113,16 +113,16 @@ The following is a table of the currently defined board identifiers:
   columns: (auto, auto, 1fr),
   [], [BoardID], [Name],
   [Kinnow Framebuffer],
-  [0x4B494E36],
+  [`0x4B494E36`],
   [kinnowfb,8],
 )
 
 == Reset Register
 
-Writing the magical 32-bit value 0xAABBCCDD into the "reset register" located at 0xF8800000 will assert the reset line on the bus for several cycles, inducing all devices to enter a quiescent (i.e. non-interrupting) state. Nothing else about the state of the devices may be assumed except that they will not produce an interrupt until again instructed that they may do so, in whatever device-specific manner. Expansion cards must be sure to respect this.
+Writing the magical 32-bit value `0xAABBCCDD` into the "reset register" located at 0xF8800000 will assert the reset line on the bus for several cycles, inducing all devices to enter a quiescent (i.e. non-interrupting) state. Nothing else about the state of the devices may be assumed except that they will not produce an interrupt until again instructed that they may do so, in whatever device-specific manner. Expansion cards must be sure to respect this.
 
 Note that this is already done by the system PROM at startup time and need not be done again under normal circumstances.
 
 == Revision Register
 
-Reading from the "revision register" located at 0xF8000800 yields a 32-bit revision code for the motherboard which is divided into two 16-bit components. The upper 16 bits indicate the "major" revision, and the low 16 bits indicate the "minor" revision.
+Reading from the "revision register" located at `0xF8000800` yields a 32-bit revision code for the motherboard which is divided into two 16-bit components. The upper 16 bits indicate the "major" revision, and the low 16 bits indicate the "minor" revision.
