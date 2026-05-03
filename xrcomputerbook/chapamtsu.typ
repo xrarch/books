@@ -18,8 +18,8 @@ Note that when interrupts are enabled for an Amtsu peripheral, the IRQ number is
 #roundedTable(
   columns: (auto, 1fr),
   [], [MID],
-  [AISA Mouse], [0x4D4F5553],
-  [AISA Keyboard], [0x8FC48FC4],
+  [AISA Mouse], [`0x4D4F5553`],
+  [AISA Keyboard], [`0x8FC48FC4`],
 )
 
 #caption[The currently defined Amtsu model identifiers.]
@@ -55,7 +55,7 @@ When the IRQ for a keyboard device is enabled in the Amtsu controller, an interr
   columns: (auto, 1fr),
 
   [], [Function],
-  [1], [Pop a scancode from the keyboard into data port A. If the 15th bit of the scancode is set, that is, it has been OR'ed with 0x8000, then the key was released and the true scancode is the low 14 bits. Otherwise, it was pressed.],
+  [1], [Pop a scancode from the keyboard into data port A. If the 15th bit of the scancode is set, that is, it has been OR'ed with `0x8000`, then the key was released and the true scancode is the low 14 bits. Otherwise, it was pressed.],
   [2], [Reset the keyboard.],
   [3], [If the scancode in data port A is currently pressed, then set data port A to 1. Otherwise, set it to 0.],
 )
