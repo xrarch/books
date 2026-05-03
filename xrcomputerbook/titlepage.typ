@@ -1,14 +1,11 @@
+#import "config.typ": *
+
 #page([
- #image("xrcomputersystemshandbook.png", fit: "stretch")
-], margin: (
-  top: 0cm,
-  bottom: 0cm,
-  left: 0cm,
-  right: 0cm,
-))
+ #image("xrcomputersystemshandbook_usletter.png", fit: "cover", width: 100%, height: 100%)
+], margin: 0pt)
 
 #pagebreak()
 
-*XR/station Project* \
-*XR/computer Systems Handbook* \
-_Revision 1.0, January 5, 2024_
+#aTitle("XR/COMPUTER", 60pt, [
+Revision 1.0, January 5, 2024
+])

@@ -1,28 +1,16 @@
+#import "config.typ": *
+
 = Overview
 == Introduction
 The XR/computer platform is a general hardware design that is shared by the XR/station uniprocessor desktop workstation, and the XR/MP multiprocessor deskside server.
 
-The platform is designed around the 32-bit XR/17032 RISC microprocessor, which itself is described in the _XR/17032 Architecture Handbook_. This document describes the platform as it is seen from the perspective of a system software writer; that is, details such as physical design and electrical characteristics are not discussed.
+The platform is designed around the 32-bit XR/17032 RISC microprocessor, which itself is described in the XR/17032 Architecture Handbook. This document describes the platform as it is seen from the perspective of a system software writer; that is, details such as physical design and electrical characteristics are not discussed.
 
 The product range encompassed by the XR/computer platform consists of:
 
-#table(
+#roundedTable(
   columns: (1fr, 1fr),
-  table.vline(stroke: 0pt),
-  table.hline(stroke: 0pt),
-  table.cell([
-    #set text(fill: white)
-    #set align(center)
-    *XR/MP*
-  ], fill: rgb(0,0,0,255)),
-  table.hline(stroke: 0pt),
-  table.vline(stroke: 0pt),
-  table.cell([
-    #set text(fill: white)
-    #set align(center)
-    *XR/station*
-  ], fill: rgb(0,0,0,255)),
-  table.vline(stroke: 0pt),
+  [XR/MP], [XR/station],
   [Deskside Server],
   [Desktop Workstation],
   [\$30K-120K],
@@ -40,7 +28,7 @@ The product range encompassed by the XR/computer platform consists of:
 )
 
 #set align(center)
-#image("xrcomputersabstract.png", width: 80%)
+#image("xrcomputersabstract.png", width: 70%)
 #set align(left)
 
 #pagebreak(weak: true)
@@ -49,24 +37,28 @@ The product range encompassed by the XR/computer platform consists of:
 
 A simplified diagram of the XR/computer platform follows:
 
+#box[
 #image("xrcomputer.svg")
+]
 
 Note that this diagram shows a four-processor XR/MP 1500 model, the maximum extent of what an XR/computer based machine may contain. The actual models implement only a subset of this:
 
+#box[
 1. XR/station contains only one processor module, and entirely lacks an S-cache. There is only physical space for up to 4 hard disks. Finally, there are only two slots for memory sticks, limiting the machine to 64MB.
 2. The XR/MP 1000 model contains only two processor modules, with a 128KB S-cache.
+]
 
 The Kinnow framebuffer card is part of the default configuration of all models, and is therefore described in this document, but can be excluded by order if the customer only requires a headless machine (for a discount!).
 
 Note that since the XR/17032 architecture specifies accesses to physical addresses above 0xC0000000 (3GB) to be noncached, all memory mapped device registers are placed above this address by this platform. Additionally, the machine is entirely little-endian.
 
-#box([
+#aGroup[
 
 == Memory
 
 There is a memory subsystem which contains up to 4 slots that may each hold one memory stick. A memory stick can have a capacity of 4MB, 8MB, 16MB, or 32MB. The slots are sequentially placed into the physical address space at offsets of 32MB starting at address zero, and the contents of a single stick are presented in a physically contiguous manner beginning at the base of the slot area. That is, the zeroth slot resides at 0x00000000, the first slot resides at 0x02000000, the second is at 0x04000000, etc. This creates a 128MB region in the low physical address space in which memory can be found.
 
-])
+]
 
 Memory sticks need not be placed into the slots in a manner that is physically contiguous. For instance, it is possible to place a 4MB stick in slot 0 and another 4MB stick in slot 1, leaving a 28MB gap inbetween them in the physical address space. The system software will deal with this correctly. However, slot 0 must always contain some memory for use by the system ROM code.
 
@@ -78,7 +70,7 @@ Note that the system PROM code will do this automatically, and should be consult
 
 == System PROM
 
-The 128KB system PROM is placed into the final 128KB of the physical address space (starting at 0xFFFE0000) and contains the reset vector for the XR/17032 microprocessor. This is the first code that runs in the system during startup and is responsible for presenting a simple interface that allows the user to select a boot device, and for booting the operating system.#footnote([The _A4X_ boot firmware contained within the system PROM is described in the document _A4X Firmware Manual_.])
+The 128KB system PROM is placed into the final 128KB of the physical address space (starting at 0xFFFE0000) and contains the reset vector for the XR/17032 microprocessor. This is the first code that runs in the system during startup and is responsible for presenting a simple interface that allows the user to select a boot device, and for booting the operating system.#footnote([The A4X boot firmware contained within the system PROM is described in the A4X Firmware Manual.])
 
 == NVRAM
 
@@ -117,21 +109,10 @@ END
 
 The following is a table of the currently defined board identifiers:
 
-#table(
-  columns: (0.8fr, 1fr, 1fr),
+#roundedTable(
+  columns: (auto, auto, 1fr),
   align: center,
-  table.cell([
-  ], fill: rgb(0,0,0,255)),
-  table.cell([
-    #set text(fill: white)
-    #set align(center)
-    *BoardId*
-  ], fill: rgb(0,0,0,255)),
-  table.cell([
-    #set text(fill: white)
-    #set align(center)
-    *Name*
-  ], fill: rgb(0,0,0,255)),
+  [], [BoardID], [Name],
   [Kinnow Framebuffer],
   [0x4B494E36],
   [kinnowfb,8],
