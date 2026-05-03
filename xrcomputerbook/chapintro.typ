@@ -111,7 +111,6 @@ The following is a table of the currently defined board identifiers:
 
 #roundedTable(
   columns: (auto, auto, 1fr),
-  align: center,
   [], [BoardID], [Name],
   [Kinnow Framebuffer],
   [0x4B494E36],

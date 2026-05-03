@@ -23,11 +23,11 @@ The RTC uses two Citron ports, a single command port (0x20) and a single data po
   columns: (auto, 1fr),
 
   [], [Function],
-  [0x1], [Set the timer interval to the number of milliseconds specified in the data port. If zero, the timer interrupt is disabled.],
-  [0x2], [Reads the current epoch time seconds part into the data port.],
-  [0x3], [Reads the current epoch time milliseconds part into the data port.],
-  [0x4], [Sets the current epoch time seconds part from the contents of the data port.],
-  [0x5], [Sets the current epoch time milliseconds part from the contents of the data port.],
+  [1], [Set the timer interval to the number of milliseconds specified in the data port. If zero, the timer interrupt is disabled.],
+  [2], [Reads the current epoch time seconds part into the data port.],
+  [3], [Reads the current epoch time milliseconds part into the data port.],
+  [4], [Sets the current epoch time seconds part from the contents of the data port.],
+  [5], [Sets the current epoch time milliseconds part from the contents of the data port.],
 )
 
 === Serial Ports
@@ -50,8 +50,8 @@ The accepted commands are as follows:
   columns: (auto, 1fr),
 
   [], [Function],
-  [0x3], [Enable the interrupt for this serial port.],
-  [0x4], [Disable the interrupt for this serial port.],
+  [3], [Enable the interrupt for this serial port.],
+  [4], [Disable the interrupt for this serial port.],
 )
 
 === Disk Controller
@@ -70,15 +70,15 @@ The IRQ number for the disk controller is 0x03.
   columns: (auto, 1fr),
 
   [], [Function],
-  [0x1], [Select the disk number specified in data port A.],
-  [0x2], [Start a READ transfer from the selected disk beginning at the sector number specified in data port A.],
-  [0x3], [Start a WRITE transfer to the selected disk beginning at the sector number specified in data port A.],
-  [0x4], [Set data port B to a bit set of disks whose transfer has completed since the last time this port was read. Atomically clears the bit set.],
-  [0x5], [Read information about the disk whose number is in data port *A*. Data port A is set to 1 if the disk is present, 0 otherwise. Data port B is set to a 32 bit count of sectors in the disk.],
-  [0x6], [Enable the transfer completion interrupt.],
-  [0x7], [Disable the transfer completion interrupt.],
-  [0x8], [Set the sector length for the next transfer from the contents of data port A.],
-  [0x9], [Set the sector-aligned physical address for the next transfer from the contents of data port A.],
+  [1], [Select the disk number specified in data port A.],
+  [2], [Start a READ transfer from the selected disk beginning at the sector number specified in data port A.],
+  [3], [Start a WRITE transfer to the selected disk beginning at the sector number specified in data port A.],
+  [4], [Set data port B to a bit set of disks whose transfer has completed since the last time this port was read. Atomically clears the bit set.],
+  [5], [Read information about the disk whose number is in data port A. Data port A is set to 1 if the disk is present, 0 otherwise. Data port B is set to a 32 bit count of sectors in the disk.],
+  [6], [Enable the transfer completion interrupt.],
+  [7], [Disable the transfer completion interrupt.],
+  [8], [Set the sector length for the next transfer from the contents of data port A.],
+  [9], [Set the sector-aligned physical address for the next transfer from the contents of data port A.],
 )
 
 #caption[Accepted disk controller commands.]
