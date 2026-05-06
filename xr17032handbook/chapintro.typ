@@ -1,36 +1,21 @@
+#import "config.typ": *
+
 = Overview
 == Introduction
-XR/17032 is a 32-bit RISC architecture. This document describes it informally and is meant to be used as a reference handbook; it is intended for readers who are already somewhat familiar with computer architecture, or who are at least familiar with computer programming and have good independent research skills.
+XR/17032 is a 32-bit RISC architecture. This document describes it informally and is meant to be used as a reference handbook; it is intended for readers who are already somewhat familiar with computer architecture, or who are at least familiar with computer programming and have good independent research skills. This handbook need not be read in order; the reader is encouraged to skip around as unfamiliar terms appear. A brief description of the architecture follows.
 
-This handbook need not be read in order; the reader is encouraged to skip around as unfamiliar terms appear. A brief description of the architecture follows.
+The architecture’s registers and the virtual address space are 32-bit, and 32-bit values are the widest that it can load or store. It has no floating-point operations, and 64-bit wide arithmetic must be synthesized from smaller operations. This architecture is intended to be relatively simple; it includes only 60 instructions. In the interest of supporting fancy operating system design, XR/17032 supports paged virtual addressing, as well as a distinction between user mode and kernel mode. Like most RISCs, memory accesses must be aligned to their size or else they will incur an exception, and, likewise, all instructions are 32 bits (4 bytes) wide and must be aligned to 32-bit boundaries. The architecture is little-endian.
 
-== Starting at the beginning...
-The architecture’s registers and the virtual address space are 32-bit, and 32-bit values are the widest that it can load or store. It has no floating-point operations, and 64-bit wide arithmetic must be synthesized from smaller operations. This architecture is intended to be relatively simple; it includes only 60 instructions.
-
-In the interest of supporting fancy operating system design, XR/17032 supports paged virtual addressing, as well as a distinction between user mode and kernel mode. Like most RISCs, memory accesses must be aligned to their size or else they will incur an exception, and, likewise, all instructions are 32 bits (4 bytes) wide and must be aligned to 32-bit boundaries. The architecture is little-endian.
+#pagebreak(weak: true)
 
 == Registers
 The architecture defines 32 general purpose registers (GPRs), usable by any instruction that takes register operands. They are each 32 bits wide. The zeroth GPR, zero, almost always reads as zero and ignores writes. This is a common RISC design tactic that simplifies the encoding of many instructions. A table of GPRs follows:
 
-#set align(center)
-#table(
+#align(center)[
+#roundedTable(
   columns: (auto, auto, auto),
   align: horizon + left,
-  table.header(
-    table.cell([
-      #set text(fill: white)
-      #set align(center)
-      *\#*
-    ], fill: rgb(0,0,0,255)), table.cell([
-      #set text(fill: white)
-      #set align(center)
-      *Name*
-    ], fill: rgb(0,0,0,255)), table.cell([
-      #set text(fill: white)
-      #set align(center)
-      *ABI Assignment*
-    ], fill: rgb(0,0,0,255)),
-  ),
+  [\#], [Name], [ABI Assignment],
   "0", "zero", "Always reads as zero, ignores writes.",
   "1-6", "t0-5", "6 temporary registers (caller-saved).",
   "7-10", "a0-3", "First 4 arguments and return values (caller-saved).",
@@ -39,29 +24,21 @@ The architecture defines 32 general purpose registers (GPRs), usable by any inst
   "30", "sp", "Stack pointer.",
   "31", "lr", "Link register."
 )
-#set align(left)
+]
+
+#pagebreak(weak: true)
 
 == Control Registers <controlregs>
-The architecture defines 32 control registers (CRs). They are each 32 bits wide. As their name suggests, CRs are used to control the behavior of the processor, and are therefore only accessible via the privileged kernel mode instructions *MTCR* and *MFCR*. A table containing a summary of all defined control registers follows:
+The architecture defines 32 control registers (CRs). They are each 32 bits wide. As their name suggests, CRs are used to control the behavior of the processor, and are therefore only accessible via the privileged kernel mode instructions MTCR and MFCR.
 
-#set align(center)
-#table(
+See @control for a more detailed description of each control register.
+
+#align(center)[
+#roundedTable(
   columns: (auto, auto, auto),
   align: horizon + left,
   table.header(
-    table.cell([
-      #set text(fill: white)
-      #set align(center)
-      *\#*
-    ], fill: rgb(0,0,0,255)), table.cell([
-      #set text(fill: white)
-      #set align(center)
-      *Name*
-    ], fill: rgb(0,0,0,255)), table.cell([
-      #set text(fill: white)
-      #set align(center)
-      *Function*
-    ], fill: rgb(0,0,0,255)),
+    [\#], [Name], [Function],
   ),
   "0", "RS", "Current and previous processor mode bits.",
   "1", "WHAMI", "Unique ID for this processor in a multiprocessor system.",
@@ -84,11 +61,11 @@ The architecture defines 32 control registers (CRs). They are each 32 bits wide.
   "28", "DCACHECTRL", "Yields Dcache size parameters when read, causes Dcache invalidations when written.",
   "29", "DTBADDR", "Pre-calculated virtual PTE address for use upon DTB miss.",
 )
-_Any absent CR numbers have undefined behavior if read or written._
-#set align(left)
+#caption[All defined CRs. Absent CR numbers have undefined behavior if read or written.]
+]
 
-See @control for a more detailed description of each control register.
+#pagebreak(weak: true)
 
 == Reset
 
-When the processor is reset, for instance during a reboot or a power-on, the *RS* control register is cleared to zero. The processor is thus forced to kernel mode, virtual address translation is disabled, exposing the physical address space. The program counter is set to the address 0xFFFE1000, with the idea that a boot ROM is located at 0xFFFE0000 and is followed by an initial 4096 byte exception block.
+When the processor is reset, for instance during a reboot or a power-on, the RS control register is cleared to zero. The processor is thus forced to kernel mode, virtual address translation is disabled, exposing the physical address space. The program counter is set to the address `0xFFFE1000`, with the idea that a boot ROM is located at `0xFFFE0000` and is followed by an initial 4096 (0x1000) byte exception block.

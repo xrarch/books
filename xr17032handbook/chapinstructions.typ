@@ -1,87 +1,232 @@
+#import "config.typ": *
+
+#let jumpFormat() = [
+  #bitfield((
+    (name: "JUMP TARGET", bits: 29),
+    (name: "OP", bits: 3),
+  ))
+
+  #caption[Jump Format]
+]
+
+#let branchFormat() = [
+  #bitfield((
+    (name: "BRANCH OFFSET", bits: 21),
+    (name: "REG", bits: 5),
+    (name: "OPCODE", bits: 6),
+  ))
+
+  #caption[Branch Format]
+]
+
+#let immOpFormat() = [
+  #bitfield((
+    (name: "IMMEDIATE VALUE", bits: 16),
+    (name: "REG B", bits: 5),
+    (name: "REG A", bits: 5),
+    (name: "OPCODE", bits: 6),
+  ))
+
+  #caption[Immediate Operate]
+]
+
+#let regOpFormat() = [
+  #bitfield((
+    (name: "FUNCT", bits: 4),
+    (name: "SHF", bits: 2),
+    (name: "SHAMT", bits: 5),
+    (name: "REG C", bits: 5),
+    (name: "REG B", bits: 5),
+    (name: "REG A", bits: 5),
+    (name: "OPCODE", bits: 6),
+  ))
+
+  #caption[Register Operate]
+]
+
+#let jumpFormatTable() = [
+  #microHeading("Jump Instructions")
+
+  #roundedTable(
+    columns: (auto, 1fr),
+    [Mnemonic], [Function],
+    [`J IMM29`], [Jump],
+    [`JAL IMM29`], [Jump And Link],
+  )
+]
+
+#let branchFormatTable() = [
+  #microHeading("Branch Instructions")
+
+  #roundedTable(
+    columns: (auto, 1fr),
+    [Mnemonic], [Function],
+    [`BEQ RA, IMM21`], [Branch Equal],
+    [`BNE RA, IMM21`], [Branch Not Equal],
+    [`BLT RA, IMM21`], [Branch Less Than],
+    [`BGT RA, IMM21`], [Branch Greater Than],
+    [`BGE RA, IMM21`], [Branch Greater Than or Equal],
+    [`BLE RA, IMM21`], [Branch Less Than or Equal],
+    [`BPE RA, IMM21`], [Branch Parity Even],
+    [`BPO RA, IMM21`], [Branch Parity Odd],
+  )
+]
+
+#let immOpTable() = [
+  #microHeading("Immediate Operate Instructions")
+
+  #roundedTable(
+    columns: (auto, 1fr),
+    [Mnemonic], [Function],
+    [`ADDI RA, RB, IMM16`], [Add Immediate],
+    [`SUBI RA, RB, IMM16`], [Subtract Immediate],
+    [`SLTI RA, RB, IMM16`], [Set Less Than Immediate],
+    [`SLTI SIGNED RA, RB, IMM16`], [Set Less Than Immediate, Signed],
+    [`ANDI RA, RB, IMM16`], [And Immediate],
+    [`XORI RA, RB, IMM16`], [Xor Immediate],
+    [`ORI RA, RB, IMM16`], [Or Immediate],
+    [`LUI RA, RB, IMM16`], [Load Upper Immediate],
+    [`MOV RA, BYTE [RB + IMM16]`], [Load Byte, Immediate Offset],
+    [`MOV RA, INT [RB + IMM16]`], [Load Int, Immediate Offset],
+    [`MOV RA, LONG [RB + IMM16]`], [Load Long, Immediate Offset],
+    [`MOV BYTE [RA + IMM16], RB`], [Store Byte, Immediate Offset],
+    [`MOV INT [RA + IMM16], RB`], [Store Int, Immediate Offset],
+    [`MOV LONG [RA + IMM16], RB`], [Store Long, Immediate Offset],
+    [`MOV BYTE [RA + IMM16], IMM5`], [Store Byte, Small Immediate],
+    [`MOV INT [RA + IMM16], IMM5`], [Store Int, Small Immediate],
+    [`MOV LONG [RA + IMM16], IMM5`], [Store Long, Small Immediate],
+    [`JALR RA, RB, IMM16`], [Jump And Link, Register],
+    [`ADR RA, IMM16`], [Compute Relative Address],
+  )
+]
+
+#let regOpTable() = [
+  #microHeading("Register Operate Instructions")
+
+  #roundedTable(
+    columns: (auto, 1fr),
+    [Mnemonic], [Function],
+    [`MOV RA, BYTE [RB + RC xSH IMM5]`], [Load Byte, Register Offset],
+    [`MOV RA, INT [RB + RC xSH IMM5]`], [Load Int, Register Offset],
+    [`MOV RA, LONG [RB + RC xSH IMM5]`], [Load Long, Register Offset],
+    [`MOV BYTE [RB + RC xSH IMM5], RA`], [Store Byte, Register Offset],
+    [`MOV INT [RB + RC xSH IMM5], RA`], [Store Int, Register Offset],
+    [`MOV LONG [RB + RC xSH IMM5], RA`], [Store Long, Register Offset],
+    [`LSH RA, RC, RB`], [Left Shift By Register Amount],
+    [`RSH RA, RC, RB`], [Logical Right Shift By Register Amount],
+    [`ASH RA, RC, RB`], [Arithmetic Right Shift By Register Amount],
+    [`ROR RA, RC, RB`], [Rotate Right By Register Amount],
+    [`ADD RA, RB, RC xSH IMM5`], [Add Register],
+    [`SUB RA, RB, RC xSH IMM5`], [Subtract Register],
+    [`SLT RA, RB, RC xSH IMM5`], [Set Less Than Register],
+    [`SLT SIGNED RA, RB, RC xSH IMM5`], [Set Less Than Register, Signed],
+    [`AND RA, RB, RC xSH IMM5`], [And Register],
+    [`XOR RA, RB, RC xSH IMM5`], [Xor Register],
+    [`OR RA, RB, RC xSH IMM5`], [Or Register],
+    [`NOR RA, RB, RC xSH IMM5`], [Nor Register],
+    [`MUL RA, RB, RC`], [Multiply],
+    [`DIV RA, RB, RC`], [Divide],
+    [`DIV SIGNED RA, RB, RC`], [Divide, Signed],
+    [`MOD RA, RB, RC`], [Modulo],
+    [`LL RA, RB`], [Load Locked],
+    [`SC RA, RB, RC`], [Store Conditional],
+    [`PAUSE`], [Pause],
+    [`MB`], [Memory Barrier],
+    [`WMB`], [Write Memory Barrier],
+    [`BRK`], [Breakpoint],
+    [`SYS`], [System Service],
+    [`MFCR RA, CR`], [Move From Control Register],
+    [`MTCR CR, RA`], [Move To Control Register],
+    [`HLT`], [Halt Until Next Interrupt],
+    [`RFE`], [Return From Exception],
+  )
+]
+
+#let instructionDetailsTable(
+  longName,
+  opcodeName,
+  opcode,
+  mnemonic
+) = [
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Mnemonic], [#opcodeName], [Name],
+    [#mnemonic], [#opcode], [#longName],
+  )
+]
+
+#let instructionDetailsSecondPart(
+  pseudocode,
+  exceptions,
+  description
+) = [
+  #pseudocode
+  
+  #microHeading("Description")
+  #description
+
+  #microHeading("Exceptions")
+  #exceptions
+]
+
+#let instructionDetails(
+  longName,
+  opcodeName,
+  opcode,
+  mnemonic,
+  pseudocode,
+  exceptions,
+  description
+) = [
+  #instructionDetailsTable(
+    longName,
+    opcodeName,
+    opcode,
+    mnemonic
+  )
+
+  #instructionDetailsSecondPart(
+    pseudocode,
+    exceptions,
+    description
+  )
+]
 
 = Instructions
-== Instruction Formats Summary
 
 The XR/17032 architecture features only four instruction formats, and each are 32 bits wide. There are a total of 60 instructions, which are summarized below. A more comprehensive description of each format and instruction can be found in @instlisting.
 
-#image("formats.png", fit: "stretch")
+#jumpFormat()
 
-=== Jump Instructions Summary
+#branchFormat()
 
-- *J IMM29* _Jump_
-- *JAL IMM29* _Jump And Link_
+#immOpFormat()
 
-=== Branch Instructions Summary
+#regOpFormat()
 
-- *BEQ RA, IMM21* _Branch Equal_
-- *BNE RA, IMM21* _Branch Not Equal_
-- *BLT RA, IMM21* _Branch Less Than_
-- *BGT RA, IMM21* _Branch Greater Than_
-- *BGE RA, IMM21* _Branch Greater Than or Equal_
-- *BLE RA, IMM21* _Branch Less Than or Equal_
-- *BPE RA, IMM21* _Branch Parity Even_
-- *BPO RA, IMM21* _Branch Parity Odd_
+#pagebreak(weak: true)
 
-=== Immediate Operate Instructions Summary
+#aGroup[
 
-- *ADDI RA, RB, IMM16* _Add Immediate_
-- *SUBI RA, RB, IMM16* _Subtract Immediate_
-- *SLTI RA, RB, IMM16* _Set Less Than Immediate_
-- *SLTI SIGNED RA, RB, IMM16* _Set Less Than Immediate, Signed_
-- *ANDI RA, RB, IMM16* _And Immediate_
-- *XORI RA, RB, IMM16* _Xor Immediate_
-- *ORI RA, RB, IMM16* _Or Immediate_
-- *LUI RA, RB, IMM16* _Load Upper Immediate_
-- *MOV RA, BYTE [RB + IMM16]* _Load Byte, Immediate Offset_
-- *MOV RA, INT [RB + IMM16]* _Load Int, Immediate Offset_
-- *MOV RA, LONG [RB + IMM16]* _Load Long, Immediate Offset_
-- *MOV BYTE [RA + IMM16], RB* _Store Byte, Immediate Offset_
-- *MOV INT [RA + IMM16], RB* _Store Int, Immediate Offset_
-- *MOV LONG [RA + IMM16], RB* _Store Long, Immediate Offset_
-- *MOV BYTE [RA + IMM16], IMM5* _Store Byte, Small Immediate_
-- *MOV INT [RA + IMM16], IMM5* _Store Int, Small Immediate_
-- *MOV LONG [RA + IMM16], IMM5* _Store Long, Small Immediate_
-- *JALR RA, RB, IMM16* _Jump And Link, Register_
-- *ADR RA, IMM16* _Compute Relative Address_
+== Instruction Summaries
 
-=== Register Operate Instructions Summary
+#jumpFormatTable()
 
-*Major Opcode 111001*
-- *MOV RA, BYTE [RB + RC xSH IMM5]* _Load Byte, Register Offset_
-- *MOV RA, INT [RB + RC xSH IMM5]* _Load Int, Register Offset_
-- *MOV RA, LONG [RB + RC xSH IMM5]* _Load Long, Register Offset_
-- *MOV BYTE [RB + RC xSH IMM5], RA* _Store Byte, Register Offset_
-- *MOV INT [RB + RC xSH IMM5], RA* _Store Int, Register Offset_
-- *MOV LONG [RB + RC xSH IMM5], RA* _Store Long, Register Offset_
-- *LSH RA, RC, RB* _Left Shift By Register Amount_
-- *RSH RA, RC, RB* _Logical Right Shift By Register Amount_
-- *ASH RA, RC, RB* _Arithmetic Right Shift By Register Amount_
-- *ROR RA, RC, RB* _Rotate Right By Register Amount_
-- *ADD RA, RB, RC xSH IMM5* _Add Register_
-- *SUB RA, RB, RC xSH IMM5* _Subtract Register_
-- *SLT RA, RB, RC xSH IMM5* _Set Less Than Register_
-- *SLT SIGNED RA, RB, RC xSH IMM5* _Set Less Than Register, Signed_
-- *AND RA, RB, RC xSH IMM5* _And Register_
-- *XOR RA, RB, RC xSH IMM5* _Xor Register_
-- *OR RA, RB, RC xSH IMM5* _Or Register_
-- *NOR RA, RB, RC xSH IMM5* _Nor Register_
-*Major Opcode 110001*
-- *MUL RA, RB, RC* _Multiply_
-- *DIV RA, RB, RC* _Divide_
-- *DIV SIGNED RA, RB, RC* _Divide, Signed_
-- *MOD RA, RB, RC* _Modulo_
-- *LL RA, RB* _Load Locked_
-- *SC RA, RB, RC* _Store Conditional_
-- *PAUSE* _Pause_
-- *MB* _Memory Barrier_
-- *WMB* _Write Memory Barrier_
-- *BRK* _Breakpoint_
-- *SYS* _System Service_
-*Major Opcode 101001 (Privileged Instructions)*
-- *MFCR RA, CR* _Move From Control Register_
-- *MTCR CR, RA* _Move To Control Register_
-- *HLT* _Halt Until Next Interrupt_
-- *RFE* _Return From Exception_
+#branchFormatTable()
+
+]
+
+#aGroup[
+
+#immOpTable()
+
+]
+
+#aGroup[
+
+#regOpTable()
+
+]
 
 == Instruction Listing <instlisting>
 The following section contains a comprehensive listing of all of the instructions defined by the XR/17032 architecture along with their encodings. The instructions are grouped first by format, and then by major opcode.
@@ -90,388 +235,248 @@ Note that the assembly language also supports several "pseudo-instructions" for 
 
 #pagebreak(weak: true)
 
-#box([
-
 === Jump Format
 
-#image("jumpformat.png", fit: "stretch")
+#jumpFormat()
 
-The format for the absolute jump instructions consists of a 3-bit opcode and a 29-bit jump target. The two possible opcodes for jump instructions are *111* and *110*.
-
-], width: 100%)
+The format for the absolute jump instructions consists of a 3-bit opcode and a 29-bit jump target. The two possible opcodes for jump instructions are 111 and 110.
 
 Note that this opcode field is unique; all other formats have a 6-bit opcode field. This small opcode is to allow the jump target to cover a 2GB range. This is accomplished by shifting the jump target left by 2, which produces a 31-bit address, and then taking the uppermost bit from that of the current program counter. This allows jumping anywhere within a 2GB userspace or kernel space in a single instruction.
 
-#box([
-
-#line(length: 100%)
-#align(center, [
-#rect([
-*JAL IMM29* \
-_Jump And Link_ \
-Opcode: *111* (0x07)
-```
-Reg[31] = PC + 4
-PC = (IMM29 << 2) | (PC & 0x80000000)
-```
-], width: 100%)])
-
-The *JAL* instruction provides a lightweight means of calling a function. The next program counter (PC + 4) is saved in the link register (31) and then the PC is set to the target address.
-
-Note that if the called function needs to call another function, it must be sure to save the link register first and then restore it.
-
-], width: 100%)
-
-#box([
-
-#line(length: 100%)
-#align(center, [
-#rect([
-*J IMM29* \
-_Jump_ \
-Opcode: *110* (0x06)
-```
-PC = (IMM29 << 2) | (PC & 0x80000000)
-```
-], width: 100%)])
-The *J* instruction provides a way to do a long-distance absolute jump to another location, without destroying the contents of the link register.
-
-], width: 100%)
-
-#line(length: 100%)
+#jumpFormatTable()
 
 #pagebreak(weak: true)
 
-#box([
+==== Listing
+
+#instructionDetails(
+  [Jump And Link],
+  [Opcode],
+  [111 (0x07)],
+  [`JAL IMM29`],
+  [```
+Reg[31] = PC + 4
+PC = (IMM29 << 2) | (PC & 0x80000000)
+```],
+  [None.],
+  [
+The `JAL` instruction provides a lightweight means of calling a function. The next program counter (PC + 4) is saved in the link register (31) and then the PC is set to the target address.
+
+Note that if the called function needs to call another function, it must be sure to save the link register first and then restore it.
+  ]
+)
+
+#pagebreak(weak: true)
+
+#instructionDetails(
+  [Jump],
+  [Opcode],
+  [110 (0x06)],
+  [`J IMM29`],
+  [```
+PC = (IMM29 << 2) | (PC & 0x80000000)
+```],
+  [None.],
+  [
+The `J` instruction provides a way to do a long-distance absolute jump to another location, without destroying the contents of the link register.
+  ]
+)
+
+#pagebreak(weak: true)
+
+#aGroup[
 === Branch Format
 
-#image("branchformat.png", fit: "stretch")
+#branchFormat()
 
-The format for the branch instructions consists of a 6-bit opcode, a 5-bit register number, and a 21-bit branch offset. Every branch instruction has *101* as the low 3 bits of the opcode.
+The format for the branch instructions consists of a 6-bit opcode, a 5-bit register number, and a 21-bit branch offset. Every branch instruction has 101 as the low 3 bits of the opcode.
 
-], width: 100%)
+]
 
 There is only one register field in order to maximize the size of the branch offset. This register is compared against zero in various ways. If the branch is taken, then the branch offset is shifted left by two, sign extended, and added to the current program counter. This gives a range of $plus.minus$1M instructions, or $plus.minus$4MB. As this covers the entire text section of most programs, and certainly covers any individual routine you're likely to find, this alleviates some burden that afflicts most RISC toolchains, as cross-procedure jumps will usually be done with absolute jumps anyway.
 
-#box([
-
-#align(center, [
-#rect([
-*BEQ RA, IMM21* \
-_Branch Equal_ \
-Opcode: *111101* (0x3D)
-```
-IF Reg[RA] == 0 THEN
-  PC += SignExtend(IMM21)
-END
-```
-], width: 100%)])
-
-The *BEQ* instruction performs a relative jump if the contents of *Register A* are equal to zero.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*BNE RA, IMM21* \
-_Branch Not Equal_ \
-Opcode: *110101* (0x35)
-```
-IF Reg[RA] != 0 THEN
-  PC += SignExtend(IMM21)
-END
-```
-], width: 100%)])
-
-The *BNE* instruction performs a relative jump if the contents of *Register A* are not equal to zero.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*BLT RA, IMM21* \
-_Branch Less Than_ \
-Opcode: *101101* (0x2D)
-```
-IF Reg[RA] & 0x80000000 THEN
-  PC += SignExtend(IMM21)
-END
-```
-], width: 100%)])
-
-The *BLT* instruction performs a relative jump if the contents of *Register A* are less than zero, i.e., the sign bit is set.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-#align(center, [
-#rect([
-*BGT RA, IMM21* \
-_Branch Greater Than_ \
-Opcode: *100101* (0x25)
-```
-IF NOT (Reg[RA] & 0x80000000) AND Reg[RA] != 0 THEN
-  PC += SignExtend(IMM21)
-END
-```
-], width: 100%)])
-
-The *BGT* instruction performs a relative jump if the contents of *Register A* are greater than zero, i.e., the sign bit is clear and the register is not equal to zero.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#box([
-
-#align(center, [
-#rect([
-*BLE RA, IMM21* \
-_Branch Less Than Or Equal_ \
-Opcode: *011101* (0x1D)
-```
-IF Reg[RA] & 0x80000000 OR Reg[RA] == 0 THEN
-  PC += SignExtend(IMM21)
-END
-```
-], width: 100%)])
-
-The *BLE* instruction performs a relative jump if the contents of *Register A* are less than or equal to zero, i.e., the sign bit is set or the register is equal to zero.
-
-#line(length: 100%)
-
-], width: 100%)
-  
-#align(center, [
-#rect([
-*BGE RA, IMM21* \
-_Branch Greater Than Or Equal_ \
-Opcode: *010101* (0x15)
-```
-IF NOT (Reg[RA] & 0x80000000) THEN
-  PC += SignExtend(IMM21)
-END
-```
-], width: 100%)])
-
-The *BGE* instruction performs a relative jump if the contents of *Register A* are greater than or equal to zero, i.e., the sign bit is clear.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*BPE RA, IMM21* \
-_Branch Parity Even_ \
-Opcode: *001101* (0x0D)
-```
-IF NOT (Reg[RA] & 0x1) THEN
-  PC += SignExtend(IMM21)
-END
-```
-], width: 100%)])
-
-The *BPE* instruction performs a relative jump if the contents of *Register A* are even, i.e., the low bit is clear.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*BPO RA, IMM21* \
-_Branch Parity Odd_ \
-Opcode: *000101* (0x05)
-```
-IF Reg[RA] & 0x1 THEN
-  PC += SignExtend(IMM21)
-END
-```
-], width: 100%)])
-
-The *BPO* instruction performs a relative jump if the contents of *Register A* are odd, i.e., the low bit is set.
-
-#line(length: 100%)
-
-], width: 100%)
+#branchFormatTable()
 
 #pagebreak(weak: true)
 
-#box([
+==== Listing
+
+#instructionDetailsTable(
+  [Branch Equal],
+  [Opcode],
+  [111101 (0x3D)],
+  [`BEQ RA, IMM21`]
+)
+
+#instructionDetailsTable(
+  [Branch Not Equal],
+  [Opcode],
+  [110101 (0x35)],
+  [`BNE RA, IMM21`]
+)
+
+#instructionDetailsTable(
+  [Branch Less Than],
+  [Opcode],
+  [101101 (0x2D)],
+  [`BLT RA, IMM21`]
+)
+
+#instructionDetailsTable(
+  [Branch Greater Than],
+  [Opcode],
+  [100101 (0x25)],
+  [`BGT RA, IMM21`]
+)
+
+#instructionDetailsTable(
+  [Branch Less Than Or Equal],
+  [Opcode],
+  [011101 (0x1D)],
+  [`BLE RA, IMM21`]
+)
+
+#instructionDetailsTable(
+  [Branch Greater Than Or Equal],
+  [Opcode],
+  [010101 (0x15)],
+  [`BGE RA, IMM21`]
+)
+
+#instructionDetailsSecondPart(
+  [```
+IF Reg[RA] COND 0 THEN
+  PC += SignExtend(IMM21) << 2
+END
+```],
+  [None.],
+  [
+The conditional branch instructions perform a relative jump if the given signed comparison between the contents of Register A and zero evaluates to true.
+  ]
+)
+
+#pagebreak(weak: true)
+
+#instructionDetailsTable(
+  [Branch Parity Even],
+  [Opcode],
+  [001101 (0x0D)],
+  [`BPE RA, IMM21`]
+)
+
+#instructionDetailsTable(
+  [Branch Parity Odd],
+  [Opcode],
+  [000101 (0x05)],
+  [`BPO RA, IMM21`]
+)
+
+#instructionDetailsSecondPart(
+  [```
+IF Reg[RA] & 0x1 == ? THEN
+  PC += SignExtend(IMM21) << 2
+END
+  ```],
+  [None.],
+  [
+The branch on parity instructions perform a relative jump if Register A has the given parity. That is, for BPE, a test is made whether the low bit is clear. For BPO, a test is made whether the low bit is set.
+  ]
+)
+
+#pagebreak(weak: true)
+
 === Immediate Operate Format
 
-#image("immopformat.png", fit: "stretch")
+#immOpFormat()
 
-The format for the immediate operate instructions consists of a 6-bit opcode, two 5-bit register numbers, and a 16-bit immediate value. Every immediate operate instruction has either *100*, *011*, *010*, or *000* as the low 3 bits of the opcode.
-
-], width: 100%)
+The format for the immediate operate instructions consists of a 6-bit opcode, two 5-bit register numbers, and a 16-bit immediate value. Every immediate operate instruction has either 100, 011, 010, or 000 as the low 3 bits of the opcode.
 
 Note that the immediate value may or may not be sign extended, depending on the instruction.
 
-#align(center, [*100 Group*])
+#immOpTable()
 
-#box([
+#pagebreak(weak: true)
 
-#align(center, [
-#rect([
-*ADDI RA, RB, IMM16* \
-_Add Immediate_ \
-Opcode: *111100* (0x3C)
-```
-Reg[RA] = Reg[RB] + IMM16
-```
-], width: 100%)])
+==== Listing, 100 Group
 
-The *ADDI* instruction performs an addition between the contents of *Register B* and a zero-extended 16-bit immediate value, storing the result in *Register A*.
+#instructionDetailsTable(
+  [Add Immediate],
+  [Opcode],
+  [111100 (0x3C)],
+  [`ADDI RA, RB, IMM16`],
+)
 
-#line(length: 100%)
+#instructionDetailsTable(
+  [Subtract Immediate],
+  [Opcode],
+  [110100 (0x34)],
+  [`SUBI RA, RB, IMM16`],
+)
 
-], width: 100%)
+#instructionDetailsTable(
+  [Set Less Than Immediate],
+  [Opcode],
+  [101100 (0x2C)],
+  [`SLTI RA, RB, IMM16`],
+)
 
-#box([
+#instructionDetailsTable(
+  [Set Less Than Immediate, Signed],
+  [Opcode],
+  [100100 (0x24)],
+  [`SLTI SIGNED RA, RB, IMM16`],
+)
 
-#align(center, [
-#rect([
-*SUBI RA, RB, IMM16* \
-_Subtract Immediate_ \
-Opcode: *110100* (0x34)
-```
-Reg[RA] = Reg[RB] - IMM16
-```
-], width: 100%)])
+#instructionDetailsTable(
+  [And Immediate],
+  [Opcode],
+  [011100 (0x1C)],
+  [`ANDI RA, RB, IMM16`],
+)
 
-The *SUBI* instruction performs a subtraction between the contents of *Register B* and a zero-extended 16-bit immediate value, storing the result in *Register A*.
+#instructionDetailsTable(
+  [Xor Immediate],
+  [Opcode],
+  [010100 (0x14)],
+  [`XORI RA, RB, IMM16`],
+)
 
-#line(length: 100%)
+#instructionDetailsTable(
+  [Or Immediate],
+  [Opcode],
+  [001100 (0x0C)],
+  [`ORI RA, RB, IMM16`],
+)
 
-], width: 100%)
+#instructionDetailsSecondPart(
+  [```
+Reg[RA] = Reg[RB] OP IMM16
+  ```],
+  [None.],
+  [
+The immediate operate instructions perform the given operation between the contents of Register B and a 16-bit immediate value, which is zero-extended, except for `SLTI SIGNED` where it is sign-extended. The result is stored in Register A. For comparisons, a 1 is stored if the comparison is true, and a 0 otherwise.
+  ]
+)
 
-#box([
+#pagebreak(weak: true)
 
-#align(center, [
-#rect([
-*SLTI RA, RB, IMM16* \
-_Set Less Than Immediate_ \
-Opcode: *101100* (0x2C)
-```
-Reg[RA] = Reg[RB] < IMM16
-```
-], width: 100%)])
-
-The *SLTI* instruction performs an unsigned less-than comparison between the contents of *Register B* and a zero-extended 16-bit immediate value. If the comparison is true, a *1* is stored in *Register A*. Otherwise, a *0* is stored.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*SLTI SIGNED RA, RB, IMM16* \
-_Set Less Than Immediate, Signed_ \
-Opcode: *100100* (0x24)
-```
-Reg[RA] = Reg[RB] s< SignExtend(IMM16)
-```
-], width: 100%)])
-
-The *SLTI SIGNED* instruction performs a signed comparison between the contents of *Register B* and a sign-extended 16-bit immediate value. If the comparison is true, a *1* is stored in *Register A*. Otherwise, a *0* is stored.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*ANDI RA, RB, IMM16* \
-_And Immediate_ \
-Opcode: *011100* (0x1C)
-```
-Reg[RA] = Reg[RB] & IMM16
-```
-], width: 100%)])
-
-The *ANDI* instruction performs a bitwise AND between the contents of *Register B* and a zero-extended 16-bit immediate value, storing the result in *Register A*.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*XORI RA, RB, IMM16* \
-_Xor Immediate_ \
-Opcode: *010100* (0x14)
-```
-Reg[RA] = Reg[RB] $ IMM16
-```
-], width: 100%)])
-
-The *XORI* instruction performs a bitwise XOR between the contents of *Register B* and a zero-extended 16-bit immediate value, storing the result in *Register A*.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*ORI RA, RB, IMM16* \
-_Or Immediate_ \
-Opcode: *001100* (0x0C)
-```
-Reg[RA] = Reg[RB] | IMM16
-```
-], width: 100%)])
-
-The *ORI* instruction performs a bitwise OR between the contents of *Register B* and a zero-extended 16-bit immediate value, storing the result in *Register A*.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*LUI RA, RB, IMM16* \
-_Load Upper Immediate_ \
-Opcode: *000100* (0x04)
-```
+#instructionDetails(
+  [Load Upper Immediate],
+  [Opcode],
+  [000100 (0x04)],
+  [`LUI RA, RB, IMM16`],
+  [```
 Reg[RA] = Reg[RB] | (IMM16 << 16)
-```
-], width: 100%)])
+```],
+  [None.],
+  [
+The LUI instruction performs a bitwise OR between the contents of Register B and a zero-extended 16-bit immediate value which is shifted 16 bits to the left, storing the result in Register A.
+  ]
+)
 
-The *LUI* instruction performs a bitwise OR between the contents of *Register B* and a zero-extended 16-bit immediate value which is shifted 16 bits to the left, storing the result in *Register A*.
+#pagebreak(weak: true)
 
-#line(length: 100%)
-
-], width: 100%)
-
-#align(center, [*011 Group*])
+==== Listing, 011 Group
 
 #box([
 
@@ -1189,7 +1194,7 @@ Exception(BRK)
 ```
 ], width: 100%)])
 
-This instruction causes a breakpoint exception. Its intended use is for debugging purposes. See @ecause.
+This instruction causes a breakpoint exception. Its intended use is for debugging purposes. See @exceptionblock.
 
 #line(length: 100%)
 
@@ -1207,7 +1212,7 @@ Exception(SYS)
 ```
 ], width: 100%)])
 
-This instruction causes a system service exception. It is useful for usermode to make a call into the system software to request a service (also called a system call or "syscall"). See @ecause.
+This instruction causes a system service exception. It is useful for usermode to make a call into the system software to request a service (also called a system call or "syscall"). See @exceptionblock.
 
 #line(length: 100%)
 
@@ -1215,7 +1220,7 @@ This instruction causes a system service exception. It is useful for usermode to
 
 #align(center, [*Opcode 101001 (Privileged Instructions)*])
 
-These instructions all produce a *PRV* exception if executed while usermode is active. See @ecause.
+These instructions all produce a *PRV* exception if executed while usermode is active. See @exceptionblock.
 
 #box([
 
