@@ -478,258 +478,213 @@ The LUI instruction performs a bitwise OR between the contents of Register B and
 
 ==== Listing, 011 Group
 
-#box([
+#instructionDetailsTable(
+  [Load Byte, Immediate Offset],
+  [Opcode],
+  [111011 (0x3B)],
+  [`MOV RA, BYTE [RB + IMM16]`],
+)
 
-#align(center, [
-#rect([
-*MOV RA, BYTE [RB + IMM16]* \
-_Load Byte, Immediate Offset_ \
-Opcode: *111011* (0x3B)
-```
-Reg[RA] = Load8(Reg[RB] + IMM16)
-```
-], width: 100%)])
+#instructionDetailsTable(
+  [Load Int, Immediate Offset],
+  [Opcode],
+  [110011 (0x33)],
+  [`MOV RA, INT [RB + IMM16]`],
+)
 
-This instruction loads an 8-bit value into *Register A* from the address stored within *Register B* plus a zero-extended 16-bit immediate offset.
+#instructionDetailsTable(
+  [Load Long, Immediate Offset],
+  [Opcode],
+  [101011 (0x2B)],
+  [`MOV RA, LONG [RB + IMM16]`],
+)
 
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MOV RA, INT [RB + IMM16]* \
-_Load Int, Immediate Offset_ \
-Opcode: *110011* (0x33)
-```
-Reg[RA] = Load16(Reg[RB] + (IMM16 << 1))
-```
-], width: 100%)])
-
-This instruction loads a 16-bit value into *Register A* from the address stored within *Register B* plus a zero-extended 16-bit immediate offset shifted to the left by one.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MOV RA, LONG [RB + IMM16]* \
-_Load Long, Immediate Offset_ \
-Opcode: *101011* (0x2B)
-```
-Reg[RA] = Load32(Reg[RB] + (IMM16 << 2))
-```
-], width: 100%)])
-
-This instruction loads a 32-bit value into *Register A* from the address stored within *Register B* plus a zero-extended 16-bit immediate offset shifted to the left by two.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [*010 Group*])
-  
-#align(center, [
-#rect([
-*MOV BYTE [RA + IMM16], RB* \
-_Store Byte, Immediate Offset_ \
-Opcode: *111010* (0x3A)
-```
-Store8(Reg[RA] + IMM16, Reg[RB])
-```
-], width: 100%)])
-
-This instruction stores the contents of *Register B* as an 8-bit value to the address stored within *Register A* plus a zero-extended 16-bit immediate offset.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MOV INT [RA + IMM16], RB* \
-_Store Int, Immediate Offset_ \
-Opcode: *110010* (0x32)
-```
-Store16(Reg[RA] + (IMM16 << 1), Reg[RB])
-```
-], width: 100%)])
-
-This instruction stores the contents of *Register B* as a 16-bit value to the address stored within *Register A* plus a zero-extended 16-bit immediate offset shifted to the left by one.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MOV LONG [RA + IMM16], RB* \
-_Store Long, Immediate Offset_ \
-Opcode: *101010* (0x2A)
-```
-Store32(Reg[RA] + (IMM16 << 2), Reg[RB])
-```
-], width: 100%)])
-
-This instruction stores the contents of *Register B* as a 32-bit value to the address stored within *Register A* plus a zero-extended 16-bit immediate offset shifted to the left by two.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MOV BYTE [RA + IMM16], IMM5* \
-_Store Byte, Small Immediate_ \
-Opcode: *011010* (0x1A)
-```
-Store8(Reg[RA] + IMM16, SignExtend(IMM5))
-```
-], width: 100%)])
-
-This instruction stores a sign-extended 5-bit immediate as an 8-bit value to the address stored within *Register A* plus a zero-extended 16-bit immediate offset. The *Register B* field of the instruction is interpreted as the 5-bit immediate.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MOV INT [RA + IMM16], IMM5* \
-_Store Int, Small Immediate_ \
-Opcode: *010010* (0x12)
-```
-Store16(Reg[RA] + (IMM16 << 1), SignExtend(IMM5))
-```
-], width: 100%)])
-
-This instruction stores a sign-extended 5-bit immediate as a 16-bit value to the address stored within *Register A* plus a zero-extended 16-bit immediate offset shifted left by one. The *Register B* field of the instruction is interpreted as the 5-bit immediate.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MOV LONG [RA + IMM16], IMM5* \
-_Store Long, Small Immediate_ \
-Opcode: *001010* (0x0A)
-```
-Store32(Reg[RA] + (IMM16 << 2), SignExtend(IMM5))
-```
-], width: 100%)])
-
-This instruction stores a sign-extended 5-bit immediate as a 32-bit value to the address stored within *Register A* plus a zero-extended 16-bit immediate offset shifted left by two. The *Register B* field of the instruction is interpreted as the 5-bit immediate.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#align(center, [*000 Group*])
-
-#box([
-
-#align(center, [
-#rect([
-*JALR RA, RB, IMM16* \
-_Jump And Link, Register_ \
-Opcode: *111000* (0x38)
-```
-Reg[RA] = PC + 4
-PC = Reg[RB] + (IMM16 << 2)
-```
-], width: 100%)])
-
-The *JALR* instruction provides a lightweight means of calling through a function pointer. The next program counter (PC + 4) is saved in *Register A*, and then the PC is set to the contents of *Register B* plus a 16-bit zero-extended immediate value shifted left by two.
-
-This instruction can also be used to jump to the contents of a register in general, by setting the destination register to the *zero* register, thereby discarding the results.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*ADR RA, IMM16* \
-_Compute Relative Address_ \
-Opcode: *110000* (0x30)
-```
-Reg[RA] = PC + (IMM16 << 16)
-```
-], width: 100%)])
-
-The *ADR* instruction adds the current program counter and a 16-bit immediate value shifted left by 16. The result is stored in *Register A*. This instruction is useful for PC-relative addressing modes.
-
-Unlike other immediate operate format instructions, this instruction's *Register B* field must be zero.
-
-#line(length: 100%)
-
-], width: 100%)
+#instructionDetailsSecondPart(
+  [```
+Reg[RA] = Load(Reg[RB] + (IMM16 * width), width)
+  ```],
+  [#box[
+  - DTB (DTB miss) if the referenced page mapping is not in the DTB.
+  - PGF (Read Page Fault) if the referenced page matches a DTB entry with a clear valid bit.
+  - BUS (Bus Error) if the memory access causes a timeout on the system bus.
+  - UNA (Unaligned Access) if the referenced address is not naturally aligned.
+  ]],
+  [
+The load instructions read a value into Register A from the address stored within Register B plus a zero-extended 16-bit immediate offset. To extend the range, the processor multiplies the immediate offset by the width of the access (in bytes) before it is added to the base register. The address must be naturally aligned to the width.
+  ]
+)
 
 #pagebreak(weak: true)
 
-#box([
+==== Listing, 010 Group
+
+#instructionDetailsTable(
+  [Store Byte, Immediate Offset],
+  [Opcode],
+  [111010 (0x3A)],
+  [`MOV BYTE [RA + IMM16], RB`],
+)
+
+#instructionDetailsTable(
+  [Store Int, Immediate Offset],
+  [Opcode],
+  [110010 (0x32)],
+  [`MOV INT [RA + IMM16], RB`],
+)
+
+#instructionDetailsTable(
+  [Store Long, Immediate Offset],
+  [Opcode],
+  [101010 (0x2A)],
+  [`MOV LONG [RA + IMM16], RB`],
+)
+
+#instructionDetailsSecondPart(
+  [```
+Store(Reg[RA] + (IMM16 * width), Reg[RB], width)
+  ```],
+  [#box[
+  - DTB (DTB miss) if the referenced page mapping is not in the DTB.
+  - PGW (Write Page Fault) if the referenced page matches a DTB entry with a clear valid bit, or a DTB entry with a clear writable bit.
+  - BUS (Bus Error) if the memory access causes a timeout on the system bus.
+  - UNA (Unaligned Access) if the referenced address is not naturally aligned.
+  ]],
+  [
+The store register instructions store the value contained with Register B to the address stored within Register A plus a zero-extended 16-bit immediate offset. To extend the range, the processor multiplies the immediate offset by the width of the access (in bytes) before it is added to the base register. The address must be naturally aligned to the width.
+  ]
+)
+
+#pagebreak(weak: true)
+
+#instructionDetailsTable(
+  [Store Byte, Small Immediate],
+  [Opcode],
+  [011010 (0x1A)],
+  [`MOV BYTE [RA + IMM16], IMM5`],
+)
+
+#instructionDetailsTable(
+  [Store Int, Small Immediate],
+  [Opcode],
+  [010010 (0x12)],
+  [`MOV INT [RA + IMM16], IMM5`],
+)
+
+#instructionDetailsTable(
+  [Store Long, Small Immediate],
+  [Opcode],
+  [001010 (0x0A)],
+  [`MOV LONG [RA + IMM16], IMM5`],
+)
+
+#instructionDetailsSecondPart(
+  [```
+Store(Reg[RA] + (IMM16 * width), SignExt5(IMM5), width)
+  ```],
+  [#box[
+  - DTB (DTB miss) if the referenced page mapping is not in the DTB.
+  - PGW (Write Page Fault) if the referenced page matches a DTB entry with a clear valid bit, or a DTB entry with a clear writable bit.
+  - BUS (Bus Error) if the memory access causes a timeout on the system bus.
+  - UNA (Unaligned Access) if the referenced address is not naturally aligned.
+  ]],
+  [
+The store small immediate instructions store a sign-extended 5-bit immediate to the address stored within Register A plus a zero-extended 16-bit immediate offset. To extend the range, the processor multiplies the immediate offset by the width of the access (in bytes) before it is added to the base register. The address must be naturally aligned to the width. The 5-bit immediate is encoded in the Register B field of the instruction word.
+  ]
+)
+
+#pagebreak(weak: true)
+
+==== Listing, 000 Group
+
+#instructionDetails(
+  [Jump And Link, Register],
+  [Opcode],
+  [111000 (0x38)],
+  [`JALR RA, RB, IMM16`],
+  [```
+Reg[RA] = PC + 4
+PC = Reg[RB] + (IMM16 << 2)
+```],
+  [None.],
+  [
+The JALR instruction provides a lightweight means of calling through a function pointer. The next program counter (PC + 4) is saved in Register A, and then the PC is set to the contents of Register B plus a 16-bit zero-extended immediate value shifted left by two.
+
+This instruction can also be used as an indirect jump to an address stored in a register, by setting the destination register to the zero register, thereby discarding the return value.
+  ]
+)
+
+#pagebreak(weak: true)
+
+#instructionDetails(
+  [Compute Relative Address],
+  [Opcode],
+  [110000 (0x30)],
+  [`ADR RA, IMM16`],
+  [```
+Reg[RA] = PC + (IMM16 << 16)
+```],
+  [None.],
+  [
+The ADR instruction adds the current program counter and a 16-bit immediate value shifted left by 16. The result is stored in Register A. This instruction is useful for PC-relative addressing modes.
+
+Unlike other immediate operate format instructions, this instruction's Register B field must be zero.
+  ]
+)
+
+#pagebreak(weak: true)
+
 === Register Operate Format
 
-#image("regopformat.png", fit: "stretch")
+#regOpFormat()
 
-The format for the register operate instructions consists of a 6-bit opcode, three 5-bit register numbers, a 5-bit shift amount, a 2-bit shift type, and a 4-bit function code (which acts as an extended opcode). Every register operate instruction has *001* as the low 3 bits of the opcode, and there are three such opcodes; *111001*, *110001*, and *101001*.
+The format for the register operate instructions consists of a 6-bit opcode, three 5-bit register numbers, a 5-bit shift amount, a 2-bit shift type, and a 4-bit function code (which acts as an extended opcode). Every register operate instruction has 001 as the low 3 bits of the opcode, and there are three such opcodes; 111001, 110001, and 101001.
 
-All privileged instructions are in this format and are function codes of the last opcode mentioned, *101001*. These instructions will produce a privilege violation exception if executed while usermode is enabled in the *RS* control register (see @rs).
+All privileged instructions are in this format and are function codes of the last opcode mentioned, 101001. These instructions will produce a privilege violation exception if executed while usermode is enabled in the RS control register (see @rs).
 
-], width: 100%)
+The value of Register C is shifted in the manner specified by the shift type, by the amount specified by the shift amount.
 
-The value of Register C is shifted in the manner specified by the shift type, by the amount specified by the shift amount. A table of shift types follows:
-
-#set align(center)
-#table(
+#align(center)[
+#roundedTable(
   columns: (auto, auto),
   align: horizon + left,
+  [], [],
   table.cell([
     #set text(fill: white)
     #set align(center)
     *00*
-  ], fill: rgb(0,0,0,255)),
+  ], fill: tableHeadingColor),
   [*LSH* Left shift.],
   table.cell([
     #set text(fill: white)
     #set align(center)
     *01*
-  ], fill: rgb(0,0,0,255)),
+  ], fill: tableHeadingColor),
   [*RSH* Logical right shift.],
   table.cell([
     #set text(fill: white)
     #set align(center)
     *10*
-  ], fill: rgb(0,0,0,255)),
+  ], fill: tableHeadingColor),
   [*ASH* Arithmetic right shift.],
   table.cell([
     #set text(fill: white)
     #set align(center)
     *11*
-  ], fill: rgb(0,0,0,255)),
+  ], fill: tableHeadingColor),
   [*ROR* Rotate right.],
 )
-#set align(left)
+]
+#caption[The 2-bit shift type codes.]
+
+#aGroup[
+
+#regOpTable()
+
+]
+
+#pagebreak(weak: true)
+
+==== Listing
 
 #box([
 
