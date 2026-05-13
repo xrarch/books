@@ -454,7 +454,9 @@ Reg[RA] = Reg[RB] OP IMM16
   ```],
   [None.],
   [
-The immediate operate instructions perform the given operation between the contents of Register B and a 16-bit immediate value, which is zero-extended, except for `SLTI SIGNED` where it is sign-extended. The result is stored in Register A. For comparisons, a 1 is stored if the comparison is true, and a 0 otherwise.
+The immediate operate instructions perform the given operation between the contents of Register B and a 16-bit immediate value, which is zero-extended, except for `SLTI SIGNED` where it is sign-extended. The result is stored in Register A.
+
+In the case of the comparison instructions, a 1 is stored if the comparison is true, and a 0 otherwise.
   ]
 )
 
@@ -504,8 +506,8 @@ The LUI instruction performs a bitwise OR between the contents of Register B and
 Reg[RA] = Load(Reg[RB] + (IMM16 * width), width)
   ```],
   [#box[
-  - DTB (DTB miss) if the referenced page mapping is not in the DTB.
-  - PGF (Read Page Fault) if the referenced page matches a DTB entry with a clear valid bit.
+  - DTB (DTB miss) if paging is enabled and the referenced page mapping is not in the DTB.
+  - PGF (Read Page Fault) if paging is enabled and the referenced page matches a DTB entry with a clear valid bit.
   - BUS (Bus Error) if the memory access causes a timeout on the system bus.
   - UNA (Unaligned Access) if the referenced address is not naturally aligned.
   ]],
@@ -544,8 +546,8 @@ The load instructions read a value into Register A from the address stored withi
 Store(Reg[RA] + (IMM16 * width), Reg[RB], width)
   ```],
   [#box[
-  - DTB (DTB miss) if the referenced page mapping is not in the DTB.
-  - PGW (Write Page Fault) if the referenced page matches a DTB entry with a clear valid bit, or a DTB entry with a clear writable bit.
+  - DTB (DTB miss) if paging is enabled and the referenced page mapping is not in the DTB.
+  - PGW (Write Page Fault) if paging is enabled and the referenced page matches a DTB entry with a clear valid bit, or a DTB entry with a clear writable bit.
   - BUS (Bus Error) if the memory access causes a timeout on the system bus.
   - UNA (Unaligned Access) if the referenced address is not naturally aligned.
   ]],
@@ -582,8 +584,8 @@ The store register instructions store the value contained with Register B to the
 Store(Reg[RA] + (IMM16 * width), SignExt5(IMM5), width)
   ```],
   [#box[
-  - DTB (DTB miss) if the referenced page mapping is not in the DTB.
-  - PGW (Write Page Fault) if the referenced page matches a DTB entry with a clear valid bit, or a DTB entry with a clear writable bit.
+  - DTB (DTB miss) if paging is enabled and the referenced page mapping is not in the DTB.
+  - PGW (Write Page Fault) if paging is enabled and the referenced page matches a DTB entry with a clear valid bit, or a DTB entry with a clear writable bit.
   - BUS (Bus Error) if the memory access causes a timeout on the system bus.
   - UNA (Unaligned Access) if the referenced address is not naturally aligned.
   ]],
@@ -684,281 +686,173 @@ The value of Register C is shifted in the manner specified by the shift type, by
 
 #pagebreak(weak: true)
 
-==== Listing
+==== Listing, Opcode 111001
 
-#box([
+#instructionDetailsTable(
+  [Load Byte, Register Offset],
+  [Funct],
+  [1111 (0xF)],
+  [`MOV RA, BYTE [RB + RC xSH IMM5]`],
+)
 
-#align(center, [*Opcode 111001*])
-  
-#align(center, [
-#rect([
-*MOV RA, BYTE [RB + RC xSH IMM5]* \
-_Load Byte, Register Offset_ \
-Function Code: *1111* (0xF)
-```
-Reg[RA] = Load8(Reg[RB] + (Reg[RC] xSH IMM5))
-```
-], width: 100%)])
+#instructionDetailsTable(
+  [Load Int, Register Offset],
+  [Funct],
+  [1110 (0xE)],
+  [`MOV RA, INT [RB + RC xSH IMM5]`],
+)
 
-This instruction loads an 8-bit value into *Register A* from the address stored within *Register B*, plus the value of *Register C* shifted in the manner specified.
+#instructionDetailsTable(
+  [Load Long, Register Offset],
+  [Funct],
+  [1101 (0xF)],
+  [`MOV RA, LONG [RB + RC xSH IMM5]`],
+)
 
-#line(length: 100%)
+#instructionDetailsSecondPart(
+  [```
+Reg[RA] = Load(Reg[RB] + (Reg[RC] xSH IMM5), width)
+  ```],
+  [#box[
+  - DTB (DTB miss) if paging is enabled and the referenced page mapping is not in the DTB.
+  - PGF (Read Page Fault) if paging is enabled and the referenced page matches a DTB entry with a clear valid bit.
+  - BUS (Bus Error) if the memory access causes a timeout on the system bus.
+  - UNA (Unaligned Access) if the referenced address is not naturally aligned.
+  ]],
+  [
+These instructions perform a load with an offset contained within a register. A zero-extended value is loaded into Register A from the address computed by adding the value of Register C, shifted in the manner specified, to the value of Register B.
+  ]
+)
 
-], width: 100%)
+#pagebreak(weak: true)
 
-#box([
+#instructionDetailsTable(
+  [Store Byte, Register Offset],
+  [Funct],
+  [1011 (0xB)],
+  [`MOV BYTE [RB + RC xSH IMM5], RA`],
+)
 
-#align(center, [
-#rect([
-*MOV RA, INT [RB + RC xSH IMM5]* \
-_Load Int, Register Offset_ \
-Function Code: *1110* (0xE)
-```
-Reg[RA] = Load16(Reg[RB] + (Reg[RC] xSH IMM5))
-```
-], width: 100%)])
+#instructionDetailsTable(
+  [Store Int, Register Offset],
+  [Funct],
+  [1010 (0xA)],
+  [`MOV INT [RB + RC xSH IMM5], RA`],
+)
 
-This instruction loads a 16-bit value into *Register A* from the address stored within *Register B*, plus the value of *Register C* shifted in the manner specified.
+#instructionDetailsTable(
+  [Store Long, Register Offset],
+  [Funct],
+  [1001 (0x9)],
+  [`MOV LONG [RB + RC xSH IMM5], RA`],
+)
 
-#line(length: 100%)
+#instructionDetailsSecondPart(
+  [```
+Store(Reg[RB] + (Reg[RC] xSH IMM5), Reg[RA], width)
+  ```],
+  [#box[
+  - DTB (DTB miss) if paging is enabled and the referenced page mapping is not in the DTB.
+  - PGW (Write Page Fault) if paging is enabled and the referenced page matches a DTB entry with a clear valid bit, or a DTB entry with a clear writable bit.
+  - BUS (Bus Error) if the memory access causes a timeout on the system bus.
+  - UNA (Unaligned Access) if the referenced address is not naturally aligned.
+  ]],
+  [
+These instructions perform a store with an offset contained within a register. The value in Register A is stored to the address computed by adding the value of Register C, shifted in the manner specified, to the value of Register B.
+  ]
+)
 
-], width: 100%)
+#pagebreak(weak: true)
 
-#box([
-
-#align(center, [
-#rect([
-*MOV RA, LONG [RB + RC xSH IMM5]* \
-_Load Long, Register Offset_ \
-Function Code: *1101* (0xD)
-```
-Reg[RA] = Load32(Reg[RB] + (Reg[RC] xSH IMM5))
-```
-], width: 100%)])
-
-This instruction loads a 32-bit value into *Register A* from the address stored within *Register B*, plus the value of *Register C* shifted in the manner specified.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MOV BYTE [RB + RC xSH IMM5], RA* \
-_Store Byte, Register Offset_ \
-Function Code: *1011* (0xB)
-```
-Store8(Reg[RB] + (Reg[RC] xSH IMM5), Reg[RA])
-```
-], width: 100%)])
-
-This instruction stores the contents of *Register A* as an 8-bit value to the address stored within *Register B*, plus the value of *Register C* shifted in the manner specified.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MOV INT [RB + RC xSH IMM5], RA* \
-_Store Int, Register Offset_ \
-Function Code: *1010* (0xA)
-```
-Store16(Reg[RB] + (Reg[RC] xSH IMM5), Reg[RA])
-```
-], width: 100%)])
-
-This instruction stores the contents of *Register A* as a 16-bit value to the address stored within *Register B*, plus the value of *Register C* shifted in the manner specified.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MOV LONG [RB + RC xSH IMM5], RA* \
-_Store Long, Register Offset_ \
-Function Code: *1001* (0x9)
-```
-Store32(Reg[RB] + (Reg[RC] xSH IMM5), Reg[RA])
-```
-], width: 100%)])
-
-This instruction stores the contents of *Register A* as a 32-bit value to the address stored within *Register B*, plus the value of *Register C* shifted in the manner specified.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*LSH/RSH/ASH/ROR RA, RC, RB* \
-_Various Shift By Register Amount_ \
-Function Code: *1000* (0x8)
-```
+#instructionDetails(
+  [Various Shift By Register Amount],
+  [Funct],
+  [1000 (0x8)],
+  [`LSH/RSH/ASH/ROR RA, RC, RB`],
+  [```
 Reg[RA] = Reg[RC] xSH (Reg[RB] & 31)
-```
-], width: 100%)])
+```],
+  [None.],
+  [
+This instruction shifts the contents of Register C by the contents of Register B and places the result in Register A. It is technically a single function code, but is split into several mnemonics for convenience. The IMM5 shift value encoded in the instruction is ignored, because the shift value is taken from Register B instead.
+  ]
+)
 
-This instruction shifts the contents of *Register C* by the contents of *Register B* and places the result in *Register A*. It is technically a single function code, but is split into several mnemonics for convenience. The *IMM5* shift value is ignored, and is taken from *Register B* instead.
+#pagebreak(weak: true)
 
-#line(length: 100%)
+#instructionDetailsTable(
+  [Add Register],
+  [Funct],
+  [0111 (0x7)],
+  [`ADD RA, RB, RC xSH IMM5`],
+)
 
-], width: 100%)
+#instructionDetailsTable(
+  [Subtract Register],
+  [Funct],
+  [0110 (0x6)],
+  [`SUB RA, RB, RC xSH IMM5`],
+)
 
-#box([
+#instructionDetailsTable(
+  [Set Less Than Register],
+  [Funct],
+  [0101 (0x5)],
+  [`SLT RA, RB, RC xSH IMM5`],
+)
 
-#align(center, [
-#rect([
-*ADD RA, RB, RC xSH IMM5* \
-_Add Register_ \
-Function Code: *0111* (0x7)
-```
-Reg[RA] = Reg[RB] + (Reg[RC] xSH IMM5)
-```
-], width: 100%)])
+#instructionDetailsTable(
+  [Set Less Than Register, Signed],
+  [Funct],
+  [0100 (0x4)],
+  [`SLT SIGNED RA, RB, RC xSH IMM5`],
+)
 
-This instruction adds the contents of *Register B* to the contents of *Register C*, and stores the result into *Register A*. The contents of *Register C* are first shifted in the manner specified.
+#instructionDetailsTable(
+  [And Register],
+  [Funct],
+  [0011 (0x3)],
+  [`AND RA, RB, RC xSH IMM5`],
+)
 
-#line(length: 100%)
+#instructionDetailsTable(
+  [Xor Register],
+  [Funct],
+  [0010 (0x2)],
+  [`XOR RA, RB, RC xSH IMM5`],
+)
 
-], width: 100%)
+#instructionDetailsTable(
+  [Or Register],
+  [Funct],
+  [0001 (0x1)],
+  [`OR RA, RB, RC xSH IMM5`],
+)
 
-#box([
+#instructionDetailsTable(
+  [Nor Register],
+  [Funct],
+  [0000 (0x0)],
+  [`NOR RA, RB, RC xSH IMM5`],
+)
 
-#align(center, [
-#rect([
-*SUB RA, RB, RC xSH IMM5* \
-_Subtract Register_ \
-Function Code: *0110* (0x6)
-```
-Reg[RA] = Reg[RB] - (Reg[RC] xSH IMM5)
-```
-], width: 100%)])
+#instructionDetailsSecondPart(
+  [```
+Reg[RA] = Reg[RB] OP (Reg[RC] xSH IMM5)
+  ```],
+  [#box[
+None.
+  ]],
+  [
+These instructions perform the specified operation between the contents of Register B and the contents of Register C, and stores the result into Register A. The contents of Register C are first shifted in the manner specified.
 
-This instruction subtracts the contents of *Register B* by the contents of *Register C*, and stores the result into *Register A*. The contents of *Register C* are first shifted in the manner specified.
+In the case of the comparison instructions, a 1 is stored if the comparison is true, and a 0 otherwise.
+  ]
+)
 
-#line(length: 100%)
+#pagebreak(weak: true)
 
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*SLT RA, RB, RC xSH IMM5* \
-_Set Less Than Register_ \
-Function Code: *0101* (0x5)
-```
-Reg[RA] = Reg[RB] < (Reg[RC] xSH IMM5)
-```
-], width: 100%)])
-
-This instruction sets *Register A* to the result of an unsigned less-than comparison between the contents of *Register B* and the contents of *Register C*. The result is *1* if the comparison is true, and *0* otherwise. The contents of *Register C* are first shifted in the manner specified.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*SLT SIGNED RA, RB, RC xSH IMM5* \
-_Set Less Than Register, Signed_ \
-Function Code: *0100* (0x4)
-```
-Reg[RA] = Reg[RB] s< (Reg[RC] xSH IMM5)
-```
-], width: 100%)])
-
-This instruction sets *Register A* to the result of a signed less-than comparison between the contents of *Register B* and the contents of *Register C*. The result is *1* if the comparison is true, and *0* otherwise. The contents of *Register C* are first shifted in the manner specified.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*AND RA, RB, RC xSH IMM5* \
-_And Register_ \
-Function Code: *0011* (0x3)
-```
-Reg[RA] = Reg[RB] & (Reg[RC] xSH IMM5)
-```
-], width: 100%)])
-
-This instruction performs a bitwise AND between the contents of *Register B* and the contents of *Register C*, and stores the result into *Register A*. The contents of *Register C* are first shifted in the manner specified.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*XOR RA, RB, RC xSH IMM5* \
-_Xor Register_ \
-Function Code: *0010* (0x2)
-```
-Reg[RA] = Reg[RB] $ (Reg[RC] xSH IMM5)
-```
-], width: 100%)])
-
-This instruction performs a bitwise XOR between the contents of *Register B* and the contents of *Register C*, and stores the result into *Register A*. The contents of *Register C* are first shifted in the manner specified.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*OR RA, RB, RC xSH IMM5* \
-_Or Register_ \
-Function Code: *0001* (0x1)
-```
-Reg[RA] = Reg[RB] | (Reg[RC] xSH IMM5)
-```
-], width: 100%)])
-
-This instruction performs a bitwise OR between the contents of *Register B* and the contents of *Register C*, and stores the result into *Register A*. The contents of *Register C* are first shifted in the manner specified.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*NOR RA, RB, RC xSH IMM5* \
-_Nor Register_ \
-Function Code: *0000* (0x0)
-```
-Reg[RA] = ~(Reg[RB] | (Reg[RC] xSH IMM5))
-```
-], width: 100%)])
-
-This instruction performs a bitwise NOR between the contents of *Register B* and the contents of *Register C*, and stores the result into *Register A*. The contents of *Register C* are first shifted in the manner specified.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#align(center, [*Opcode 110001*])
+==== Listing, Opcode 110001
 
 #box([
 
