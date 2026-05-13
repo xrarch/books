@@ -156,11 +156,113 @@
 
 = Instructions
 
-== Formats
+== Instruction Set Summary
 
-The XR/17032 architecture features only four instruction formats. All instruction formats are 32 bits wide. There are a total of 60 instructions. The following section contains a comprehensive listing of all of the instructions defined by the XR/17032 architecture along with their encodings. The instructions are grouped first by format, and then by major opcode.
+The XR/17032 architecture features only four instruction formats. All instruction formats are 32 bits wide, and there are a total of 60 instructions. This section contains a summary of all of the instructions defined by the XR/17032 architecture along with their encodings. The instructions are grouped first by format, and then by major opcode. The summary is followed by a much more comprehensive listing of the instructions and what they do.
 
 Note that the assembly language also supports several "pseudo-instructions" for ease of assembly programming, which are not listed below, as they don't directly correspond to any particular hardware instruction, and are usually translated to a sequence of several hardware instructions. See @pseudoinstructions for a listing of pseudo-instructions.
+
+#v(1fr)
+
+#jumpFormat()
+
+#jumpFormatTable()
+
+#v(1fr)
+
+#branchFormat()
+
+#branchFormatTable()
+
+#v(1fr)
+
+#pagebreak(weak: true)
+
+#v(1fr)
+
+#immOpFormat()
+
+#immOpTable()
+
+#v(1fr)
+
+#pagebreak(weak: true)
+
+#v(1fr)
+
+#regOpFormat()
+
+#aGroup[
+  #microHeading("Major Opcode 111001 (0x39)")
+
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Function], [Mnemonic], [Name],
+    [`0xF`], [`MOV RA, BYTE [RB + RC xSH IMM5]`], [Load Byte, Register Offset],
+    [`0xE`], [`MOV RA, INT [RB + RC xSH IMM5]`], [Load Int, Register Offset],
+    [`0xD`], [`MOV RA, LONG [RB + RC xSH IMM5]`], [Load Long, Register Offset],
+    [`0xB`], [`MOV BYTE [RB + RC xSH IMM5], RA`], [Store Byte, Register Offset],
+    [`0xA`], [`MOV INT [RB + RC xSH IMM5], RA`], [Store Int, Register Offset],
+    [`0x9`], [`MOV LONG [RB + RC xSH IMM5], RA`], [Store Long, Register Offset],
+    [`0x8`], [`LSH RA, RC, RB`], [Left Shift By Register],
+    [`0x8`], [`RSH RA, RC, RB`], [Logical Right Shift By Register],
+    [`0x8`], [`ASH RA, RC, RB`], [Arithmetic Right Shift By Register],
+    [`0x8`], [`ROR RA, RC, RB`], [Rotate Right By Register],
+    [`0x7`], [`ADD RA, RB, RC xSH IMM5`], [Add Register],
+    [`0x6`], [`SUB RA, RB, RC xSH IMM5`], [Subtract Register],
+    [`0x5`], [`SLT RA, RB, RC xSH IMM5`], [Set Less Than Register],
+    [`0x4`], [`SLT SIGNED RA, RB, RC xSH IMM5`], [Set Less Than Register, Signed],
+    [`0x3`], [`AND RA, RB, RC xSH IMM5`], [And Register],
+    [`0x2`], [`XOR RA, RB, RC xSH IMM5`], [Xor Register],
+    [`0x1`], [`OR RA, RB, RC xSH IMM5`], [Or Register],
+    [`0x0`], [`NOR RA, RB, RC xSH IMM5`], [Nor Register],
+  )
+]
+
+#v(1fr)
+
+#pagebreak(weak: true)
+
+#v(1fr)
+
+#aGroup[
+  #microHeading("Major Opcode 110001 (0x31)")
+
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Function], [Mnemonic], [Name],
+    [`0xF`], [`MUL RA, RB, RC`], [Multiply],
+    [`0xD`], [`DIV RA, RB, RC`], [Divide],
+    [`0xC`], [`DIV SIGNED RA, RB, RC`], [Divide, Signed],
+    [`0xB`], [`MOD RA, RB, RC`], [Modulo],
+    [`0x9`], [`LL RA, RB`], [Load Locked],
+    [`0x8`], [`SC RA, RB, RC`], [Store Conditional],
+    [`0x6`], [`PAUSE`], [Pause],
+    [`0x3`], [`MB`], [Memory Barrier],
+    [`0x2`], [`WMB`], [Write Memory Barrier],
+    [`0x1`], [`BRK`], [Breakpoint],
+    [`0x0`], [`SYS`], [System Service],
+  )
+]
+
+#v(1fr)
+
+#aGroup[
+  #microHeading("Major Opcode 101001 (0x29, Privileged)")
+
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Function], [Mnemonic], [Name],
+    [`0xF`], [`MFCR RA, CR`], [Move From Control Register],
+    [`0xE`], [`MTCR CR, RA`], [Move To Control Register],
+    [`0xC`], [`HLT`], [Halt Until Next Interrupt],
+    [`0xB`], [`RFE`], [Return From Exception],
+  )
+]
+
+#v(1fr)
+
+#pagebreak(weak: true)
 
 #pagebreak(weak: true)
 
@@ -1100,109 +1202,5 @@ MOV BYTE/INT/LONG [RB + (IMM32 & 0xFFFF)], RA
 These pseudo-instructions store a value into a full 32-bit address. They are synthesized with LUI (Load Upper Immediate) and the appropriate offsetted store instruction. The upper 16 bits of the address are loaded into a user-supplied temporary register with LUI, and then a store is done with an offset of the low 16 bits of the address.
   ]
 )
-
-#v(1fr)
-
-#pagebreak(weak: true)
-
-== Instruction Summary
-
-#v(1fr)
-
-#jumpFormat()
-
-#jumpFormatTable()
-
-#v(1fr)
-
-#branchFormat()
-
-#branchFormatTable()
-
-#v(1fr)
-
-#pagebreak(weak: true)
-
-#v(1fr)
-
-#immOpFormat()
-
-#immOpTable()
-
-#v(1fr)
-
-#pagebreak(weak: true)
-
-#v(1fr)
-
-#regOpFormat()
-
-#aGroup[
-  #microHeading("Major Opcode 111001 (0x39)")
-
-  #roundedTable(
-    columns: (auto, auto, 1fr),
-    [Function], [Mnemonic], [Name],
-    [`0xF`], [`MOV RA, BYTE [RB + RC xSH IMM5]`], [Load Byte, Register Offset],
-    [`0xE`], [`MOV RA, INT [RB + RC xSH IMM5]`], [Load Int, Register Offset],
-    [`0xD`], [`MOV RA, LONG [RB + RC xSH IMM5]`], [Load Long, Register Offset],
-    [`0xB`], [`MOV BYTE [RB + RC xSH IMM5], RA`], [Store Byte, Register Offset],
-    [`0xA`], [`MOV INT [RB + RC xSH IMM5], RA`], [Store Int, Register Offset],
-    [`0x9`], [`MOV LONG [RB + RC xSH IMM5], RA`], [Store Long, Register Offset],
-    [`0x8`], [`LSH RA, RC, RB`], [Left Shift By Register],
-    [`0x8`], [`RSH RA, RC, RB`], [Logical Right Shift By Register],
-    [`0x8`], [`ASH RA, RC, RB`], [Arithmetic Right Shift By Register],
-    [`0x8`], [`ROR RA, RC, RB`], [Rotate Right By Register],
-    [`0x7`], [`ADD RA, RB, RC xSH IMM5`], [Add Register],
-    [`0x6`], [`SUB RA, RB, RC xSH IMM5`], [Subtract Register],
-    [`0x5`], [`SLT RA, RB, RC xSH IMM5`], [Set Less Than Register],
-    [`0x4`], [`SLT SIGNED RA, RB, RC xSH IMM5`], [Set Less Than Register, Signed],
-    [`0x3`], [`AND RA, RB, RC xSH IMM5`], [And Register],
-    [`0x2`], [`XOR RA, RB, RC xSH IMM5`], [Xor Register],
-    [`0x1`], [`OR RA, RB, RC xSH IMM5`], [Or Register],
-    [`0x0`], [`NOR RA, RB, RC xSH IMM5`], [Nor Register],
-  )
-]
-
-#v(1fr)
-
-#pagebreak(weak: true)
-
-#v(1fr)
-
-#aGroup[
-  #microHeading("Major Opcode 110001 (0x31)")
-
-  #roundedTable(
-    columns: (auto, auto, 1fr),
-    [Function], [Mnemonic], [Name],
-    [`0xF`], [`MUL RA, RB, RC`], [Multiply],
-    [`0xD`], [`DIV RA, RB, RC`], [Divide],
-    [`0xC`], [`DIV SIGNED RA, RB, RC`], [Divide, Signed],
-    [`0xB`], [`MOD RA, RB, RC`], [Modulo],
-    [`0x9`], [`LL RA, RB`], [Load Locked],
-    [`0x8`], [`SC RA, RB, RC`], [Store Conditional],
-    [`0x6`], [`PAUSE`], [Pause],
-    [`0x3`], [`MB`], [Memory Barrier],
-    [`0x2`], [`WMB`], [Write Memory Barrier],
-    [`0x1`], [`BRK`], [Breakpoint],
-    [`0x0`], [`SYS`], [System Service],
-  )
-]
-
-#v(1fr)
-
-#aGroup[
-  #microHeading("Major Opcode 101001 (0x29, Privileged)")
-
-  #roundedTable(
-    columns: (auto, auto, 1fr),
-    [Function], [Mnemonic], [Name],
-    [`0xF`], [`MFCR RA, CR`], [Move From Control Register],
-    [`0xE`], [`MTCR CR, RA`], [Move To Control Register],
-    [`0xC`], [`HLT`], [Halt Until Next Interrupt],
-    [`0xB`], [`RFE`], [Return From Exception],
-  )
-]
 
 #v(1fr)
