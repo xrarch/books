@@ -1,4 +1,7 @@
-#let decBlue = rgb("#8a9dd1")
+#import "@preview/cetz:0.4.2"
+
+#let decBlue = black
+#let titleColor = rgb("#8a9dd1")
 #let headingColor = decBlue.darken(20%)
 #let tableHeadingColor = decBlue
 
@@ -24,7 +27,7 @@
 
 #let paragraphOffset = 2cm
 #let roundedRadius = 3pt
-#let roundedInset = 4pt
+#let roundedInset = 5pt
 
 #let caption(theText) = {
 	v(-0.5em)
@@ -62,28 +65,28 @@
 	let theTracking = -2pt
 
 	align(right + horizon)[
-		#text(font: titleFont, size: theSize, fill: decBlue, tracking: theTracking)[
+		#text(font: titleFont, size: theSize, fill: titleColor, tracking: theTracking)[
 			#theShortTitle
 		] \
-		#text(font: titleFont, size: theSize, fill: decBlue, tracking: theTracking)[
+		#text(font: titleFont, size: theSize, fill: titleColor, tracking: theTracking)[
 			#theShortTitle
 		] \
-		#text(font: titleFont, size: theSize, fill: decBlue.transparentize(12.5%), tracking: theTracking)[
+		#text(font: titleFont, size: theSize, fill: titleColor.transparentize(12.5%), tracking: theTracking)[
 			#theShortTitle
 		] \
-		#text(font: titleFont, size: theSize, fill: decBlue.transparentize(25%), tracking: theTracking)[
+		#text(font: titleFont, size: theSize, fill: titleColor.transparentize(25%), tracking: theTracking)[
 			#theShortTitle
 		] \
-		#text(font: titleFont, size: theSize, fill: decBlue.transparentize(37.5%), tracking: theTracking)[
+		#text(font: titleFont, size: theSize, fill: titleColor.transparentize(37.5%), tracking: theTracking)[
 			#theShortTitle
 		] \
-		#text(font: titleFont, size: theSize, fill: decBlue.transparentize(62.5%), tracking: theTracking)[
+		#text(font: titleFont, size: theSize, fill: titleColor.transparentize(62.5%), tracking: theTracking)[
 			#theShortTitle
 		] \
-		#text(font: titleFont, size: theSize, fill: decBlue.transparentize(75%), tracking: theTracking)[
+		#text(font: titleFont, size: theSize, fill: titleColor.transparentize(75%), tracking: theTracking)[
 			#theShortTitle
 		] \
-		#text(font: titleFont, size: theSize, fill: decBlue.transparentize(87.5%), tracking: theTracking)[
+		#text(font: titleFont, size: theSize, fill: titleColor.transparentize(87.5%), tracking: theTracking)[
 			#theShortTitle
 		]
 	]
@@ -97,3 +100,90 @@
 	theRevisionHistory
 }
 
+#let roundedTable(..args) = {
+	show table: it => pad(left: paragraphOffset, [
+		#block(
+			radius: roundedRadius,
+			clip: true,
+			[
+				#it
+				#v(1pt)
+			],
+		)
+	])
+	set table(
+		fill: (_, y) => if y == 0 { tableHeadingColor },
+		stroke: (x, y) => {
+			if y == 0 {
+				(top: 1pt + tableHeadingColor, left: none, right: 1pt + tableHeadingColor, bottom: 1pt + tableHeadingColor)
+			} else {
+				(top: none, bottom: 1pt + tableHeadingColor, left: none, right: none)
+			}
+		},
+	)
+
+	show table.cell.where(y: 0): set text(fill: white)
+	show table.cell: set align(horizon)
+	table(..args)
+}
+
+// The following bitfield function was borrowed from the Aphelion project with permission
+#let format(..fields) = layout(ly => cetz.canvas(length: ly.width/32, {
+    import cetz.draw: *;
+  
+    let notch_width = 0.15;
+    let bitnum_size = 10pt;
+    let name_size = bitnum_size;
+    let fields = fields.pos().rev();
+    
+    // draw text
+    let bits = 32;
+    for (name, bitwidth) in fields {
+        if (name == "MBZ" or name == "MBZ(hidden)" or name == "IGNORED") {
+            rect((bits - bitwidth,0), (bits, 2), stroke: 0pt, fill: tableHeadingColor)
+        }
+        content(
+            anchor: "mid", (bits - 0.5, 2.5),
+            text(size: bitnum_size)[#{32 - bits}]
+        );
+        if bitwidth != 1 {
+            content(
+                anchor: "mid", (bits - bitwidth + 0.5, 2.5),
+                text(size: bitnum_size)[#{32 + bitwidth - bits - 1}]
+            );
+        }
+        if (name.match(regex("^[01]+$")) == none) {
+          
+            if (name != "MBZ(hidden)") {
+                content(
+                    anchor: "mid", (bits - bitwidth/2, 1),
+                    text(size: name_size, fill: (if (name == "MBZ" or name == "IGNORED") {white} else {black}))[#name]
+                );
+            }
+        } else {
+            let n = 0;
+            for char in name {
+                content(
+                    anchor: "mid", (bits - bitwidth + 0.5 + n, 1.0),
+                    text(size: name_size)[#char]
+                );
+                n += 1;
+            }
+        }
+        bits -= bitwidth;
+    }
+
+    // draw box and lines
+    let bits = 32;
+    for (name, bitwidth) in fields {
+        bits -= bitwidth;
+        for i in range(1, bitwidth) {
+            line((bits + i, 0), (bits + i, notch_width), stroke: 0.5pt)
+            line((bits + i, 2), (bits + i, 2-notch_width), stroke: 0.5pt)
+        }
+        if bits != 0 {
+            line((bits, 0), (bits, 2), stroke: 0.5pt)
+        }
+    }
+    rect((0,0), (32, 2), stroke: 0.5pt);
+}))

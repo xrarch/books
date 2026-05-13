@@ -92,7 +92,7 @@ StringTableOffset contains the file pointer of the "string table", which is the 
 #microHeading("TargetArchitecture")
 TargetArchitecture contains the 32-bit architecture code indicating which instruction set the code within the module is for.
 
-#table(
+#roundedTable(
   columns: (auto, 1fr),
   [], [Architecture],
   [0], [Unknown or not applicable],
@@ -120,7 +120,7 @@ ImportTableOffset contains the file pointer of the "import table", a flat array 
 #microHeading("Flags")
 Flags contains up to 32 flags indicating characteristics of the module file.
 
-#table(
+#roundedTable(
   columns: (auto, auto, 1fr),
   [], [Name], [Meaning],
   [0], [FRAGMENT], [This file is a fragment; it has an extended header and is not yet suitable for relocation or dynamic linking. These files are produced directly by the assembler.],
@@ -184,7 +184,7 @@ SectionIndex is the 8-bit index [0, 255] into the section table of the section t
 #microHeading("Type")
 Type is the 8-bit type code indicating properties of the symbol.
 
-#table(
+#roundedTable(
   columns: (auto, auto, 1fr),
   [], [Name], [Meaning],
   [1], [GLOBAL], [This symbol is visible to other modules in a statically linked compilation unit, but will not be included in the symbol table of a final executable or dynamic library.],
@@ -307,7 +307,7 @@ ExternIndex contains the 16-bit index [0, 65535] of the entry within the extern 
 #microHeading("Type")
 Type contains the 8-bit type code [0, 255] of the pointer that must be relocated.
 
-#table(
+#roundedTable(
   columns: (auto, auto, 1fr),
   [], [Name], [Meaning],
   [1], [PTR], [32 or 64-bit pointer, depending on the bitness of the module's target architecture.],
@@ -363,7 +363,7 @@ NameOffset contains the offset from the base of the string table at which the nu
 #microHeading("Type")
 Type contains the 8-bit type code indicating properties of the extern symbol.
 
-#table(
+#roundedTable(
   columns: (auto, auto, 1fr),
   [], [Name], [Meaning],
   [1], [UNRESOLVED], [This external symbol is completely unresolved.],
@@ -447,7 +447,7 @@ RelocTableOffset contains the file pointer of the section's relocation table, co
 #microHeading("Flags")
 Flags contains up to 32 bit flags that indicate characteristics of the section.
 
-#table(
+#roundedTable(
   columns: (auto, auto, 1fr),
   [], [Name], [Meaning],
   [0], [ZERO], [The section has no on-disk data and is full of zeroes. This flag is primarily a hint to the linker.],

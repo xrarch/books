@@ -1,8 +1,10 @@
+#import "config.typ": *
+
 = NVRAM
 
 XR/computer systems all contain a 4KB non-volatile RAM (NVRAM) which is used by the system firmware to store persistent information in "NVRAM variables". These can be viewed and set by the user from the command monitor. All NVRAM variable contents are ASCII strings, but the internal format is undocumented and liable to change. A table of the currently defined NVRAM variables follows:
 
-#table(
+#roundedTable(
   columns: (auto, 1fr),
   [], [Function],
   [*boot-dev*], [If *auto-boot?* is set to "true", contains the name of a preferred partition to boot from (in *dksXsY* format).],

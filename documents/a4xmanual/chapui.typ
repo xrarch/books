@@ -23,7 +23,7 @@ The command monitor is available both graphically via an extremely simplistic te
 Note that partitions are named in the format dksXsY, where X is the integer identifier of the disk device, and Y is the integer identifier of the partition. If Y is 8, such as in dks0s8, the entire disk is addressed.
 
 #aGroup[
-#table(
+#roundedTable(
   columns: (auto, 1fr),
   [], [Function],
   [*help*], [Display help text about all commands.],
