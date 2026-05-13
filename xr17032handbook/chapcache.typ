@@ -12,7 +12,7 @@ The XR/17032 architecture contains a "split cache" scheme, where instruction byt
 
 ]
 
-Due to these issues, among other reasons, the paging architecture includes an *N* bit in the PTE format which indicates that accesses to that page should bypass the Dcache. This bit should be used when mapping pages containing device registers for driver access.
+Due to these issues, among other reasons, the paging architecture includes an N bit in the PTE format which indicates that accesses to that page should bypass the Dcache. This bit should be used when mapping pages containing device registers for driver access.
 
 While virtual address translation is disabled, for instance at system reset, the cache is bypassed for all accesses to physical addresses at or above `0xC0000000` (3GB). For this reason, it is advisable for a platform to place device registers in this region of the physical address space, to allow boot firmware to easily manipulate them. It is also advised to immediately copy the boot firmware from the ROM in high memory to RAM in low memory and execute it from there instead, or else it will execute noncached (that is, extremely slowly).
 

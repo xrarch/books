@@ -45,101 +45,115 @@
 ]
 
 #let jumpFormatTable() = [
-  #microHeading("Jump Instructions")
-
   #roundedTable(
-    columns: (auto, 1fr),
-    [Mnemonic], [Function],
-    [`J IMM29`], [Jump],
-    [`JAL IMM29`], [Jump And Link],
+    columns: (auto, auto, 1fr),
+    [Opcode], [Mnemonic], [Function],
+    [`0x6`], [`J IMM29`], [Jump],
+    [`0x7`], [`JAL IMM29`], [Jump And Link],
   )
 ]
 
 #let branchFormatTable() = [
-  #microHeading("Branch Instructions")
-
   #roundedTable(
-    columns: (auto, 1fr),
-    [Mnemonic], [Function],
-    [`BEQ RA, IMM21`], [Branch Equal],
-    [`BNE RA, IMM21`], [Branch Not Equal],
-    [`BLT RA, IMM21`], [Branch Less Than],
-    [`BGT RA, IMM21`], [Branch Greater Than],
-    [`BGE RA, IMM21`], [Branch Greater Than or Equal],
-    [`BLE RA, IMM21`], [Branch Less Than or Equal],
-    [`BPE RA, IMM21`], [Branch Parity Even],
-    [`BPO RA, IMM21`], [Branch Parity Odd],
+    columns: (auto, auto, 1fr),
+    [Opcode], [Mnemonic], [Function],
+    [`0x3D`], [`BEQ RA, IMM21`], [Branch Equal],
+    [`0x35`], [`BNE RA, IMM21`], [Branch Not Equal],
+    [`0x2D`], [`BLT RA, IMM21`], [Branch Less Than],
+    [`0x25`], [`BGT RA, IMM21`], [Branch Greater Than],
+    [`0x1D`], [`BLE RA, IMM21`], [Branch Less Than or Equal],
+    [`0x15`], [`BGE RA, IMM21`], [Branch Greater Than or Equal],
+    [`0x0D`], [`BPE RA, IMM21`], [Branch Parity Even],
+    [`0x05`], [`BPO RA, IMM21`], [Branch Parity Odd],
   )
 ]
 
 #let immOpTable() = [
-  #microHeading("Immediate Operate Instructions")
-
   #roundedTable(
-    columns: (auto, 1fr),
-    [Mnemonic], [Function],
-    [`ADDI RA, RB, IMM16`], [Add Immediate],
-    [`SUBI RA, RB, IMM16`], [Subtract Immediate],
-    [`SLTI RA, RB, IMM16`], [Set Less Than Immediate],
-    [`SLTI SIGNED RA, RB, IMM16`], [Set Less Than Immediate, Signed],
-    [`ANDI RA, RB, IMM16`], [And Immediate],
-    [`XORI RA, RB, IMM16`], [Xor Immediate],
-    [`ORI RA, RB, IMM16`], [Or Immediate],
-    [`LUI RA, RB, IMM16`], [Load Upper Immediate],
-    [`MOV RA, BYTE [RB + IMM16]`], [Load Byte, Immediate Offset],
-    [`MOV RA, INT [RB + IMM16]`], [Load Int, Immediate Offset],
-    [`MOV RA, LONG [RB + IMM16]`], [Load Long, Immediate Offset],
-    [`MOV BYTE [RA + IMM16], RB`], [Store Byte, Immediate Offset],
-    [`MOV INT [RA + IMM16], RB`], [Store Int, Immediate Offset],
-    [`MOV LONG [RA + IMM16], RB`], [Store Long, Immediate Offset],
-    [`MOV BYTE [RA + IMM16], IMM5`], [Store Byte, Small Immediate],
-    [`MOV INT [RA + IMM16], IMM5`], [Store Int, Small Immediate],
-    [`MOV LONG [RA + IMM16], IMM5`], [Store Long, Small Immediate],
-    [`JALR RA, RB, IMM16`], [Jump And Link, Register],
-    [`ADR RA, IMM16`], [Compute Relative Address],
+    columns: (auto, auto, 1fr),
+    [Opcode], [Mnemonic], [Function],
+    [`0x3C`], [`ADDI RA, RB, IMM16`], [Add Immediate],
+    [`0x34`], [`SUBI RA, RB, IMM16`], [Subtract Immediate],
+    [`0x2C`], [`SLTI RA, RB, IMM16`], [Set Less Than Immediate],
+    [`0x24`], [`SLTI SIGNED RA, RB, IMM16`], [Set Less Than Immediate, Signed],
+    [`0x1C`], [`ANDI RA, RB, IMM16`], [And Immediate],
+    [`0x14`], [`XORI RA, RB, IMM16`], [Xor Immediate],
+    [`0x0C`], [`ORI RA, RB, IMM16`], [Or Immediate],
+    [`0x04`], [`LUI RA, RB, IMM16`], [Load Upper Immediate],
+    [`0x3B`], [`MOV RA, BYTE [RB + IMM16]`], [Load Byte, Immediate Offset],
+    [`0x33`], [`MOV RA, INT [RB + IMM16]`], [Load Int, Immediate Offset],
+    [`0x2B`], [`MOV RA, LONG [RB + IMM16]`], [Load Long, Immediate Offset],
+    [`0x3A`], [`MOV BYTE [RA + IMM16], RB`], [Store Byte, Immediate Offset],
+    [`0x32`], [`MOV INT [RA + IMM16], RB`], [Store Int, Immediate Offset],
+    [`0x2A`], [`MOV LONG [RA + IMM16], RB`], [Store Long, Immediate Offset],
+    [`0x1A`], [`MOV BYTE [RA + IMM16], IMM5`], [Store Byte, Small Immediate],
+    [`0x12`], [`MOV INT [RA + IMM16], IMM5`], [Store Int, Small Immediate],
+    [`0x0A`], [`MOV LONG [RA + IMM16], IMM5`], [Store Long, Small Immediate],
+    [`0x38`], [`JALR RA, RB, IMM16`], [Jump And Link, Register],
+    [`0x30`], [`ADR RA, IMM16`], [Compute Relative Address],
   )
 ]
 
 #let regOpTable() = [
-  #microHeading("Register Operate Instructions")
+  #aGroup[
+    #microHeading("Major Opcode 111001 (0x39)")
 
-  #roundedTable(
-    columns: (auto, 1fr),
-    [Mnemonic], [Function],
-    [`MOV RA, BYTE [RB + RC xSH IMM5]`], [Load Byte, Register Offset],
-    [`MOV RA, INT [RB + RC xSH IMM5]`], [Load Int, Register Offset],
-    [`MOV RA, LONG [RB + RC xSH IMM5]`], [Load Long, Register Offset],
-    [`MOV BYTE [RB + RC xSH IMM5], RA`], [Store Byte, Register Offset],
-    [`MOV INT [RB + RC xSH IMM5], RA`], [Store Int, Register Offset],
-    [`MOV LONG [RB + RC xSH IMM5], RA`], [Store Long, Register Offset],
-    [`LSH RA, RC, RB`], [Left Shift By Register Amount],
-    [`RSH RA, RC, RB`], [Logical Right Shift By Register Amount],
-    [`ASH RA, RC, RB`], [Arithmetic Right Shift By Register Amount],
-    [`ROR RA, RC, RB`], [Rotate Right By Register Amount],
-    [`ADD RA, RB, RC xSH IMM5`], [Add Register],
-    [`SUB RA, RB, RC xSH IMM5`], [Subtract Register],
-    [`SLT RA, RB, RC xSH IMM5`], [Set Less Than Register],
-    [`SLT SIGNED RA, RB, RC xSH IMM5`], [Set Less Than Register, Signed],
-    [`AND RA, RB, RC xSH IMM5`], [And Register],
-    [`XOR RA, RB, RC xSH IMM5`], [Xor Register],
-    [`OR RA, RB, RC xSH IMM5`], [Or Register],
-    [`NOR RA, RB, RC xSH IMM5`], [Nor Register],
-    [`MUL RA, RB, RC`], [Multiply],
-    [`DIV RA, RB, RC`], [Divide],
-    [`DIV SIGNED RA, RB, RC`], [Divide, Signed],
-    [`MOD RA, RB, RC`], [Modulo],
-    [`LL RA, RB`], [Load Locked],
-    [`SC RA, RB, RC`], [Store Conditional],
-    [`PAUSE`], [Pause],
-    [`MB`], [Memory Barrier],
-    [`WMB`], [Write Memory Barrier],
-    [`BRK`], [Breakpoint],
-    [`SYS`], [System Service],
-    [`MFCR RA, CR`], [Move From Control Register],
-    [`MTCR CR, RA`], [Move To Control Register],
-    [`HLT`], [Halt Until Next Interrupt],
-    [`RFE`], [Return From Exception],
-  )
+    #roundedTable(
+      columns: (auto, auto, 1fr),
+      [Funct], [Mnemonic], [Function],
+      [`0xF`], [`MOV RA, BYTE [RB + RC xSH IMM5]`], [Load Byte, Register Offset],
+      [`0xE`], [`MOV RA, INT [RB + RC xSH IMM5]`], [Load Int, Register Offset],
+      [`0xD`], [`MOV RA, LONG [RB + RC xSH IMM5]`], [Load Long, Register Offset],
+      [`0xB`], [`MOV BYTE [RB + RC xSH IMM5], RA`], [Store Byte, Register Offset],
+      [`0xA`], [`MOV INT [RB + RC xSH IMM5], RA`], [Store Int, Register Offset],
+      [`0x9`], [`MOV LONG [RB + RC xSH IMM5], RA`], [Store Long, Register Offset],
+      [`0x8`], [`LSH RA, RC, RB`], [Left Shift By Register Amount],
+      [`0x8`], [`RSH RA, RC, RB`], [Logical Right Shift By Register Amount],
+      [`0x8`], [`ASH RA, RC, RB`], [Arithmetic Right Shift By Register Amount],
+      [`0x8`], [`ROR RA, RC, RB`], [Rotate Right By Register Amount],
+      [`0x7`], [`ADD RA, RB, RC xSH IMM5`], [Add Register],
+      [`0x6`], [`SUB RA, RB, RC xSH IMM5`], [Subtract Register],
+      [`0x5`], [`SLT RA, RB, RC xSH IMM5`], [Set Less Than Register],
+      [`0x4`], [`SLT SIGNED RA, RB, RC xSH IMM5`], [Set Less Than Register, Signed],
+      [`0x3`], [`AND RA, RB, RC xSH IMM5`], [And Register],
+      [`0x2`], [`XOR RA, RB, RC xSH IMM5`], [Xor Register],
+      [`0x1`], [`OR RA, RB, RC xSH IMM5`], [Or Register],
+      [`0x0`], [`NOR RA, RB, RC xSH IMM5`], [Nor Register],
+    )
+  ]
+
+  #aGroup[
+    #microHeading("Major Opcode 110001 (0x31)")
+
+    #roundedTable(
+      columns: (auto, auto, 1fr),
+      [Funct], [Mnemonic], [Function],
+      [`0xF`], [`MUL RA, RB, RC`], [Multiply],
+      [`0xD`], [`DIV RA, RB, RC`], [Divide],
+      [`0xC`], [`DIV SIGNED RA, RB, RC`], [Divide, Signed],
+      [`0xB`], [`MOD RA, RB, RC`], [Modulo],
+      [`0x9`], [`LL RA, RB`], [Load Locked],
+      [`0x8`], [`SC RA, RB, RC`], [Store Conditional],
+      [`0x6`], [`PAUSE`], [Pause],
+      [`0x3`], [`MB`], [Memory Barrier],
+      [`0x2`], [`WMB`], [Write Memory Barrier],
+      [`0x1`], [`BRK`], [Breakpoint],
+      [`0x0`], [`SYS`], [System Service],
+    )
+  ]
+
+  #aGroup[
+    #microHeading("Major Opcode 101001 (0x29, Privileged)")
+
+    #roundedTable(
+      columns: (auto, auto, 1fr),
+      [Funct], [Mnemonic], [Function],
+      [`0xF`], [`MFCR RA, CR`], [Move From Control Register],
+      [`0xE`], [`MTCR CR, RA`], [Move To Control Register],
+      [`0xC`], [`HLT`], [Halt Until Next Interrupt],
+      [`0xB`], [`RFE`], [Return From Exception],
+    )
+  ]
 ]
 
 #let instructionDetailsTable(
@@ -194,7 +208,7 @@
 
 = Instructions
 
-The XR/17032 architecture features only four instruction formats, and each are 32 bits wide. There are a total of 60 instructions, which are summarized below. A more comprehensive description of each format and instruction can be found in @instlisting.
+The XR/17032 architecture features only four instruction formats, and each are 32 bits wide. There are a total of 60 instructions, which are summarized below.
 
 #jumpFormat()
 
@@ -206,36 +220,13 @@ The XR/17032 architecture features only four instruction formats, and each are 3
 
 #pagebreak(weak: true)
 
-#aGroup[
-
-== Instruction Summaries
-
-#jumpFormatTable()
-
-#branchFormatTable()
-
-]
-
-#aGroup[
-
-#immOpTable()
-
-]
-
-#aGroup[
-
-#regOpTable()
-
-]
-
-== Instruction Listing <instlisting>
 The following section contains a comprehensive listing of all of the instructions defined by the XR/17032 architecture along with their encodings. The instructions are grouped first by format, and then by major opcode.
 
 Note that the assembly language also supports several "pseudo-instructions" for ease of assembly programming, which are not listed below, as they don't directly correspond to any particular hardware instruction, and are usually translated to a sequence of several hardware instructions. See @pseudoinstructions for a listing of pseudo-instructions.
 
 #pagebreak(weak: true)
 
-=== Jump Format
+== Jump Format
 
 #jumpFormat()
 
@@ -243,11 +234,9 @@ The format for the absolute jump instructions consists of a 3-bit opcode and a 2
 
 Note that this opcode field is unique; all other formats have a 6-bit opcode field. This small opcode is to allow the jump target to cover a 2GB range. This is accomplished by shifting the jump target left by 2, which produces a 31-bit address, and then taking the uppermost bit from that of the current program counter. This allows jumping anywhere within a 2GB userspace or kernel space in a single instruction.
 
-#jumpFormatTable()
-
 #pagebreak(weak: true)
 
-==== Listing
+=== Listing
 
 #instructionDetails(
   [Jump And Link],
@@ -285,7 +274,7 @@ The `J` instruction provides a way to do a long-distance absolute jump to anothe
 #pagebreak(weak: true)
 
 #aGroup[
-=== Branch Format
+== Branch Format
 
 #branchFormat()
 
@@ -295,11 +284,9 @@ The format for the branch instructions consists of a 6-bit opcode, a 5-bit regis
 
 There is only one register field in order to maximize the size of the branch offset. This register is compared against zero in various ways. If the branch is taken, then the branch offset is shifted left by two, sign extended, and added to the current program counter. This gives a range of $plus.minus$1M instructions, or $plus.minus$4MB. As this covers the entire text section of most programs, and certainly covers any individual routine you're likely to find, this alleviates some burden that afflicts most RISC toolchains, as cross-procedure jumps will usually be done with absolute jumps anyway.
 
-#branchFormatTable()
-
 #pagebreak(weak: true)
 
-==== Listing
+=== Listing
 
 #instructionDetailsTable(
   [Branch Equal],
@@ -385,7 +372,7 @@ The branch on parity instructions perform a relative jump if Register A has the 
 
 #pagebreak(weak: true)
 
-=== Immediate Operate Format
+== Immediate Operate Format
 
 #immOpFormat()
 
@@ -393,11 +380,9 @@ The format for the immediate operate instructions consists of a 6-bit opcode, tw
 
 Note that the immediate value may or may not be sign extended, depending on the instruction.
 
-#immOpTable()
-
 #pagebreak(weak: true)
 
-==== Listing, 100 Group
+=== Listing, 100 Group
 
 #instructionDetailsTable(
   [Add Immediate],
@@ -478,7 +463,7 @@ The LUI instruction performs a bitwise OR between the contents of Register B and
 
 #pagebreak(weak: true)
 
-==== Listing, 011 Group
+=== Listing, 011 Group
 
 #instructionDetailsTable(
   [Load Byte, Immediate Offset],
@@ -518,7 +503,7 @@ The load instructions read a value into Register A from the address stored withi
 
 #pagebreak(weak: true)
 
-==== Listing, 010 Group
+=== Listing, 010 Group
 
 #instructionDetailsTable(
   [Store Byte, Immediate Offset],
@@ -596,7 +581,7 @@ The store small immediate instructions store a sign-extended 5-bit immediate to 
 
 #pagebreak(weak: true)
 
-==== Listing, 000 Group
+=== Listing, 000 Group
 
 #instructionDetails(
   [Jump And Link, Register],
@@ -635,7 +620,7 @@ Unlike other immediate operate format instructions, this instruction's Register 
 
 #pagebreak(weak: true)
 
-=== Register Operate Format
+== Register Operate Format
 
 #regOpFormat()
 
@@ -680,13 +665,11 @@ The value of Register C is shifted in the manner specified by the shift type, by
 
 #aGroup[
 
-#regOpTable()
-
 ]
 
 #pagebreak(weak: true)
 
-==== Listing, Opcode 111001
+=== Listing, Opcode 111001
 
 #instructionDetailsTable(
   [Load Byte, Register Offset],
@@ -705,7 +688,7 @@ The value of Register C is shifted in the manner specified by the shift type, by
 #instructionDetailsTable(
   [Load Long, Register Offset],
   [Funct],
-  [1101 (0xF)],
+  [1101 (0xD)],
   [`MOV RA, LONG [RB + RC xSH IMM5]`],
 )
 
@@ -852,7 +835,7 @@ In the case of the comparison instructions, a 1 is stored if the comparison is t
 
 #pagebreak(weak: true)
 
-==== Listing, Opcode 110001
+=== Listing, Opcode 110001
 
 #instructionDetailsTable(
   [Multiply],
@@ -1014,10 +997,10 @@ This instruction ensures that, from the perspective of all processors and I/O de
 Exception(BRK)
 ```],
   [#box[
-  - BRK (Breakpoint) exception is always triggered by this instruction.
+  - BRK (Breakpoint) is always triggered by this instruction.
   ]],
   [
-This instruction causes a breakpoint exception. Its intended use is for debugging purposes. See @exceptionblock.
+This instruction causes a breakpoint exception. Its intended use is for debugging purposes. See @exceptionblock for more information on exceptions.
   ]
 )
 
@@ -1032,81 +1015,85 @@ This instruction causes a breakpoint exception. Its intended use is for debuggin
 Exception(SYS)
 ```],
   [#box[
-  - SYS (Syscall) exception is always triggered by this instruction.
+  - SYS (Syscall) is always triggered by this instruction.
   ]],
   [
-This instruction causes a system service exception. It is useful for usermode to make a call into the system software to request a service (also called a system call or "syscall"). See @exceptionblock.
+This instruction causes a system service exception. It is useful for usermode to make a call into the system software to request a service (also called a system call or "syscall"). See @exceptionblock for more information on exceptions.
   ]
 )
 
 #pagebreak(weak: true)
 
-==== Listing, Opcode 101001 (Privileged Instructions)
+=== Listing, Opcode 101001 (Privileged Instructions)
 
-These instructions all produce a *PRV* exception if executed while usermode is active. See @exceptionblock.
+Opcode 101001 is the major opcode for all currently defined privileged instructions. That is, all function codes of opcode 101001 will produce a *PRV* exception when executed while usermode is active. See @exceptionblock for more information on exceptions.
 
-#box([
+#pagebreak(weak: true)
 
-#align(center, [
-#rect([
-*MFCR RA, CR* \
-_Move From Control Register_ \
-Function Code: *1111* (0xF)
-```
+#instructionDetails(
+  [Move From Control Register],
+  [Funct],
+  [1111 (0xF)],
+  [`MFCR RA, CR`],
+  [```
 Reg[RA] = ControlReg[CR]
-```
-], width: 100%)])
+```],
+  [#box[
+  - PRV (Privilege Violation) if executed while usermode is active.
+  ]],
+  [
+This instruction moves the contents of the specified control register into Register A. The 5-bit control register number is encoded in the place of Register C.
 
-This instruction moves the contents of the specified control register into *Register A*. The 5-bit control register number is encoded in the place of *Register C*. See @controlregs for a full listing of control registers and their behaviors.
+Note that not all control registers are simple memory-like repositories of bits, and may perform special actions when read. See @controlregs for a full listing of control registers and their behaviors.
+  ]
+)
 
-#line(length: 100%)
+#pagebreak(weak: true)
 
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MTCR CR, RB* \
-_Move To Control Register_ \
-Function Code: *1110* (0xE)
-```
+#instructionDetails(
+  [Move To Control Register],
+  [Funct],
+  [1110 (0xE)],
+  [`MTCR CR, RB`],
+  [```
 ControlReg[CR] = Reg[RB]
-```
-], width: 100%)])
+```],
+  [#box[
+  - PRV (Privilege Violation) if executed while usermode is active.
+  ]],
+  [
+This instruction moves the contents of Register B into the specified control register. The 5-bit control register number is encoded in the place of Register C. Register A is ignored but should be encoded as zero.
 
-This instruction moves the contents of *Register B* into the specified control register. The 5-bit control register number is encoded in the place of *Register C*. *Register A* is ignored but should be encoded as zero. See @controlregs for a full listing of control registers and their behaviors.
+Note that not all control registers are simple memory-like repositories of bits, and may perform special actions when written. See @controlregs for a full listing of control registers and their behaviors.
+  ]
+)
 
-#line(length: 100%)
+#pagebreak(weak: true)
 
-], width: 100%)
+#instructionDetails(
+  [Halt Until Next Interrupt],
+  [Funct],
+  [1100 (0xC)],
+  [`HLT`],
+  [```
+HaltUntilInterrupt()
+```],
+  [#box[
+  - PRV (Privilege Violation) if executed while usermode is active.
+  ]],
+  [
+This instruction pauses execution of the processor until the next external interrupt is received. This can be used as a power-saving measure; for instance, executing HLT in a loop in the low priority idle thread of a multitasking kernel could greatly reduce the idle power consumption of the system. If external interrupts are disabled, this instruction causes the processor to halt forever, that is, until it is physically reset.
+  ]
+)
 
-#box([
+#pagebreak(weak: true)
 
-#align(center, [
-#rect([
-*HLT* \
-_Halt Until Next Interrupt_ \
-Function Code: *1100* (0xC)
-```
-Halt()
-```
-], width: 100%)])
-
-This instruction pauses execution of the processor until the next external interrupt is received. This can be used as a power-saving measure; for instance, executing *HLT* in a loop in the low priority idle thread of a multitasking kernel could greatly reduce the idle power consumption of the system. If external interrupts are disabled, this instruction causes the processor to halt until it is reset.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*RFE* \
-_Return From Exception_ \
-Function Code: *1011* (0xB)
-```
+#instructionDetails(
+  [Return From Exception],
+  [Funct],
+  [1011 (0xB)],
+  [`RFE`],
+  [```
 Locked = FALSE
 IF ControlReg[RS].ModeStack & T THEN
   PC = ControlReg[TBPC]
@@ -1114,191 +1101,216 @@ ELSE
   PC = ControlReg[EPC]
 END
 ControlReg[RS].ModeStack = ControlReg[RS].ModeStack >> 8
-```
-], width: 100%)])
-
-This instruction pops the "mode stack" of the *RS* control register (see @rs), and returns execution to the program counter saved in either the *TBPC* or *EPC* control register, depending on if the *T* bit of *RS* was set or not, respectively (i.e., whether a TB miss handler was active or not; see @tbmiss). It also clears the "locked" flag, causing the next *SC* _Store Conditional_ instruction to fail.
-
-#line(length: 100%)
-
-], width: 100%)
+```],
+  [#box[
+  - PRV (Privilege Violation) if executed while usermode is active.
+  ]],
+  [
+This instruction "pops" the "mode stack" of the RS control register (see @rs), and returns execution to the program counter saved in either the TBPC or EPC control register, depending on if the T bit of RS was set or not, respectively (i.e., whether a TB miss handler was active or not; see @tbmiss). It also clears the "locked" flag, causing the next SC (Store Conditional) instruction to fail.
+  ]
+)
 
 #pagebreak(weak: true)
 
 == Pseudo-Instructions <pseudoinstructions>
+
 Some operations are synthesized out of simpler instructions, but are common or inconvenient enough to warrant a "pseudo-instruction", a fake instruction that the assembler converts into a corresponding hardware instruction sequence. The following is a (not necessarily exhaustive, depending on the assembler) list of common pseudo-instructions.
 
-#box([
+#pagebreak(weak: true)
 
-#align(center, [
-#rect([
-*B IMM21* \
-_Unconditional Relative Branch_
-```
+#instructionDetails(
+  [Unconditional Relative Branch],
+  [],
+  [],
+  [`B IMM21`],
+  [```
 BEQ ZERO, IMM21
-```
-], width: 100%)])
+```],
+  [None.],
+  [
+This pseudo-instruction performs an unconditional relative branch. This is synthesized from the BEQ (Branch Equal) instruction, used here to compare the contents of the register ZERO with the number zero; by definition, this will always be true, thereby synthesizing an unconditional branch.
+  ]
+)
 
-This pseudo-instruction performs an unconditional relative branch. This is synthesized out of the *BEQ* _Branch Equal_ instruction, by comparing the contents of the register *ZERO* with the number zero; by definition, this will always be true.
+#pagebreak(weak: true)
 
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*RET* \
-_Return_
-```
+#instructionDetails(
+  [Return],
+  [],
+  [],
+  [`RET`],
+  [```
 JALR ZERO, LR, 0
-```
-], width: 100%)])
+```],
+  [None.],
+  [
+This pseudo-instruction performs a common return-from-subroutine operation. This is synthesized from the JALR (Jump And Link, Register) instruction, by performing a jump-and-link to the contents of the link register LR, and saving the result in ZERO (thereby discarding it).
+  ]
+)
 
-This pseudo-instruction performs a common return from subroutine operation. This is synthesized out of the *JALR* _Jump And Link, Register_ instruction, by performing a jump-and-link to the contents of the link register *LR*, and saving the result in *ZERO* (thereby discarding it).
+#pagebreak(weak: true)
 
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*JR RA* \
-_Jump to Register_
-```
+#instructionDetails(
+  [Jump to Register],
+  [],
+  [],
+  [`JR RA`],
+  [```
 JALR ZERO, RA, 0
-```
-], width: 100%)])
+```],
+  [None.],
+  [
+This pseudo-instruction performs a jump to the contents of Register A. This is synthesized from the JALR (Jump And Link, Register) instruction, by performing a jump-and-link to the contents of Register A, and saving the result in ZERO (thereby discarding it).
+  ]
+)
 
-This pseudo-instruction performs a jump to the contents of *Register A*. This is synthesized out of the *JALR* _Jump And Link, Register_ instruction, by performing a jump-and-link to the contents of *Register A*, and saving the result in *ZERO* (thereby discarding it).
+#pagebreak(weak: true)
 
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MOV RA, RB* \
-_Move Register_
-```
+#instructionDetails(
+  [Move Register],
+  [],
+  [],
+  [`MOV RA, RB`],
+  [```
 ADD RA, RB, ZERO LSH 0
-```
-], width: 100%)])
+```],
+  [None.],
+  [
+This pseudo-instruction copies the contents of Register B into Register A. It is synthesized from the ADD (Add Register) instruction, by adding the contents of the ZERO register to the contents of Register B (which is a no-op), and saving the results in Register A.
+  ]
+)
 
-This pseudo-instruction copies the contents of *Register B* into *Register A*. It is synthesized out of the *ADD* _Add Register_ instruction, by adding the contents of the *ZERO* register to the contents of *Register B* (which is a no-op), and saving the results in *Register A*.
+#pagebreak(weak: true)
 
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*LI RA, IMM16* \
-_Load 16-bit Immediate_
-```
+#instructionDetails(
+  [Load 16-bit Immediate],
+  [],
+  [],
+  [`LI RA, IMM16`],
+  [```
 ADDI RA, ZERO, IMM16
-```
-], width: 100%)])
+```],
+  [None.],
+  [
+This pseudo-instruction loads a 16-bit immediate into Register A. It is synthesized from the ADDI (Add Immediate) instruction, by adding the immediate to the contents of the ZERO register and saving the results in Register A.
+  ]
+)
 
-This pseudo-instruction loads a 16-bit immediate into *Register A*. It is synthesized out of the *ADDI* _Add Immediate_ instruction, by adding the immediate to the contents of the *ZERO* register and saving the results in *Register A*.
+#pagebreak(weak: true)
 
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*LA RA, IMM32* \
-_Load 32-bit Immediate_
-```
+#instructionDetails(
+  [Load 32-bit Immediate],
+  [],
+  [],
+  [`LA RA, IMM32`],
+  [```
 LUI RA, ZERO, (IMM32 >> 16)
 ORI RA, RA, (IMM32 & 0xFFFF)
-```
-], width: 100%)])
+```],
+  [None.],
+  [
+This pseudo-instruction loads a 32-bit immediate into Register A. It is synthesized from the LUI (Load Upper Immediate) and ORI (Or Immediate) instructions, by loading the upper 16 bits of the immediate into the register with LUI, and then bitwise OR-ing the lower 16 bits in with ORI.
+  ]
+)
 
-This pseudo-instruction loads a 32-bit immediate into *Register A*. It is synthesized out of the *LUI* _Load Upper Immediate_ and *ORI* _Or Immediate_ instructions, by loading the upper 16 bits of the immediate into the register with *LUI*, and then bitwise OR-ing the lower 16 bits in with *ORI*.
+#pagebreak(weak: true)
 
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*NOP* \
-_No Operation_
-```
+#instructionDetails(
+  [No Operation],
+  [],
+  [],
+  [`NOP`],
+  [```
 ADDI ZERO, ZERO, 0
-```
-], width: 100%)])
+```],
+  [None.],
+  [
+This pseudo-instruction does nothing, by adding the contents of the ZERO register with the number zero and saving the result in the ZERO register.
 
-This pseudo-instruction does nothing, by adding the contents of the *ZERO* register with the number zero and saving the result in the *ZERO* register.
+Note that the instruction of all zeroes is _not_ a no-op. The instruction set was designed to ensure that the instruction of all zeroes is an invalid instruction, so that an invalid instruction exception will tend to occur more immediately if a mistaken jump occurs.
+  ]
+)
 
-Note that the instruction of all zeroes is _not_ a no-op, and this instruction set was carefully designed to ensure that that is an invalid instruction, so that exceptions will occur if the processor jumps off "into nowhere".
+#pagebreak(weak: true)
 
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*LSHI/RSHI/ASHI/RORI RA, RB, IMM5* \
-_Various Shift By Immediate Amount_
-```
+#instructionDetails(
+  [Various Shift By Immediate Amount],
+  [],
+  [],
+  [`LSHI/RSHI/ASHI/RORI RA, RB, IMM5`],
+  [```
 ADD RA, ZERO, RB xSH IMM5
-```
-], width: 100%)])
+```],
+  [None.],
+  [
+These pseudo-instructions shift the contents of Register B by the 5-bit immediate, and save the result in Register A. They are synthesized from the ADD (Add Register) instruction, by adding the contents of Register B with the contents of the ZERO register, and shifting it in the specified manner.
+  ]
+)
 
-These pseudo-instructions shift the contents of *Register B* by the 5-bit immediate, and saves the result in *Register A*. They are synthesized with the *ADD* _Add Register_ instruction, by adding the contents of *Register B* with the contents of the *ZERO* register, and shifting it in the specified manner.
+#pagebreak(weak: true)
 
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MOV RA, BYTE/INT/LONG [IMM32]* \
-_Load From 32-bit Address_
-```
+#instructionDetails(
+  [Load from 32-bit Address],
+  [],
+  [],
+  [`MOV RA, BYTE/INT/LONG [IMM32]`],
+  [```
 LUI RA, ZERO, (IMM32 >> 16)
 MOV RA, BYTE/INT/LONG [RA + (IMM32 & 0xFFFF)]
-```
-], width: 100%)])
+```],
+  [Any exception that can be caused by the load instruction.],
+  [
+These pseudo-instructions load a value into Register A from a full 32-bit address. They are synthesized from LUI (Load Upper Immediate) and the appropriate offsetted load instruction. The upper 16 bits of the address are loaded into the register with LUI, and then a load is done into the register, with an offset of the low 16 bits of the address.
+  ]
+)
 
-These pseudo-instructions load a value into *Register A* from a full 32-bit address. They are synthesized with *LUI* _Load Upper Immediate_ and the appropriate offsetted load instructions. The upper 16 bits of the address are loaded into the register with *LUI*, and then a load is done into the register with the offset being the low 16 bits of the address.
+#pagebreak(weak: true)
 
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MOV BYTE/INT/LONG [IMM32], RA, TMP=RB* \
-_Store To 32-bit Address_
-```
+#instructionDetails(
+  [Store to 32-bit Address],
+  [],
+  [],
+  [`MOV BYTE/INT/LONG [IMM32], RA, TMP=RB`],
+  [```
 LUI RB, ZERO, (IMM32 >> 16)
 MOV BYTE/INT/LONG [RB + (IMM32 & 0xFFFF)], RA
-```
-], width: 100%)])
+```],
+  [Any exception that can be caused by the store instruction.],
+  [
+These pseudo-instructions store a value into a full 32-bit address. They are synthesized with LUI (Load Upper Immediate) and the appropriate offsetted store instruction. The upper 16 bits of the address are loaded into a user-supplied temporary register with LUI, and then a store is done with an offset of the low 16 bits of the address.
+  ]
+)
 
-These pseudo-instructions store a value into a full 32-bit address. They are synthesized with *LUI* _Load Upper Immediate_ and the appropriate offsetted store instructions. The upper 16 bits of the address are loaded into a user-supplied temporary register with *LUI*, and then a store is done with the offset being the low 16 bits of the address.
+#pagebreak(weak: true)
 
-#line(length: 100%)
+== Instruction Summary
 
-], width: 100%)
+=== Jump Format
+
+#jumpFormat()
+
+#jumpFormatTable()
+
+#pagebreak(weak: true)
+
+=== Branch Format
+
+#branchFormat()
+
+#branchFormatTable()
+
+#pagebreak(weak: true)
+
+=== Immediate Operate Format
+
+#immOpFormat()
+
+#immOpTable()
+
+#pagebreak(weak: true)
+
+=== Register Operate Format
+
+#regOpFormat()
+
+#regOpTable()

@@ -95,87 +95,7 @@ As explained earlier, the XR/17032 architecture invokes a software exception han
 
 The behavior of the processor when a TB miss occurs is contingent on whether the T bit was set in the RS control register's current mode bits. This bit is also set by a TB miss, so in reality, it is contingent on whether the TB miss is "nested" within another TB miss or not. The reason you would want to take a TB miss within a TB miss handler will be elucidated later.
 
-#aGroup[
-
-#roundedTable(
-  columns: (1fr, 1fr),
-  align: horizon + left,
-  // width: 100%,
-  // auto-vlines: false,
-  table.cell([
-    #set align(center)
-    #set text(fill: white)
-    TB Miss Exception Behavior
-  ], fill: tableHeadingColor, colspan: 2),
-  table.cell([
-    #set text(fill: white)
-    T=0
-    #h(1.1fr)
-    T=1
-    #h(1fr)
-  ], fill: tableHeadingColor, colspan: 2),
-  [
-    The TBMISSADDR control register is set to the missed virtual address.
-  ],
-  [
-    The TBMISSADDR control register is left alone.
-  ],
-  [
-    Normal exception logic occurs; the RS mode stack is pushed. However, the exception program counter is saved in the TBPC control register instead of the EPC control register.
-  ],
-  [
-    None of the normal exception logic occurs except to redirect the program counter to the appropriate exception vector. The RS mode stack is not pushed.
-  ],
-  [
-    The T bit is set.
-  ],
-  [
-    The T bit remains set.
-  ]
-)
-
-]
-
 There are also some special cases for page faults that occur while the T bit is set. Note that this behavior essentially causes the new page fault to look like a page fault on the original virtual address that missed in the TB, instead of a page fault on the virtual address referenced by the TB miss handler.
-
-#aGroup[
-
-#roundedTable(
-  columns: (1fr, 1fr),
-  align: horizon + left,
-  table.cell([
-    #set align(center)
-    #set text(fill: white)
-    Page Fault Exception Behavior
-  ], fill: tableHeadingColor, colspan: 2),
-  table.cell([
-    #set text(fill: white)
-    T=0
-    #h(1.1fr)
-    T=1
-    #h(1fr)
-  ], fill: tableHeadingColor, colspan: 2),
-  [
-    The EBADADDR control register is set to the faulting address.
-  ],
-  [
-    The EBADADDR control register is set to the value of the TBMISSADDR control register.
-  ],
-  [
-    A Page Fault Read exception is triggered if the access was a read, or Page Fault Write otherwise.
-  ],
-  [
-    If the last TB miss exception that occurred while the T bit was clear was a read, a Page Fault Read exception is generated, otherwise Page Fault Write.
-  ],
-  [
-    Normal exception logic occurs. The RS mode stack is pushed.
-  ],
-  [
-    None of the normal exception logic occurs except to redirect the program counter to the appropriate exception vector. The RS mode stack is not pushed. The T bit is cleared. The EPC control register is set to the value of the TBPC control register.
-  ]
-)
-
-]
 
 Aside from the special cases in TB miss and page fault handling, there is another major effect of the T bit being set, which is that the ZERO register is no longer hardwired to read all zeroes. It can therefore be used freely as a scratch register by TB miss routines, without needing to be saved or restored.
 
@@ -242,3 +162,87 @@ If system software maps the level 2 table page with one wired entry of the DTB, 
 Careful readers will now understand how the four instruction TB miss routine from earlier works. You may also note that this scheme has an extra benefit, whereby only one memory access is needed to load the PTE from the two-level page table, as long as the containing level 1 page table is already present in the DTB. Note that the nested TB miss which loads the level 1 page table into the DTB does not require any special code, the processor merely (re-)executes the exact same normal DTB miss handler.
 
 There is one small snag, which is the second concerning case from earlier. If the level 1 page table does not actually exist, then the nested DTB miss will load an invalid level 2 page table entry into the DTB. In this case, a page fault will occur in the TB miss handler when it attempts to load the PTE from the level 1 page table again. The special cased page fault behavior listed earlier addresses this case, by clearing the T bit and setting EBADADDR to the value of TBMISSADDR. It also keeps the exception state intact in a similar manner to the nested TB miss special case. The page fault exception handler is thereby "fooled" into thinking that the original instruction caused a page fault on the original missed address.#footnote([Note that a processor implementation must keep a latch somewhere that remembers whether the last non-nested TB miss (the last one that occurred while the T bit was clear) was caused by a read or write instruction, so that this page fault case will result in the appropriate page fault exception.])
+
+#aGroup[
+
+#roundedTable(
+  columns: (1fr, 1fr),
+  align: horizon + left,
+  // width: 100%,
+  // auto-vlines: false,
+  table.cell([
+    #set align(center)
+    #set text(fill: white)
+    TB Miss Exception Behavior
+  ], fill: tableHeadingColor, colspan: 2),
+  table.cell([
+    #set text(fill: white)
+    T=0
+    #h(1.1fr)
+    T=1
+    #h(1fr)
+  ], fill: tableHeadingColor, colspan: 2),
+  [
+    The TBMISSADDR control register is set to the missed virtual address.
+  ],
+  [
+    The TBMISSADDR control register is left alone.
+  ],
+  [
+    Normal exception logic occurs; the RS mode stack is pushed. However, the exception program counter is saved in the TBPC control register instead of the EPC control register.
+  ],
+  [
+    None of the normal exception logic occurs except to redirect the program counter to the appropriate exception vector. The RS mode stack is not pushed.
+  ],
+  [
+    The T bit is set.
+  ],
+  [
+    The T bit remains set.
+  ]
+)
+
+#caption[The effect of the T bit in the RS control register upon TB miss exception behavior.]
+
+]
+
+#aGroup[
+
+#roundedTable(
+  columns: (1fr, 1fr),
+  align: horizon + left,
+  table.cell([
+    #set align(center)
+    #set text(fill: white)
+    Page Fault Exception Behavior
+  ], fill: tableHeadingColor, colspan: 2),
+  table.cell([
+    #set text(fill: white)
+    T=0
+    #h(1.1fr)
+    T=1
+    #h(1fr)
+  ], fill: tableHeadingColor, colspan: 2),
+  [
+    The EBADADDR control register is set to the faulting address.
+  ],
+  [
+    The EBADADDR control register is set to the value of the TBMISSADDR control register.
+  ],
+  [
+    A Page Fault Read exception is triggered if the access was a read, or Page Fault Write otherwise.
+  ],
+  [
+    If the last TB miss exception that occurred while the T bit was clear was a read, a Page Fault Read exception is generated, otherwise Page Fault Write.
+  ],
+  [
+    Normal exception logic occurs. The RS mode stack is pushed.
+  ],
+  [
+    None of the normal exception logic occurs except to redirect the program counter to the appropriate exception vector. The RS mode stack is not pushed. The T bit is cleared. The EPC control register is set to the value of the TBPC control register.
+  ]
+)
+
+#caption[The effect of the T bit in the RS control register upon page fault exception behavior.]
+
+]

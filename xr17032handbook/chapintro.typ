@@ -9,7 +9,7 @@ The architecture’s registers and the virtual address space are 32-bit, and 32-
 #pagebreak(weak: true)
 
 == Registers
-The architecture defines 32 general purpose registers (GPRs), usable by any instruction that takes register operands. They are each 32 bits wide. The zeroth GPR, zero, almost always reads as zero and ignores writes. This is a common RISC design tactic that simplifies the encoding of many instructions. A table of GPRs follows:
+The architecture defines 32 general purpose registers (GPRs), usable by any instruction that takes register operands. They are each 32 bits wide. The zeroth GPR, zero, almost always reads as zero and ignores writes. This is a common RISC design tactic that simplifies the encoding of many instructions.
 
 #align(center)[
 #roundedTable(
@@ -24,6 +24,7 @@ The architecture defines 32 general purpose registers (GPRs), usable by any inst
   "30", "sp", "Stack pointer.",
   "31", "lr", "Link register."
 )
+#caption[All general purpose registers and their ABI assignments.]
 ]
 
 #pagebreak(weak: true)
