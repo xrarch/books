@@ -10,10 +10,6 @@ The architecture defines 32 general purpose registers (GPRs), usable by any inst
 
 The architecture defines 32 control registers (CRs). They are each 32 bits wide. As their name suggests, CRs are used to control the behavior of the processor, and are therefore only accessible via the privileged kernel mode instructions MTCR and MFCR. See @control for a more detailed description of each control register.
 
-== Reset
-
-When the processor is reset, for instance during a reboot or a power-on, the RS control register is cleared to zero. The processor is thus forced to kernel mode, virtual address translation is disabled, exposing the physical address space. The program counter is set to the address `0xFFFE1000`, with the idea that a boot ROM is located at `0xFFFE0000` and is followed by an initial 4096 (0x1000) byte exception block.
-
 #aGroup[
 
 #align(center)[
@@ -33,3 +29,7 @@ When the processor is reset, for instance during a reboot or a power-on, the RS 
 ]
 
 ]
+
+== Reset
+
+When the processor is reset, for instance during a reboot or a power-on, the RS control register is cleared to zero. The processor is thus forced to kernel mode, virtual address translation is disabled, exposing the physical address space. The program counter is set to the address `0xFFFE1000`, with the idea that a boot ROM is located at `0xFFFE0000` and is followed by an initial 4096 (0x1000) byte exception block.
