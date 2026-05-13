@@ -2,9 +2,46 @@
 
 = Processor Control <control>
 
-The behavior of the processor is primarily controlled by a small set of control registers (CRs). They are summarized by a table in @controlregs, and are explored in much more detail below.
+== Introduction <controlregs>
 
-#pagebreak(weak: true)
+The behavior of the processor is primarily controlled by a small set of control registers (CRs).
+
+#aGroup[
+
+#align(center)[
+#roundedTable(
+  columns: (auto, auto, auto),
+  align: horizon + left,
+  table.header(
+    [\#], [Name], [Function],
+  ),
+  "0", "RS", "Current and previous processor mode bits.",
+  "1", "WHAMI", "Unique ID for this processor in a multiprocessor system.",
+  "5", "EB", "Exception block base address.",
+  "6", "EPC", "Program counter before the last exception.",
+  "7", "EBADADDR", "Bad address that triggered the last exception (if relevant).",
+  "9", "TBMISSADDR", "Bad address that triggered the last TB miss exception.",
+  "10", "TBPC", "Program counter before the last TB miss exception.",
+  "11-15", "SCRATCH0-4", "Permanently reserved for arbitrary system software usage.",
+  "16", "ITBPTE", "Lower 32 bits of an entry to insert in the ITB. Causes ITB insertion when written.",
+  "17", "ITBTAG", [Upper 32 bits of an entry to insert in the ITB. Doubles as the current ASID, and the VPN of the last virtual address that missed in the ITB.],
+  "18", "ITBINDEX", "Next replacement index for the ITB.",
+  "19", "ITBCTRL", "Causes ITB invalidations when written.",
+  "20", "ICACHECTRL", "Yields Icache size parameters when read, causes Icache invalidations when written.",
+  "21", "ITBADDR", "Pre-calculated virtual PTE address for use upon ITB miss.",
+  "24", "DTBPTE", "Lower 32 bits of an entry to insert in the DTB. Causes DTB insertion when written.",
+  "25", "DTBTAG", [Upper 32 bits of an entry to insert in the DTB. Doubles as the current ASID, and the VPN of the last virtual address that missed in the DTB.],
+  "26", "DTBINDEX", "Next replacement index for the DTB.",
+  "27", "DTBCTRL", "Causes DTB invalidations when written.",
+  "28", "DCACHECTRL", "Yields Dcache size parameters when read, causes Dcache invalidations when written.",
+  "29", "DTBADDR", "Pre-calculated virtual PTE address for use upon DTB miss.",
+)
+#caption[All defined CRs. Absent CR numbers have undefined behavior if read or written.]
+]
+
+]
+
+#aGroup[
 
 == RS (Processor Status) <rs>
 
@@ -21,6 +58,8 @@ The behavior of the processor is primarily controlled by a small set of control 
 ))
 
 The RS control register contains a three-deep "stack" of mode bits (the top of which contains the primary mode bits that control the state of the processor). The four ECAUSE bits identify the cause of the last exception.
+
+]
 
 When an exception is taken, several of the mode bits are overwritten to place the processor into kernel mode with interrupts disabled. Because of the need to return from an exception with the state of the processor intact, there is a need to save the previous mode bits somewhere. In some CISC designs, like fox32
 #footnote([fox32 is a trademark of Ryfox Computer Corp.]),
@@ -77,7 +116,7 @@ The reason that this stack is three-deep is to account for this case:
 
 Modifying the current mode bits must be done with a read-modify-write procedure; that is, if one wished to enable interrupts, they would need to read RS into some register, set the I bit, and then write the contents of that register back into RS. The same principle applies to the other mode bits.
 
-#pagebreak(weak: true)
+#aGroup[
 
 == WHAMI (Who Am I)
 
@@ -87,7 +126,9 @@ Modifying the current mode bits must be done with a read-modify-write procedure;
 
 In a multiprocessor system, WHAMI contains a numeric ID which is unique to each processor in the system. It should be in a range of \[0, MAXPROC-1\], where MAXPROC is the maximum number of processors supported by the platform. Therefore, on a uniprocessor system, it should always contain zero.
 
-#pagebreak(weak: true)
+]
+
+#aGroup[
 
 == EB (Exception Block Base) <exceptionblock>
 
@@ -97,6 +138,8 @@ In a multiprocessor system, WHAMI contains a numeric ID which is unique to each 
 ))
 
 The EB control register indicates the base address of the exception block.
+
+]
 
 When an exception is taken by the processor, the program counter must be redirected to an exception handler. Some architectures use a table of exception vectors, which is indexed and loaded by the processor in order to determine whether to jump. However, as this is a RISC architecture, memory accesses during exception dispatch are unacceptable complexity.
 
@@ -132,7 +175,7 @@ Note that as the TB miss handlers themselves reside in the exception block, the 
 #caption[All defined ECAUSE codes. Absent codes are reserved.]
 ]
 
-#pagebreak(weak: true)
+#aGroup[
 
 == EPC (Exception Program Counter)
 
@@ -143,7 +186,9 @@ Note that as the TB miss handlers themselves reside in the exception block, the 
 
 When an exception is taken, the current program counter is saved into EPC. The RFE instruction restores the program counter from this control register, atomically with restoring the mode bits (see @rs).
 
-#pagebreak(weak: true)
+]
+
+#aGroup[
 
 == EBADADDR (Exception Bad Address)
 
@@ -153,7 +198,9 @@ When an exception is taken, the current program counter is saved into EPC. The R
 
 When a bus error or page fault exception is taken, EBADADDR is filled with the physical or virtual address, respectively, that caused the exception.
 
-#pagebreak(weak: true)
+]
+
+#aGroup[
 
 == TBMISSADDR (Translation Buffer Missed Address)
 
@@ -163,7 +210,9 @@ When a bus error or page fault exception is taken, EBADADDR is filled with the p
 
 When a TB miss exception is taken, and the T bit is not set in RS, TBMISSADDR is filled with the virtual address that failed to match in the TB. If the T bit is set, however (i.e., the processor is already handling a TB miss), this CR is left alone. This CR, therefore, is not affected upon a nested TB miss exception, and always contains the missed virtual address that caused the first one.
 
-#pagebreak(weak: true)
+]
+
+#aGroup[
 
 == TBPC (Translation Buffer Miss Program Counter)
 
@@ -174,7 +223,9 @@ When a TB miss exception is taken, and the T bit is not set in RS, TBMISSADDR is
 
 When a TB miss exception is taken, and the T bit is not set in RS, the current program counter is saved into TBPC. If the T bit is set, however (i.e., the processor is already handling a TB miss), this CR is left alone. This CR, therefore, is not affected upon a nested TB miss exception, and always contains the program counter that caused the first one. Additionally, if the T bit is set when the RFE instruction is executed, it will restore the program counter to the value of TBPC rather than that of EPC, allowing instant return to the original faulting instruction without having to potentially unwind several levels of nested TB misses. See @tbmiss for more details.
 
-#pagebreak(weak: true)
+]
+
+#aGroup[
 
 == SCRATCH0-4 (Arbitrary Scratch)
 
@@ -184,7 +235,9 @@ When a TB miss exception is taken, and the T bit is not set in RS, the current p
 
 The system software can use the SCRATCH0 through SCRATCH4 control registers for anything. They are fully readable and writable and do not perform any action. The intended usage is to save general purpose registers to free them up as scratch within exception handlers, but other usages are also possible.
 
-#pagebreak(weak: true)
+]
+
+#aGroup[
 
 == ITBPTE/DTBPTE (Translation Buffer Page Table Entry) <tbpte>
 
@@ -200,7 +253,11 @@ The system software can use the SCRATCH0 through SCRATCH4 control registers for 
 
 When written, the ITBPTE and DTBPTE control registers will cause an entry to be written to the ITB or DTB, respectively. The upper 32 bits of the entry are taken from the current value of ITBTAG or DTBTAG, and the lower 32 bits are taken from the value written to this control register.
 
+]
+
 The low 32 bits of a TB entry are its "value", indicating the page frame that the virtual page maps to. The upper 32 bits, TBTAG, are its "key", containing the "matching" ASID and the virtual page number mapped by the entry. Note that the low 32 bits form a preferred format for page table entries, hence the name of this control register. See @mmu for more information.
+
+#aGroup[
 
 #align(center)[
 #roundedTable(
@@ -241,7 +298,9 @@ The low 32 bits of a TB entry are its "value", indicating the page frame that th
 ]
 #caption[The meaning of the PTE bits when set.]
 
-#pagebreak(weak: true)
+]
+
+#aGroup[
 
 == ITBTAG/DTBTAG (Translation Buffer Tag) <tbtag>
 
@@ -252,7 +311,9 @@ The low 32 bits of a TB entry are its "value", indicating the page frame that th
 
 The ITBTAG and DTBTAG control registers contain the current ASID (Address Space ID), and the last virtual page number that incurred a TB miss. This control register also doubles as the uppermost 32 bits of the entry that is written to the TB when a write occurs to the ITBPTE or DTBPTE control register (see @tbpte and @tbmiss).  
 
-#pagebreak(weak: true)
+]
+
+#aGroup[
 
 == ITBINDEX/DTBINDEX (Translation Buffer Index) <tbindex>
 
@@ -262,7 +323,9 @@ The ITBTAG and DTBTAG control registers contain the current ASID (Address Space 
 
 The ITBINDEX and DTBINDEX control registers contain the next replacement index for the ITB and DTB, respectively. See @tbmiss for more information.
 
-#pagebreak(weak: true)
+]
+
+#aGroup[
 
 == ITBCTRL/DTBCTRL (Translation Buffer Control) <tbctrl>
 
@@ -301,7 +364,11 @@ The ITBINDEX and DTBINDEX control registers contain the next replacement index f
 
 Writes to ITBCTRL and DTBCTRL can be used to invalidate entries in the ITB or DTB, respectively. The 32-bit value written to the control register should be in one of the three formats enumerated above, distinguished by the low two bits. Any other combination of low bits will yield unpredictable results.
 
+]
+
 Note that reads from these control registers yield unpredictable (non-useful!) results. If one wishes to determine the size of the ITB or DTB, they can set ITBINDEX or DTBINDEX to zero, and write values to ITBPTE or DTBPTE until they see the replacement index wrap. The last value of the replacement index before it wraps, plus one, is the size of that TB.
+
+#aGroup[
 
 #align(center)[
 #roundedTable(
@@ -337,7 +404,9 @@ Note that reads from these control registers yield unpredictable (non-useful!) r
 
 #caption[The function of each TBCTRL command.]
 
-#pagebreak(weak: true)
+]
+
+#aGroup[
 
 == ICACHECTRL/DCACHECTRL (Cache Control) <cachectrl>
 
@@ -369,7 +438,11 @@ Note that reads from these control registers yield unpredictable (non-useful!) r
 
 Reads from the ICACHECTRL and DCACHECTRL control registers yield a 32-bit value whose bit fields indicate the parameters of the Icache and Dcache respectively; the number of lines in the cache, the number of ways (i.e. the set associativity) of the cache, and the size of a cache line are each given, in the form of a binary logarithm. I.e., if the line count field contains 8, then there are 2\^8 = 256 lines in the cache.
 
+]
+
 Writes to the ICACHECTRL and DCACHECTRL control registers cause various invalidations to occur. The 32-bit value written to the control register should be in one of the two formats enumerated above, distinguished by the low two bits. Any other combination of low bits will yield unpredictable results.
+
+#aGroup[
 
 #align(center)[
 #roundedTable(
@@ -393,7 +466,9 @@ Writes to the ICACHECTRL and DCACHECTRL control registers cause various invalida
 
 #caption[The action of each CACHECTRL command.]
 
-#pagebreak(weak: true)
+]
+
+#aGroup[
 
 == ITBADDR/DTBADDR (Translation Buffer Miss PTE Address)
 
@@ -405,6 +480,8 @@ Writes to the ICACHECTRL and DCACHECTRL control registers cause various invalida
 ))
 
 The ITBADDR and DTBADDR control registers exist solely for the benefit of TB miss routines, and serve no other functional purpose. When a TB miss exception is taken, this control register is filled with the virtual address of the PTE to load from the virtually linear page table, saving a TB miss handler that implements this scheme from having to calculate this itself.
+
+]
 
 System software should write the upper 10 bits of this control register with the upper 10 bits of the virtual address of a virtually linear page table. As this scheme has no way to handle a page table base containing non-zero bits in the low 22 bits, the page table base should be naturally aligned to the size of the page table, i.e. 2\^22 = 4MB-aligned.
 

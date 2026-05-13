@@ -162,11 +162,13 @@
   opcode,
   mnemonic
 ) = [
-  #roundedTable(
-    columns: (auto, auto, 1fr),
-    [Mnemonic], [#opcodeName], [Name],
-    [#mnemonic], [#opcode], [#longName],
-  )
+  #aGroup[
+    #roundedTable(
+      columns: (auto, auto, 1fr),
+      [Mnemonic], [#opcodeName], [Name],
+      [#mnemonic], [#opcode], [#longName],
+    )
+  ]
 ]
 
 #let instructionDetailsSecondPart(
@@ -174,13 +176,19 @@
   exceptions,
   description
 ) = [
-  #pseudocode
-  
-  #microHeading("Description")
-  #description
+  #aGroup[
+    #pseudocode
+  ]
 
-  #microHeading("Exceptions")
-  #exceptions
+  #aGroup[ 
+    #microHeading("Description")
+    #description
+  ]
+
+  #aGroup[
+    #microHeading("Exceptions")
+    #exceptions
+  ]
 ]
 
 #let instructionDetails(
@@ -208,19 +216,9 @@
 
 = Instructions
 
-The XR/17032 architecture features only four instruction formats, and each are 32 bits wide. There are a total of 60 instructions, which are summarized below.
+== Formats
 
-#jumpFormat()
-
-#branchFormat()
-
-#immOpFormat()
-
-#regOpFormat()
-
-#pagebreak(weak: true)
-
-The following section contains a comprehensive listing of all of the instructions defined by the XR/17032 architecture along with their encodings. The instructions are grouped first by format, and then by major opcode.
+The XR/17032 architecture features only four instruction formats. All instruction formats are 32 bits wide. There are a total of 60 instructions. The following section contains a comprehensive listing of all of the instructions defined by the XR/17032 architecture along with their encodings. The instructions are grouped first by format, and then by major opcode.
 
 Note that the assembly language also supports several "pseudo-instructions" for ease of assembly programming, which are not listed below, as they don't directly correspond to any particular hardware instruction, and are usually translated to a sequence of several hardware instructions. See @pseudoinstructions for a listing of pseudo-instructions.
 
@@ -1015,10 +1013,10 @@ This instruction causes a breakpoint exception. Its intended use is for debuggin
 Exception(SYS)
 ```],
   [#box[
-  - SYS (Syscall) is always triggered by this instruction.
+  - SYS (System Service) is always triggered by this instruction.
   ]],
   [
-This instruction causes a system service exception. It is useful for usermode to make a call into the system software to request a service (also called a system call or "syscall"). See @exceptionblock for more information on exceptions.
+This instruction causes a system service exception. It is useful for usermode to make a call into the system software to request a service (also called a system service or "syscall"). See @exceptionblock for more information on exceptions.
   ]
 )
 

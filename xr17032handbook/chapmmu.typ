@@ -57,8 +57,6 @@ In the example above, there is a 4-entry TB, containing entries for the virtual 
 
 Had there not been a matching entry in the TB, a TB miss exception would have occurred. The TB miss handler would have inserted the correct entry into the TB, and the original instruction would have re-executed; beginning this process again, but matching in the TB this time and succeeding.
 
-#pagebreak(weak: true)
-
 == The Translation Buffers <managetb>
 
 The XR/17032 architecture has two TBs. In fact, it could be seen as having two MMUs; an IMMU and a DMMU, providing translations for instruction fetch and data access respectively. This is to simplify pipelined implementations where a FETCH and MEMORY stage may want to access the TB to translate a virtual address simultaneously. The TB management scheme is architected such that the actual size of each TB is transparent to system software and may vary from processor to processor.
@@ -86,8 +84,6 @@ A very important note is that setting an ASID of 0xFFF (4095) in ITBTAG or DTBTA
 === Translation Buffer Invalidation
 
 See @tbctrl for a thorough explanation on how to invalidate entries in the TB by writing to the ITBCTRL and DTBCTRL control registers.
-
-#pagebreak(weak: true)
 
 == Translation Buffer Miss <tbmiss>
 

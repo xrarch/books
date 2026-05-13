@@ -6,14 +6,23 @@ XR/17032 is a 32-bit RISC architecture. This document describes it informally an
 
 The architecture’s registers and the virtual address space are 32-bit, and 32-bit values are the widest that it can load or store. It has no floating-point operations, and 64-bit wide arithmetic must be synthesized from smaller operations. This architecture is intended to be relatively simple; it includes only 60 instructions. In the interest of supporting fancy operating system design, XR/17032 supports paged virtual addressing, as well as a distinction between user mode and kernel mode. Like most RISCs, memory accesses must be aligned to their size or else they will incur an exception, and, likewise, all instructions are 32 bits (4 bytes) wide and must be aligned to 32-bit boundaries. The architecture is little-endian.
 
-#pagebreak(weak: true)
-
 == Registers
 The architecture defines 32 general purpose registers (GPRs), usable by any instruction that takes register operands. They are each 32 bits wide. The zeroth GPR, zero, almost always reads as zero and ignores writes. This is a common RISC design tactic that simplifies the encoding of many instructions.
 
+== Control Registers
+The architecture defines 32 control registers (CRs). They are each 32 bits wide. As their name suggests, CRs are used to control the behavior of the processor, and are therefore only accessible via the privileged kernel mode instructions MTCR and MFCR.
+
+See @control for a more detailed description of each control register.
+
+== Reset
+
+When the processor is reset, for instance during a reboot or a power-on, the RS control register is cleared to zero. The processor is thus forced to kernel mode, virtual address translation is disabled, exposing the physical address space. The program counter is set to the address `0xFFFE1000`, with the idea that a boot ROM is located at `0xFFFE0000` and is followed by an initial 4096 (0x1000) byte exception block.
+
+#aGroup[
+
 #align(center)[
 #roundedTable(
-  columns: (auto, auto, auto),
+  columns: (auto, auto, 1fr),
   align: horizon + left,
   [\#], [Name], [ABI Assignment],
   "0", "zero", "Always reads as zero, ignores writes.",
@@ -27,46 +36,4 @@ The architecture defines 32 general purpose registers (GPRs), usable by any inst
 #caption[All general purpose registers and their ABI assignments.]
 ]
 
-#pagebreak(weak: true)
-
-== Control Registers <controlregs>
-The architecture defines 32 control registers (CRs). They are each 32 bits wide. As their name suggests, CRs are used to control the behavior of the processor, and are therefore only accessible via the privileged kernel mode instructions MTCR and MFCR.
-
-See @control for a more detailed description of each control register.
-
-#align(center)[
-#roundedTable(
-  columns: (auto, auto, auto),
-  align: horizon + left,
-  table.header(
-    [\#], [Name], [Function],
-  ),
-  "0", "RS", "Current and previous processor mode bits.",
-  "1", "WHAMI", "Unique ID for this processor in a multiprocessor system.",
-  "5", "EB", "Exception block base address.",
-  "6", "EPC", "Program counter before the last exception.",
-  "7", "EBADADDR", "Bad address that triggered the last exception (if relevant).",
-  "9", "TBMISSADDR", "Bad address that triggered the last TB miss exception.",
-  "10", "TBPC", "Program counter before the last TB miss exception.",
-  "11-15", "SCRATCH0-4", "Permanently reserved for arbitrary system software usage.",
-  "16", "ITBPTE", "Lower 32 bits of an entry to insert in the ITB. Causes ITB insertion when written.",
-  "17", "ITBTAG", [Upper 32 bits of an entry to insert in the ITB. Doubles as the current ASID, and the VPN of the last virtual address that missed in the ITB.],
-  "18", "ITBINDEX", "Next replacement index for the ITB.",
-  "19", "ITBCTRL", "Causes ITB invalidations when written.",
-  "20", "ICACHECTRL", "Yields Icache size parameters when read, causes Icache invalidations when written.",
-  "21", "ITBADDR", "Pre-calculated virtual PTE address for use upon ITB miss.",
-  "24", "DTBPTE", "Lower 32 bits of an entry to insert in the DTB. Causes DTB insertion when written.",
-  "25", "DTBTAG", [Upper 32 bits of an entry to insert in the DTB. Doubles as the current ASID, and the VPN of the last virtual address that missed in the DTB.],
-  "26", "DTBINDEX", "Next replacement index for the DTB.",
-  "27", "DTBCTRL", "Causes DTB invalidations when written.",
-  "28", "DCACHECTRL", "Yields Dcache size parameters when read, causes Dcache invalidations when written.",
-  "29", "DTBADDR", "Pre-calculated virtual PTE address for use upon DTB miss.",
-)
-#caption[All defined CRs. Absent CR numbers have undefined behavior if read or written.]
 ]
-
-#pagebreak(weak: true)
-
-== Reset
-
-When the processor is reset, for instance during a reboot or a power-on, the RS control register is cleared to zero. The processor is thus forced to kernel mode, virtual address translation is disabled, exposing the physical address space. The program counter is set to the address `0xFFFE1000`, with the idea that a boot ROM is located at `0xFFFE0000` and is followed by an initial 4096 (0x1000) byte exception block.

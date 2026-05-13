@@ -18,8 +18,6 @@ While virtual address translation is disabled, for instance at system reset, the
 
 For detailed information on how to flush either a single page or the entirety of the Icache or Dcache, see @cachectrl.
 
-#pagebreak(weak: true)
-
 == The Caches and XR/computer Systems
 
 This information is included here for quick reference, and strictly speaking, belongs in these systems' respective manuals.
