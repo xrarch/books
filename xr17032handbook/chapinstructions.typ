@@ -854,220 +854,194 @@ In the case of the comparison instructions, a 1 is stored if the comparison is t
 
 ==== Listing, Opcode 110001
 
-#box([
+#instructionDetailsTable(
+  [Multiply],
+  [Funct],
+  [1111 (0xF)],
+  [`MUL RA, RB, RC xSH IMM5`],
+)
 
-#align(center, [
-#rect([
-*MUL RA, RB, RC* \
-_Multiply_ \
-Function Code: *1111* (0xF)
-```
-Reg[RA] = Reg[RB] * Reg[RC]
-```
-], width: 100%)])
+#instructionDetailsTable(
+  [Divide],
+  [Funct],
+  [1101 (0xD)],
+  [`DIV RA, RB, RC xSH IMM5`],
+)
 
-This instruction performs an integer multiplication between the contents of *Register B* and the contents of *Register C*, and stores the result into *Register A*.
+#instructionDetailsTable(
+  [Divide, Signed],
+  [Funct],
+  [1100 (0xC)],
+  [`DIV SIGNED RA, RB, RC xSH IMM5`],
+)
 
-#line(length: 100%)
+#instructionDetailsTable(
+  [Modulo],
+  [Funct],
+  [1011 (0xB)],
+  [`MOD RA, RB, RC xSH IMM5`],
+)
 
-], width: 100%)
+#instructionDetailsSecondPart(
+  [```
+Reg[RA] = Reg[RB] OP (Reg[RC] xSH IMM5)
+  ```],
+  [#box[
+None.
+  ]],
+  [
+These instructions perform the specified operation between the contents of Register B and the contents of Register C, and stores the result into Register A. The contents of Register C are first shifted in the manner specified.
 
-#box([
+The result of division is rounded toward zero, to a whole integer.
+  ]
+)
 
-#align(center, [
-#rect([
-*DIV RA, RB, RC* \
-_Divide_ \
-Function Code: *1101* (0xD)
-```
-Reg[RA] = Reg[RB] / Reg[RC]
-```
-], width: 100%)])
+#pagebreak(weak: true)
 
-This instruction performs an unsigned integer division between the contents of *Register B* and the contents of *Register C*, and stores the result into *Register A*. The result of the division is rounded down to the last whole integer.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*DIV SIGNED RA, RB, RC* \
-_Divide, Signed_ \
-Function Code: *1100* (0xC)
-```
-Reg[RA] = Reg[RB] s/ Reg[RC]
-```
-], width: 100%)])
-
-This instruction performs a signed integer division between the contents of *Register B* and the contents of *Register C*, and stores the result into *Register A*. The result of the division is rounded toward zero to a whole integer.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MOD RA, RB, RC* \
-_Modulo_ \
-Function Code: *1011* (0xB)
-```
-Reg[RA] = Reg[RB] % Reg[RC]
-```
-], width: 100%)])
-
-This instruction performs an unsigned modulo between the contents of *Register B* and the contents of *Register C*, and stores the result into *Register A*. The modulo is the remainder part of the result of an unsigned division.
-
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*LL RA, RB* \
-_Load Locked_ \
-Function Code: *1001* (0x9)
-```
+#instructionDetails(
+  [Load Locked],
+  [Funct],
+  [1001 (0x9)],
+  [`LL RA, RB`],
+  [```
 Locked = TRUE
 LockedAddress = Translate(Reg[RB])
 Reg[RA] = Load32(Reg[RB])
-```
-], width: 100%)])
+```],
+  [#box[
+  - DTB (DTB miss) if paging is enabled and the referenced page mapping is not in the DTB.
+  - PGF (Read Page Fault) if paging is enabled and the referenced page matches a DTB entry with a clear valid bit.
+  - BUS (Bus Error) if the memory access causes a timeout on the system bus.
+  - UNA (Unaligned Access) if the referenced address is not naturally aligned.
+  ]],
+  [
+This instruction is used to implement atomic sequences. It loads the 32-bit contents of a naturally-aligned memory address contained within Register B into Register A. It also sets two "registers" associated with the current processor: a "locked" flag is set to TRUE, and a "locked address" is set to the physical address being accessed. Though it is implementation-dependent, these "registers" likely do not reside on the processor itself, and may be implemented in any way as long as it provides the same semantics.
 
-This instruction is used to implement atomic sequences. It loads the 32-bit contents of a naturally-aligned memory address within *Register B* into *Register A*. It also sets two "registers" associated with the current processor: a "locked" flag is set to TRUE, and a "locked address" is set to the physical address being accessed. Though it is implementation-dependent, these "registers" likely do not reside on the processor itself, and may be implemented in any way as long as it provides the same semantics.
+If the RFE (Return From Exception) instruction is executed on the processor, the "locked" flag is cleared, causing a future SC instruction on the same processor to fail. This is the only required behavior in a uniprocessor system.
 
-If the *RFE* _Return From Exception_ instruction is executed on the current processor, the "locked" flag is cleared, causing a future *SC* instruction on this processor to fail. This is the only required behavior in a uniprocessor system. In a multiprocessor system, if any other processor performs a store instruction to this processor's "locked address", this processor's "locked" flag is cleared. This can be used to implement atomic sequences in non-privileged (i.e. usermode) code.
+In a multiprocessor system, if any other processor performs a store instruction to this processor's "locked address", this processor's "locked" flag is cleared. This can be used to implement atomic sequences in non-privileged (i.e. usermode) code.
+  ]
+)
 
-#line(length: 100%)
+#pagebreak(weak: true)
 
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*SC RA, RB, RC* \
-_Store Conditional_ \
-Function Code: *1000* (0x8)
-```
+#instructionDetails(
+  [Store Conditional],
+  [Funct],
+  [1000 (0x8)],
+  [`SC RA, RB, RC`],
+  [```
 IF Locked THEN
   Store32(Reg[RB], Reg[RC])
 END
 Reg[RA] = Locked
-```
-], width: 100%)])
+```],
+  [#box[
+  - DTB (DTB miss) if paging is enabled and the referenced page mapping is not in the DTB.
+  - PGW (Write Page Fault) if paging is enabled and the referenced page matches a DTB entry with a clear valid bit, or a DTB entry with a clear writable bit.
+  - BUS (Bus Error) if the memory access causes a timeout on the system bus.
+  - UNA (Unaligned Access) if the referenced address is not naturally aligned.
+  ]],
+  [
+This instruction stores the current value of the processor's "locked" flag to Register A. If the "locked" flag is set, it stores the contents of Register C to the address contained within Register B.
+  ]
+)
 
-This instruction stores the current value of the processor's "locked" flag to *Register A*. If the "locked" flag is set, it stores the contents of *Register C* to the address contained within *Register B*, and (like any other store instruction) clears the "locked" flag of any other processor with the same physical address locked by the *LL* _Load Locked_ instruction.
+#pagebreak(weak: true)
 
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*PAUSE* \
-_Pause_ \
-Function Code: *0110* (0x6)
-```
+#instructionDetails(
+  [Pause],
+  [Funct],
+  [0110 (0x6)],
+  [`PAUSE`],
+  [```
 // Possible implementation.
 PauseCount += 1
 IF PauseCount >= 256 THEN
   PauseCount = 0
   Yield()
 END
-```
-], width: 100%)])
-
+```],
+  [None.],
+  [
 On multiprocessor systems, this instruction should be executed on each iteration of a spin-wait loop for another processor to do something (release a spinlock, acknowledge an IPI, etc). It serves as a hint that the processor isn't doing useful work, which can be used to optimize emulation software among other things.
+  ]
+)
 
-#line(length: 100%)
+#pagebreak(weak: true)
 
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*MB* \
-_Memory Barrier_ \
-Function Code: *0011* (0x3)
-```
+#instructionDetails(
+  [Memory Barrier],
+  [Funct],
+  [0011 (0x3)],
+  [`MB`],
+  [```
 // Possible implementation.
 FlushWriteBuffer()
-RetireAllLoads()
-```
-], width: 100%)])
+SynchronizeLoads()
+```],
+  [None.],
+  [
+This instruction ensures that, from the perspective of all processors and I/O devices in the system, no reads or writes performed by this processor are reordered across the *MB* instruction in either direction. This is sometimes necessary for proper multiprocessor memory ordering.
+  ]
+)
 
-This instruction ensures that, from the perspective of all other processors and I/O devices in the system, no reads or writes performed by this processor are reordered across the *MB* instruction in either direction.
+#pagebreak(weak: true)
 
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*WMB* \
-_Write Memory Barrier_ \
-Function Code: *0010* (0x2)
-```
+#instructionDetails(
+  [Write Memory Barrier],
+  [Funct],
+  [0010 (0x2)],
+  [`WMB`],
+  [```
 // Possible implementation.
 FlushWriteBuffer()
-```
-], width: 100%)])
+```],
+  [None.],
+  [
+This instruction ensures that, from the perspective of all processors and I/O devices in the system, no writes performed by this processor before the WMB instruction are reordered after the WMB instruction. One example of this instruction on a uniprocessor system is to ensure that a device has seen a sequence of writes to its registers before asking it to perform a command. An example on a multiprocessor system is to ensure data coherency before releasing a spinlock.
+  ]
+)
 
-This instruction ensures that, from the perspective of all other processors and I/O devices in the system, no writes performed by this processor before the *WMB* instruction are reordered after the *WMB* instruction. One example of this instruction on a uniprocessor system is to ensure that a device has seen a sequence of writes to its registers before asking it to perform a command. An example on a multiprocessor system is to ensure data coherency before releasing a spinlock.
+#pagebreak(weak: true)
 
-#line(length: 100%)
-
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*BRK* \
-_Breakpoint_ \
-Function Code: *0001* (0x1)
-```
+#instructionDetails(
+  [Breakpoint],
+  [Funct],
+  [0001 (0x1)],
+  [`BRK`],
+  [```
 Exception(BRK)
-```
-], width: 100%)])
-
+```],
+  [#box[
+  - BRK (Breakpoint) exception is always triggered by this instruction.
+  ]],
+  [
 This instruction causes a breakpoint exception. Its intended use is for debugging purposes. See @exceptionblock.
+  ]
+)
 
-#line(length: 100%)
+#pagebreak(weak: true)
 
-], width: 100%)
-
-#box([
-
-#align(center, [
-#rect([
-*SYS* \
-_System Service_ \
-Function Code: *0000* (0x0)
-```
+#instructionDetails(
+  [System Service],
+  [Funct],
+  [0000 (0x0)],
+  [`SYS`],
+  [```
 Exception(SYS)
-```
-], width: 100%)])
-
+```],
+  [#box[
+  - SYS (Syscall) exception is always triggered by this instruction.
+  ]],
+  [
 This instruction causes a system service exception. It is useful for usermode to make a call into the system software to request a service (also called a system call or "syscall"). See @exceptionblock.
+  ]
+)
 
-#line(length: 100%)
+#pagebreak(weak: true)
 
-], width: 100%)
-
-#align(center, [*Opcode 101001 (Privileged Instructions)*])
+==== Listing, Opcode 101001 (Privileged Instructions)
 
 These instructions all produce a *PRV* exception if executed while usermode is active. See @exceptionblock.
 
