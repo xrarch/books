@@ -41,6 +41,8 @@ The behavior of the processor is primarily controlled by a small set of control 
 
 ]
 
+#pagebreak(weak: true)
+
 #aGroup[
 
 == RS (Processor Status) <rs>
@@ -63,9 +65,9 @@ The RS control register contains a three-deep "stack" of mode bits (the top of w
 
 When an exception is taken, several of the mode bits are overwritten to place the processor into kernel mode with interrupts disabled. Because of the need to return from an exception with the state of the processor intact, there is a need to save the previous mode bits somewhere. In some CISC designs, like fox32
 #footnote([fox32 is a trademark of Ryfox Computer Corp.]),
-this is accomplished by pushing the old state onto the stack.
+the old state is saved onto the stack.
 
-However, because this is a design following RISCy philosophy, performing a memory access during exception dispatch is considered unacceptable complexity. Instead, there is a small "stack" of mode bits within the RS control register. When an exception is taken, the current mode is shifted left by 8 into the "old mode", which itself is shifted left by 8 into the "old old mode", effectively performing a "push" onto a small stack. Any mode bits in the "old old mode" at this time are destroyed, and so manually saving RS is required if it is desired to go more than three levels deep. The RFE (Return From Exception) instruction atomically reverses this, popping the old mode bits into the current mode bits.
+Instead of performing memory access during exception dispatch, there is a small "stack" of mode bits within the RS control register. When an exception is taken, the current mode is shifted left by 8 into the "old mode", which itself is shifted left by 8 into the "old old mode", effectively performing a "push" onto a small stack. Any mode bits in the "old old mode" at this time are destroyed. Manually saving RS in the exception handler is required if more than three levels of nesting are needed. The RFE (Return From Exception) instruction atomically reverses this, popping the old mode bits into the current mode bits.
 
 The reason that this stack is three-deep is to account for this case:
 #footnote([The mode stack was once two-deep but was grown to three when software TB miss handling was introduced to the architecture, as this case would otherwise destroy the saved state in the old mode bits. Note also that the mode stack itself is an idea borrowed from the MIPS architecture's SR cop0 register.])
@@ -75,6 +77,8 @@ The reason that this stack is three-deep is to account for this case:
 2. An exception occurs, pushing the original state into the old mode.
 3. A TB miss exception is taken during the exception handler, before it can save RS, pushing the original state into the old old mode.
 ]
+
+Modifying the current mode bits must be done with a read-modify-write procedure; that is, if one wished to enable interrupts, they would need to read RS into some register, set the I bit, and then write the contents of that register back into RS. The same principle applies to the other mode bits.
 
 #aGroup[
 
@@ -88,7 +92,7 @@ The reason that this stack is three-deep is to account for this case:
     #set align(center)
     U
   ], fill: tableHeadingColor),
-  [Usermode is active. Privileged instructions, which all have a major opcode of *101001*, are forbidden and will produce a privilege violation exception if executed.],
+  [Usermode is active. Privileged instructions, which all have a major opcode of 101001, are forbidden and will produce a privilege violation exception if executed.],
   table.cell([
     #set text(fill: white)
     #set align(center)
@@ -106,7 +110,7 @@ The reason that this stack is three-deep is to account for this case:
     #set align(center)
     T
   ], fill: tableHeadingColor),
-  [A TB miss is in progress. This causes the *zero* register to be usable as a full register; i.e., it is not wired to read all zeroes while this bit is set. This is intended to free it as a scratch register for TB miss routines, to avoid having to save any registers. This bit also has special effects on exception handling, which are enumerated in @tbmiss.]
+  [A TB miss is in progress. The ZERO register is usable as a GPR; it is not wired to read all zeroes while this bit is set. This frees it as a scratch register for TB miss routines. This bit also has effects on exception handling, which are enumerated in @tbmiss.]
 )
 ]
 
@@ -114,19 +118,7 @@ The reason that this stack is three-deep is to account for this case:
 
 ]
 
-Modifying the current mode bits must be done with a read-modify-write procedure; that is, if one wished to enable interrupts, they would need to read RS into some register, set the I bit, and then write the contents of that register back into RS. The same principle applies to the other mode bits.
-
-#aGroup[
-
-== WHAMI (Who Am I)
-
-#bitfield((
-  (name: "PROCESSOR ID", bits: 32),
-))
-
-In a multiprocessor system, WHAMI contains a numeric ID which is unique to each processor in the system. It should be in a range of \[0, MAXPROC-1\], where MAXPROC is the maximum number of processors supported by the platform. Therefore, on a uniprocessor system, it should always contain zero.
-
-]
+#pagebreak(weak: true)
 
 #aGroup[
 
@@ -145,7 +137,7 @@ When an exception is taken by the processor, the program counter must be redirec
 
 Instead, upon exception, the PC is redirected to an offset within the "exception block". The offset is calculated using the ECAUSE code of the exception, which is a 4-bit number between 0 and 15.
 
-The exception block occupies exactly one page frame, which is 4096 bytes in size. As there are 16 possible exception codes, each vector has room for 4096 / 16 = 256 bytes, or 256 / 4 = 64 instructions. This provides enough room to handle simple cases of exceptions, such as TB misses, without needing to branch outside of the exception block.
+The exception block occupies exactly one page frame, which is 4096 bytes in size. As there are 16 possible exception codes, each vector has room for 256 bytes, or 64 instructions. This provides enough room to handle simple cases of exceptions, such as TB misses, without needing to branch outside of the exception block.
 
 The new program counter is calculated by EB | ECAUSE << 8, and so the base address of the exception block must be page-aligned, that is, the low 12 bits must be zero, otherwise garbage may be loaded into PC.
 
@@ -175,67 +167,7 @@ Note that as the TB miss handlers themselves reside in the exception block, the 
 #caption[All defined ECAUSE codes. Absent codes are reserved.]
 ]
 
-#aGroup[
-
-== EPC (Exception Program Counter)
-
-#bitfield((
-  (name: "EXCEPTION PROGRAM COUNTER", bits: 30),
-  (name: "MBZ", bits: 2),
-))
-
-When an exception is taken, the current program counter is saved into EPC. The RFE instruction restores the program counter from this control register, atomically with restoring the mode bits (see @rs).
-
-]
-
-#aGroup[
-
-== EBADADDR (Exception Bad Address)
-
-#bitfield((
-  (name: "EXCEPTION BAD ADDRESS", bits: 32),
-))
-
-When a bus error or page fault exception is taken, EBADADDR is filled with the physical or virtual address, respectively, that caused the exception.
-
-]
-
-#aGroup[
-
-== TBMISSADDR (Translation Buffer Missed Address)
-
-#bitfield((
-  (name: "TRANSLATION BUFFER MISSED ADDRESS", bits: 32),
-))
-
-When a TB miss exception is taken, and the T bit is not set in RS, TBMISSADDR is filled with the virtual address that failed to match in the TB. If the T bit is set, however (i.e., the processor is already handling a TB miss), this CR is left alone. This CR, therefore, is not affected upon a nested TB miss exception, and always contains the missed virtual address that caused the first one.
-
-]
-
-#aGroup[
-
-== TBPC (Translation Buffer Miss Program Counter)
-
-#bitfield((
-  (name: "TRANSLATION BUFFER MISS PROGRAM COUNTER", bits: 30),
-  (name: "MBZ", bits: 2),
-))
-
-When a TB miss exception is taken, and the T bit is not set in RS, the current program counter is saved into TBPC. If the T bit is set, however (i.e., the processor is already handling a TB miss), this CR is left alone. This CR, therefore, is not affected upon a nested TB miss exception, and always contains the program counter that caused the first one. Additionally, if the T bit is set when the RFE instruction is executed, it will restore the program counter to the value of TBPC rather than that of EPC, allowing instant return to the original faulting instruction without having to potentially unwind several levels of nested TB misses. See @tbmiss for more details.
-
-]
-
-#aGroup[
-
-== SCRATCH0-4 (Arbitrary Scratch)
-
-#bitfield((
-  (name: "SCRATCH SPACE", bits: 302),
-))
-
-The system software can use the SCRATCH0 through SCRATCH4 control registers for anything. They are fully readable and writable and do not perform any action. The intended usage is to save general purpose registers to free them up as scratch within exception handlers, but other usages are also possible.
-
-]
+#pagebreak(weak: true)
 
 #aGroup[
 
@@ -300,30 +232,7 @@ The low 32 bits of a TB entry are its "value", indicating the page frame that th
 
 ]
 
-#aGroup[
-
-== ITBTAG/DTBTAG (Translation Buffer Tag) <tbtag>
-
-#bitfield((
-  (name: "ASID", bits: 12),
-  (name: "VIRTUAL PAGE NUMBER", bits: 20),
-))
-
-The ITBTAG and DTBTAG control registers contain the current ASID (Address Space ID), and the last virtual page number that incurred a TB miss. This control register also doubles as the uppermost 32 bits of the entry that is written to the TB when a write occurs to the ITBPTE or DTBPTE control register (see @tbpte and @tbmiss).  
-
-]
-
-#aGroup[
-
-== ITBINDEX/DTBINDEX (Translation Buffer Index) <tbindex>
-
-#bitfield((
-  (name: "TRANSLATION BUFFER INDEX", bits: 32),
-))
-
-The ITBINDEX and DTBINDEX control registers contain the next replacement index for the ITB and DTB, respectively. See @tbmiss for more information.
-
-]
+#pagebreak(weak: true)
 
 #aGroup[
 
@@ -406,6 +315,8 @@ Note that reads from these control registers yield unpredictable (non-useful!) r
 
 ]
 
+#pagebreak(weak: true)
+
 #aGroup[
 
 == ICACHECTRL/DCACHECTRL (Cache Control) <cachectrl>
@@ -465,6 +376,107 @@ Writes to the ICACHECTRL and DCACHECTRL control registers cause various invalida
 ]
 
 #caption[The action of each CACHECTRL command.]
+
+]
+
+#pagebreak(weak: true)
+
+#aGroup[
+
+== WHAMI (Who Am I)
+
+#bitfield((
+  (name: "PROCESSOR ID", bits: 32),
+))
+
+In a multiprocessor system, WHAMI contains a numeric ID which is unique to each processor in the system. It should be in a range of \[0, MAXPROC-1\], where MAXPROC is the maximum number of processors supported by the platform. Therefore, on a uniprocessor system, it should always contain zero.
+
+]
+
+#aGroup[
+
+== EPC (Exception Program Counter)
+
+#bitfield((
+  (name: "EXCEPTION PROGRAM COUNTER", bits: 30),
+  (name: "MBZ", bits: 2),
+))
+
+When an exception is taken, the current program counter is saved into EPC. The RFE instruction restores the program counter from this control register, atomically with restoring the mode bits (see @rs).
+
+]
+
+#aGroup[
+
+== EBADADDR (Exception Bad Address)
+
+#bitfield((
+  (name: "EXCEPTION BAD ADDRESS", bits: 32),
+))
+
+When a bus error or page fault exception is taken, EBADADDR is filled with the physical or virtual address, respectively, that caused the exception.
+
+]
+
+#aGroup[
+
+== TBMISSADDR (Translation Buffer Missed Address)
+
+#bitfield((
+  (name: "TRANSLATION BUFFER MISSED ADDRESS", bits: 32),
+))
+
+When a TB miss exception is taken, and the T bit is not set in RS, TBMISSADDR is filled with the virtual address that failed to match in the TB. If the T bit is set, however (i.e., the processor is already handling a TB miss), this CR is left alone. This CR, therefore, is not affected upon a nested TB miss exception, and always contains the missed virtual address that caused the first one.
+
+]
+
+#aGroup[
+
+== TBPC (Translation Buffer Miss Program Counter)
+
+#bitfield((
+  (name: "TRANSLATION BUFFER MISS PROGRAM COUNTER", bits: 30),
+  (name: "MBZ", bits: 2),
+))
+
+When a TB miss exception is taken, and the T bit is not set in RS, the current program counter is saved into TBPC. If the T bit is set, however (i.e., the processor is already handling a TB miss), this CR is left alone. This CR, therefore, is not affected upon a nested TB miss exception, and always contains the program counter that caused the first one. Additionally, if the T bit is set when the RFE instruction is executed, it will restore the program counter to the value of TBPC rather than that of EPC, allowing instant return to the original faulting instruction without having to potentially unwind several levels of nested TB misses. See @tbmiss for more details.
+
+]
+
+#aGroup[
+
+== SCRATCH0-4 (Arbitrary Scratch)
+
+#bitfield((
+  (name: "SCRATCH SPACE", bits: 302),
+))
+
+The system software can use the SCRATCH0 through SCRATCH4 control registers for anything. They are fully readable and writable and do not perform any action. The intended usage is to save general purpose registers to free them up as scratch within exception handlers, but other usages are also possible.
+
+]
+
+#aGroup[
+
+== ITBTAG/DTBTAG (Translation Buffer Tag) <tbtag>
+
+#bitfield((
+  (name: "ASID", bits: 12),
+  (name: "VIRTUAL PAGE NUMBER", bits: 20),
+))
+
+The ITBTAG and DTBTAG control registers contain the current ASID (Address Space ID), and the last virtual page number that incurred a TB miss. This control register also doubles as the uppermost 32 bits of the entry that is written to the TB when a write occurs to the ITBPTE or DTBPTE control register (see @tbpte and @tbmiss).  
+
+]
+
+#aGroup[
+
+== ITBINDEX/DTBINDEX (Translation Buffer Index) <tbindex>
+
+#bitfield((
+  (name: "TRANSLATION BUFFER INDEX", bits: 32),
+))
+
+The ITBINDEX and DTBINDEX control registers contain the next replacement index for the ITB and DTB, respectively. See @tbmiss for more information.
 
 ]
 

@@ -12,11 +12,11 @@ For many reasons, it is useful to be able to dynamically re-map sections of the 
 5. Virtual memory: Disk space can be transparently used as extra memory via swapping.
 ]
 
-The mechanism that the XR/17032 architecture uses for this is _paged_ virtual addressing, also known as "paging". In a paging scheme, the virtual address space is divided into evenly sized "pages" which can be individually re-mapped to arbitrary physical addresses. As this is a 32-bit architecture, the virtual addresses are 32 bits, leading to a 2\^32 = 4GB virtual address space. For simplicity, the only supported page size on the XR/17032 processor is 4096 bytes, or 4KB. This means that the virtual address space is evenly tiled by 4GB / 4KB = 1048576 pages.
+The mechanism that the XR/17032 architecture uses for this is _paged_ virtual addressing, also known as "paging". In a paging scheme, the virtual address space is divided into evenly sized "pages" which can be individually re-mapped to arbitrary physical addresses. As this is a 32-bit architecture, the virtual addresses are 32 bits, leading to a 4GB virtual address space. The only supported page size on the processor is 4096 bytes, or 4KB. This means that the virtual address space is evenly tiled by 1,048,576 pages.
 
-There is now a question of how to achieve this translation. If the translation of the virtual page to the physical page is performed by looking up a physically linear page table, with 32-bit table entries, it would therefore consume 1048576 \* 4 bytes = 4MB of memory (per process!), which is obviously unacceptable overhead.
+There is now a question of how to achieve this translation. If the translation of the virtual page to the physical page is performed by looking up a physically linear page table, with 32-bit table entries, it would therefore consume 4MB of memory per process, which is obviously unacceptable overhead.
 
-In many architectures, such as fox32 and Intel 386, the virtual address space is therefore managed by a two-level page table. The indices into the two levels of the page table are usually extracted from bit fields of the 32-bit virtual address in the manner shown:
+In many architectures, such as fox32 and i386, the virtual address space is therefore managed by a two-level page table. The indices into the two levels of the page table are usually extracted from bit fields of the 32-bit virtual address in the manner shown:
 
 #bitfield((
   (name: "LEVEL 2 INDEX", bits: 10),
@@ -26,7 +26,7 @@ In many architectures, such as fox32 and Intel 386, the virtual address space is
 
 The two 10-bit fields [22:31] and [12:21] contain the index into the level 2 table and the level 1 table, respectively.
 
-As these indices are 10 bits, and the entries are 4 bytes wide, these tables are both 2\^10 \* 4 = 4096 bytes in size.#footnote([Note that this is one reason for the usage of the 4KB page size: this is the page size for which the division of the virtual address into these three fields causes the tables to consume single page frames, which simplifies memory management.])
+As these indices are 10 bits, and the entries are 4 bytes wide, these tables are both 4096 bytes in size.#footnote([Note that this is one reason for the usage of the 4KB page size: this is the page size for which the division of the virtual address into these three fields causes the tables to consume single page frames, which simplifies memory management.])
 
 To translate a virtual address, the level 2 table is indexed first, yielding a 32-bit entry that contains the physical address of the level 1 table. This level 1 table is indexed next, yielding the 20-bit page frame number to which this virtual page is mapped. The 12-bit byte offset is appended to this, yielding the final 32-bit physical address to which the memory access should be performed. Note that each address space needs its own level 2 page table, which may point to up to 1024 level 1 page tables, which each map 1024 virtual pages to physical pages.
 
@@ -34,7 +34,7 @@ This scheme allows the omission of large sections of the page table that are not
 
 However, there is one major problem: you now have to perform two extra memory accesses for each memory access! The solution to this is, as with many things in computer science, a cache: processors that employ this scheme contain a translation buffer, or TB,#footnote([Also called a "translation lookaside buffer" or TLB.]) which is a small memory typically containing 8 to 64 cached page table entries. The TB is usually fully associative, meaning that it can be indexed directly by virtual address; the virtual page number is compared simultaneously with all of the entries in the TB, and if any of them contain a matching entry, it is returned. This can easily be done within a single cycle, and a hit in the TB avoids the cost of looking up the page tables.
 
-In the case that a needed virtual page translation is not cached in the TB, a "TB miss" occurs. On architectures like the aforementioned fox32 and Intel 386, this results in a page table walk done automatically by the hardware, which then inserts the page table entry in the TB. The instruction is then transparently re-executed and hopefully succeeds this time.
+In the case that a needed virtual page translation is not cached in the TB, a "TB miss" occurs. On architectures like fox32 and i386, this results in a page table walk done automatically by the hardware, which then inserts the page table entry in the TB. The instruction is then transparently re-executed and hopefully succeeds this time.
 
 This, still, has two major problems:
 
@@ -63,7 +63,7 @@ The XR/17032 architecture has two TBs. In fact, it could be seen as having two M
 
 When the M bit is set in the RS control register (see @rs), instruction fetches are translated by the ITB, and data accesses are translated by the DTB. The TB entries are each 64 bits wide. The upper 32 bits contain the TBTAG, which is the 12-bit ASID (Address Space ID) and 20-bit VPN (Virtual Page Number) that will match the TB entry. The lower 32 bits contain the TBPTE, containing the 20-bit physical page number along with some flag bits. The TBPTE is the "preferred" format for a page table entry. See @tbtag for the format of the TBTAG, and @tbpte for the format of the TBPTE.
 
-Something important to note is the difference between a TB miss exception, and a page fault exception. A TB miss exception occurs when a key consisting of a VPN and the current ASID fails to match in the TB. A page fault occurs when it _does_ match, but matches to a PTE whose V (valid) bit is clear. This is behavior that differs significantly from other architectures like Intel 386: it is possible to have a TB entry that matches a virtual page, but is invalid and causes a page fault.
+Something important to note is the difference between a TB miss exception, and a page fault exception. A TB miss exception occurs when a key consisting of a VPN and the current ASID fails to match in the TB. A page fault occurs when it _does_ match, but matches to a PTE whose V (valid) bit is clear. This is behavior that differs significantly from other architectures like i386: it is possible to have a TB entry that matches a virtual page, but is invalid and causes a page fault.
 
 This seemingly strange behavior makes more sense when you recall that we perform software TB miss handling. This behavior makes it possible to perform an optimization in which an invalid PTE can be "blindly" inserted into the TB, the faulting instruction can be re-executed, and a page fault then occurs. If this were not the case, the TB miss handler would need to have a branch to make sure that the PTE is valid before it inserts it into the TB, and branch to the page fault handler if it isn't. Adding a branch to what may be the hottest codepath in the entire system is a bad plan, as opposed to allowing invalid PTEs to match in the TB.
 
