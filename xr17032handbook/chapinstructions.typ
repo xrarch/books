@@ -7,8 +7,6 @@
     ("JUMP TARGET", 29),
     ("OP", 3),
   )]
-
-  #caption[Jump Format]
 ]
 
 #let branchFormat() = [
@@ -17,8 +15,6 @@
     ("REG", 5),
     ("OPCODE", 6),
   )]
-
-  #caption[Branch Format]
 ]
 
 #let immOpFormat() = [
@@ -28,8 +24,6 @@
     ("REG A", 5),
     ("OPCODE", 6),
   )]
-
-  #caption[Immediate Operate]
 ]
 
 #let regOpFormat() = [
@@ -42,8 +36,6 @@
     ("REG A", 5),
     ("OPCODE", 6),
   )]
-
-  #caption[Register Operate]
 ]
 
 #let jumpFormatTable() = [
@@ -164,11 +156,17 @@ Note that the assembly language also supports several "pseudo-instructions" for 
 
 #v(1fr)
 
+#caption[Jump Format]
+#v(-0.4em)
+
 #jumpFormat()
 
 #jumpFormatTable()
 
 #v(1fr)
+
+#caption[Branch Format]
+#v(-0.4em)
 
 #branchFormat()
 
@@ -180,6 +178,9 @@ Note that the assembly language also supports several "pseudo-instructions" for 
 
 #v(1fr)
 
+#caption[Immediate Operate Format]
+#v(-0.4em)
+
 #immOpFormat()
 
 #immOpTable()
@@ -189,6 +190,9 @@ Note that the assembly language also supports several "pseudo-instructions" for 
 #pagebreak(weak: true)
 
 #v(1fr)
+
+#caption[Register Operate Format]
+#v(-0.4em)
 
 #regOpFormat()
 
