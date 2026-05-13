@@ -198,7 +198,7 @@ There is one small snag, which is the second concerning case from earlier. If th
   ]
 )
 
-#caption[The effect of the T bit in the RS control register upon TB miss exception behavior.]
+#caption[The effect that the T bit in the RS control register has on the behavior of a TB miss exception.]
 
 ]
 
@@ -239,6 +239,6 @@ There is one small snag, which is the second concerning case from earlier. If th
   ]
 )
 
-#caption[The effect of the T bit in the RS control register upon page fault exception behavior.]
+#caption[The effect that the T bit in the RS control register has on the behavior of a page fault exception.]
 
 ]

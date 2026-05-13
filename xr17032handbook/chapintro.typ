@@ -6,13 +6,9 @@ XR/17032 is a 32-bit RISC architecture. This document describes it informally an
 
 The architecture’s registers and the virtual address space are 32-bit, and 32-bit values are the widest that it can load or store. It has no floating-point operations, and 64-bit wide arithmetic must be synthesized from smaller operations. This architecture is intended to be relatively simple; it includes only 60 instructions. In the interest of supporting fancy operating system design, XR/17032 supports paged virtual addressing, as well as a distinction between user mode and kernel mode. Like most RISCs, memory accesses must be aligned to their size or else they will incur an exception, and, likewise, all instructions are 32 bits (4 bytes) wide and must be aligned to 32-bit boundaries. The architecture is little-endian.
 
-== Registers
-The architecture defines 32 general purpose registers (GPRs), usable by any instruction that takes register operands. They are each 32 bits wide. The zeroth GPR, zero, almost always reads as zero and ignores writes. This is a common RISC design tactic that simplifies the encoding of many instructions.
+The architecture defines 32 general purpose registers (GPRs), usable by any instruction that takes register operands. They are each 32 bits wide. The zeroth GPR almost always reads as zero and ignores writes. This is a common RISC design tactic that simplifies the encoding of many instructions.
 
-== Control Registers
-The architecture defines 32 control registers (CRs). They are each 32 bits wide. As their name suggests, CRs are used to control the behavior of the processor, and are therefore only accessible via the privileged kernel mode instructions MTCR and MFCR.
-
-See @control for a more detailed description of each control register.
+The architecture defines 32 control registers (CRs). They are each 32 bits wide. As their name suggests, CRs are used to control the behavior of the processor, and are therefore only accessible via the privileged kernel mode instructions MTCR and MFCR. See @control for a more detailed description of each control register.
 
 == Reset
 
