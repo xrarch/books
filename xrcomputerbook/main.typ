@@ -17,7 +17,6 @@
 		heading
 		h(1fr)
 		document.title
-		line(length: 100%, stroke: 1pt)
 	},
 	paper: "us-letter",
 )
@@ -36,9 +35,19 @@
   ],
 ))
 #show raw.where(block: true): set text(codeFontColor)
-#set heading(numbering: "1.1")
+#set heading(numbering: "1.1.")
 #set par(justify: true)
 #show heading: set text(headingColor, font: titleFont)
+#show heading: set block(below: 1em)
+
+#show heading.where(level: 1): it => {
+  colbreak(weak: true)
+  align(right, [
+  	#text(fill: headingColor, it)
+  ])
+}
+
+#show heading.where(level: 1): set text(size: 1.5em)
 
 #include "titlepage.typ"
 
@@ -50,6 +59,7 @@
 #include "toc.typ"
 
 #pagebreak(weak: true)
+
 
 #contentStartedState.update(true)
 

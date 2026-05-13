@@ -136,8 +136,8 @@ When the event type indicates mouse movement, the change in mouse position is in
 
 The upper 16 bits of this value contain the change in X position, and the lower 16 bits contain the change in Y position. These are both 16-bit signed (two's complement) integers. X represents "left-right" and Y represents "up-down". A negative change indicates a movement to the "left" or "up", and a positive change represents a movement to the "right" or "down".
 
-#bitfield((
-  (name: "Delta X", bits: 16),
-  (name: "Delta Y", bits: 16),
-))
+#box[#format(
+  ("Delta X", 16),
+  ("Delta Y", 16),
+)]
 #caption[Mouse delta format.]
