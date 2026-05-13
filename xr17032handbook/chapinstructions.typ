@@ -266,7 +266,7 @@ Note that the assembly language also supports several "pseudo-instructions" for 
 
 #pagebreak(weak: true)
 
-== Jump Format
+== Jump Listing
 
 #jumpFormat()
 
@@ -310,7 +310,7 @@ The `J` instruction provides a way to do a long-distance absolute jump to anothe
 #pagebreak(weak: true)
 
 #aGroup[
-== Branch Format
+== Branch Listing
 
 #branchFormat()
 
@@ -378,7 +378,7 @@ The branch on parity instructions perform a relative jump if Register A has the 
 
 #pagebreak(weak: true)
 
-== Immediate Operate Format
+== Immediate Operate Listing
 
 #immOpFormat()
 
@@ -557,7 +557,7 @@ Unlike other immediate operate format instructions, this instruction's Register 
 
 #pagebreak(weak: true)
 
-== Register Operate Format
+== Register Operate Listing
 
 #regOpFormat()
 
@@ -1008,7 +1008,7 @@ This instruction "pops" the "mode stack" of the RS control register (see @rs), a
 
 #pagebreak(weak: true)
 
-== Pseudo-Instructions <pseudoinstructions>
+== Pseudo-Instruction Listing <pseudoinstructions>
 
 Some operations are synthesized out of simpler instructions, but are common or inconvenient enough to warrant a "pseudo-instruction", a fake instruction that the assembler converts into a corresponding hardware instruction sequence. The following is a (not necessarily exhaustive, depending on the assembler) list of common pseudo-instructions.
 
