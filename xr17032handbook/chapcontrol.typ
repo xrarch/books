@@ -4,7 +4,7 @@
 
 == Introduction <controlregs>
 
-The behavior of the processor is primarily controlled by a small set of control registers (CRs).
+The behavior of the processor is primarily controlled by a small set of control registers (CRs). They are explained below. Note that some CRs whose function is very similar but whose names differ by only a character are de-duplicated into a single section whose name omits that character. For example, DCACHECTRL and ICACHECTRL are both explained in the CACHECTRL section.
 
 #aGroup[
 
@@ -47,17 +47,17 @@ The behavior of the processor is primarily controlled by a small set of control 
 
 == RS (Processor Status) <rs>
 
-#bitfield((
-  (name: "ECAUSE", bits: 4),
-  (name: "MBZ", bits: 4),
-  (name: "OLD OLD MODE", bits: 8),
-  (name: "OLD MODE", bits: 8),
-  (name: "MBZ", bits: 4),
-  (name: "T", bits: 1),
-  (name: "M", bits: 1),
-  (name: "I", bits: 1),
-  (name: "U", bits: 1),
-))
+#box[#format(
+  ("ECAUSE", 4),
+  ("MBZ", 4),
+  ("OLD OLD MODE", 8),
+  ("OLD MODE", 8),
+  ("MBZ", 4),
+  ("T", 1),
+  ("M", 1),
+  ("I", 1),
+  ("U", 1),
+)]
 
 The RS control register contains a three-deep "stack" of mode bits (the top of which contains the primary mode bits that control the state of the processor). The four ECAUSE bits identify the cause of the last exception.
 
@@ -124,10 +124,10 @@ Modifying the current mode bits must be done with a read-modify-write procedure;
 
 == EB (Exception Block Base) <exceptionblock>
 
-#bitfield((
-  (name: "EXCEPTION BLOCK BASE", bits: 20),
-  (name: "MBZ", bits: 12),
-))
+#box[#format(
+  ("EXCEPTION BLOCK BASE", 20),
+  ("MBZ", 12),
+)]
 
 The EB control register indicates the base address of the exception block.
 
@@ -171,17 +171,17 @@ Note that as the TB miss handlers themselves reside in the exception block, the 
 
 #aGroup[
 
-== ITBPTE/DTBPTE (Translation Buffer Page Table Entry) <tbpte>
+== TBPTE (Translation Buffer Page Table Entry) <tbpte>
 
-#bitfield((
-  (name: "AVAILABLE", bits: 7),
-  (name: "PAGE FRAME NUMBER", bits: 20),
-  (name: "G", bits: 1),
-  (name: "N", bits: 1),
-  (name: "K", bits: 1),
-  (name: "W", bits: 1),
-  (name: "V", bits: 1),
-))
+#box[#format(
+  ("AVAILABLE", 7),
+  ("PAGE FRAME NUMBER", 20),
+  ("G", 1),
+  ("N", 1),
+  ("K", 1),
+  ("W", 1),
+  ("V", 1),
+)]
 
 When written, the ITBPTE and DTBPTE control registers will cause an entry to be written to the ITB or DTB, respectively. The upper 32 bits of the entry are taken from the current value of ITBTAG or DTBTAG, and the lower 32 bits are taken from the value written to this control register.
 
@@ -236,38 +236,38 @@ The low 32 bits of a TB entry are its "value", indicating the page frame that th
 
 #aGroup[
 
-== ITBCTRL/DTBCTRL (Translation Buffer Control) <tbctrl>
+== TBCTRL (Translation Buffer Control) <tbctrl>
 
-#bitfield((
-  (name: "IGNORED", bits: 30),
-  (name: "1", bits: 1),
-  (name: "1", bits: 1),
-))
+#box[#format(
+  ("IGNORED", 30),
+  ("1", 1),
+  ("1", 1),
+)]
 
 #caption[TBCTRL WRITE: CLEAR ALL]
 
-#bitfield((
-  (name: "IGNORED", bits: 30),
-  (name: "1", bits: 1),
-  (name: "0", bits: 1),
-))
+#box[#format(
+  ("IGNORED", 30),
+  ("1", 1),
+  ("0", 1),
+)]
 
 #caption[TBCTRL WRITE: CLEAR PRIVATE]
 
-#bitfield((
-  (name: "IGNORED", bits: 30),
-  (name: "0", bits: 1),
-  (name: "1", bits: 1),
-))
+#box[#format(
+  ("IGNORED", 30),
+  ("0", 1),
+  ("1", 1),
+)]
 
 #caption[TBCTRL WRITE: CLEAR NON-WIRED]
 
-#bitfield((
-  (name: "VIRTUAL PAGE NUMBER", bits: 20),
-  (name: "IGNORED", bits: 10),
-  (name: "0", bits: 1),
-  (name: "0", bits: 1),
-))
+#box[#format(
+  ("VIRTUAL PAGE NUMBER", 20),
+  ("IGNORED", 10),
+  ("0", 1),
+  ("0", 1),
+)]
 
 #caption[TBCTRL WRITE: INVALIDATE ONE]
 
@@ -319,35 +319,35 @@ Note that reads from these control registers yield unpredictable (non-useful!) r
 
 #aGroup[
 
-== ICACHECTRL/DCACHECTRL (Cache Control) <cachectrl>
+== CACHECTRL (Cache Control) <cachectrl>
 
-#bitfield((
-  (name: "UNDEFINED", bits: 8),
-  (name: "LINE SIZE LOG", bits: 8),
-  (name: "WAY COUNT LOG", bits: 8),
-  (name: "LINE COUNT LOG", bits: 8),
-))
+#box[#format(
+  ("UNDEFINED", 8),
+  ("LINE SIZE LOG", 8),
+  ("WAY COUNT LOG", 8),
+  ("LINE COUNT LOG", 8),
+)]
 
 #caption[CACHECTRL READ]
 
-#bitfield((
-  (name: "IGNORED", bits: 30),
-  (name: "1", bits: 1),
-  (name: "1", bits: 1),
-))
+#box[#format(
+  ("IGNORED", 30),
+  ("1", 1),
+  ("1", 1),
+)]
 
 #caption[CACHECTRL WRITE: CLEAR ALL]
 
-#bitfield((
-  (name: "PAGE FRAME NUMBER", bits: 20),
-  (name: "IGNORED", bits: 10),
-  (name: "1", bits: 1),
-  (name: "0", bits: 1),
-))
+#box[#format(
+  ("PAGE FRAME NUMBER", 20),
+  ("IGNORED", 10),
+  ("1", 1),
+  ("0", 1),
+)]
 
 #caption[CACHECTRL WRITE: CLEAR PAGE]
 
-Reads from the ICACHECTRL and DCACHECTRL control registers yield a 32-bit value whose bit fields indicate the parameters of the Icache and Dcache respectively; the number of lines in the cache, the number of ways (i.e. the set associativity) of the cache, and the size of a cache line are each given, in the form of a binary logarithm. I.e., if the line count field contains 8, then there are 2\^8 = 256 lines in the cache.
+Reads from the ICACHECTRL and DCACHECTRL control registers yield a 32-bit value whose bit fields indicate the parameters of the Icache and Dcache respectively; the number of lines in the cache, the number of ways (i.e. the set associativity) of the cache, and the size of a cache line are each given, in the form of a binary logarithm. I.e., if the line count field contains 8, then there are 256 lines in the cache.
 
 ]
 
@@ -385,9 +385,9 @@ Writes to the ICACHECTRL and DCACHECTRL control registers cause various invalida
 
 == WHAMI (Who Am I)
 
-#bitfield((
-  (name: "PROCESSOR ID", bits: 32),
-))
+#box[#format(
+  ("PROCESSOR ID", 32),
+)]
 
 In a multiprocessor system, WHAMI contains a numeric ID which is unique to each processor in the system. It should be in a range of \[0, MAXPROC-1\], where MAXPROC is the maximum number of processors supported by the platform. Therefore, on a uniprocessor system, it should always contain zero.
 
@@ -397,10 +397,10 @@ In a multiprocessor system, WHAMI contains a numeric ID which is unique to each 
 
 == EPC (Exception Program Counter)
 
-#bitfield((
-  (name: "EXCEPTION PROGRAM COUNTER", bits: 30),
-  (name: "MBZ", bits: 2),
-))
+#box[#format(
+  ("EXCEPTION PROGRAM COUNTER", 30),
+  ("MBZ", 2),
+)]
 
 When an exception is taken, the current program counter is saved into EPC. The RFE instruction restores the program counter from this control register, atomically with restoring the mode bits (see @rs).
 
@@ -410,9 +410,9 @@ When an exception is taken, the current program counter is saved into EPC. The R
 
 == EBADADDR (Exception Bad Address)
 
-#bitfield((
-  (name: "EXCEPTION BAD ADDRESS", bits: 32),
-))
+#box[#format(
+  ("EXCEPTION BAD ADDRESS", 32),
+)]
 
 When a bus error or page fault exception is taken, EBADADDR is filled with the physical or virtual address, respectively, that caused the exception.
 
@@ -422,9 +422,9 @@ When a bus error or page fault exception is taken, EBADADDR is filled with the p
 
 == TBMISSADDR (Translation Buffer Missed Address)
 
-#bitfield((
-  (name: "TRANSLATION BUFFER MISSED ADDRESS", bits: 32),
-))
+#box[#format(
+  ("TRANSLATION BUFFER MISSED ADDRESS", 32),
+)]
 
 When a TB miss exception is taken, and the T bit is not set in RS, TBMISSADDR is filled with the virtual address that failed to match in the TB. If the T bit is set, however (i.e., the processor is already handling a TB miss), this CR is left alone. This CR, therefore, is not affected upon a nested TB miss exception, and always contains the missed virtual address that caused the first one.
 
@@ -434,10 +434,10 @@ When a TB miss exception is taken, and the T bit is not set in RS, TBMISSADDR is
 
 == TBPC (Translation Buffer Miss Program Counter)
 
-#bitfield((
-  (name: "TRANSLATION BUFFER MISS PROGRAM COUNTER", bits: 30),
-  (name: "MBZ", bits: 2),
-))
+#box[#format(
+  ("TRANSLATION BUFFER MISS PROGRAM COUNTER", 30),
+  ("MBZ", 2),
+)]
 
 When a TB miss exception is taken, and the T bit is not set in RS, the current program counter is saved into TBPC. If the T bit is set, however (i.e., the processor is already handling a TB miss), this CR is left alone. This CR, therefore, is not affected upon a nested TB miss exception, and always contains the program counter that caused the first one. Additionally, if the T bit is set when the RFE instruction is executed, it will restore the program counter to the value of TBPC rather than that of EPC, allowing instant return to the original faulting instruction without having to potentially unwind several levels of nested TB misses. See @tbmiss for more details.
 
@@ -447,9 +447,9 @@ When a TB miss exception is taken, and the T bit is not set in RS, the current p
 
 == SCRATCH0-4 (Arbitrary Scratch)
 
-#bitfield((
-  (name: "SCRATCH SPACE", bits: 302),
-))
+#box[#format(
+  ("SCRATCH SPACE", 32),
+)]
 
 The system software can use the SCRATCH0 through SCRATCH4 control registers for anything. They are fully readable and writable and do not perform any action. The intended usage is to save general purpose registers to free them up as scratch within exception handlers, but other usages are also possible.
 
@@ -457,12 +457,12 @@ The system software can use the SCRATCH0 through SCRATCH4 control registers for 
 
 #aGroup[
 
-== ITBTAG/DTBTAG (Translation Buffer Tag) <tbtag>
+== TBTAG (Translation Buffer Tag) <tbtag>
 
-#bitfield((
-  (name: "ASID", bits: 12),
-  (name: "VIRTUAL PAGE NUMBER", bits: 20),
-))
+#box[#format(
+  ("ASID", 12),
+  ("VIRTUAL PAGE NUMBER", 20),
+)]
 
 The ITBTAG and DTBTAG control registers contain the current ASID (Address Space ID), and the last virtual page number that incurred a TB miss. This control register also doubles as the uppermost 32 bits of the entry that is written to the TB when a write occurs to the ITBPTE or DTBPTE control register (see @tbpte and @tbmiss).  
 
@@ -470,11 +470,11 @@ The ITBTAG and DTBTAG control registers contain the current ASID (Address Space 
 
 #aGroup[
 
-== ITBINDEX/DTBINDEX (Translation Buffer Index) <tbindex>
+== TBINDEX (Translation Buffer Index) <tbindex>
 
-#bitfield((
-  (name: "TRANSLATION BUFFER INDEX", bits: 32),
-))
+#box[#format(
+  ("TRANSLATION BUFFER INDEX", 32),
+)]
 
 The ITBINDEX and DTBINDEX control registers contain the next replacement index for the ITB and DTB, respectively. See @tbmiss for more information.
 
@@ -482,20 +482,20 @@ The ITBINDEX and DTBINDEX control registers contain the next replacement index f
 
 #aGroup[
 
-== ITBADDR/DTBADDR (Translation Buffer Miss PTE Address)
+== TBADDR (Translation Buffer Miss PTE Address)
 
-#bitfield((
-  (name: "PAGE TABLE BASE", bits: 10),
-  (name: "PRECALCULATED PTE OFFSET", bits: 20),
-  (name: "0", bits: 1),
-  (name: "0", bits: 1),
-))
+#box[#format(
+  ("PAGE TABLE BASE", 10),
+  ("PRECALCULATED PTE OFFSET", 20),
+  ("0", 1),
+  ("0", 1),
+)]
 
 The ITBADDR and DTBADDR control registers exist solely for the benefit of TB miss routines, and serve no other functional purpose. When a TB miss exception is taken, this control register is filled with the virtual address of the PTE to load from the virtually linear page table, saving a TB miss handler that implements this scheme from having to calculate this itself.
 
 ]
 
-System software should write the upper 10 bits of this control register with the upper 10 bits of the virtual address of a virtually linear page table. As this scheme has no way to handle a page table base containing non-zero bits in the low 22 bits, the page table base should be naturally aligned to the size of the page table, i.e. 2\^22 = 4MB-aligned.
+System software should write the upper 10 bits of this control register with the upper 10 bits of the virtual address of a virtually linear page table. As this scheme has no way to handle a page table base containing non-zero bits in the low 22 bits, the page table base should be naturally aligned to the size of the page table, i.e. 4MB-aligned.
 
 When a TB miss exception occurs, the low 22 bits of this control register are filled by the processor with the index at which the relevant PTE can be found within the virtually linear page table. As the page table is a linear array, this index is trivial to calculate; it consists simply of the upper 20 bits of the missed virtual address.
 

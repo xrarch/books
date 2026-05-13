@@ -1,45 +1,47 @@
 #import "config.typ": *
 
+#let separator = []
+
 #let jumpFormat() = [
-  #bitfield((
-    (name: "JUMP TARGET", bits: 29),
-    (name: "OP", bits: 3),
-  ))
+  #box[#format(
+    ("JUMP TARGET", 29),
+    ("OP", 3),
+  )]
 
   #caption[Jump Format]
 ]
 
 #let branchFormat() = [
-  #bitfield((
-    (name: "BRANCH OFFSET", bits: 21),
-    (name: "REG", bits: 5),
-    (name: "OPCODE", bits: 6),
-  ))
+  #box[#format(
+    ("BRANCH OFFSET", 21),
+    ("REG", 5),
+    ("OPCODE", 6),
+  )]
 
   #caption[Branch Format]
 ]
 
 #let immOpFormat() = [
-  #bitfield((
-    (name: "IMMEDIATE VALUE", bits: 16),
-    (name: "REG B", bits: 5),
-    (name: "REG A", bits: 5),
-    (name: "OPCODE", bits: 6),
-  ))
+  #box[#format(
+    ("IMMEDIATE VALUE", 16),
+    ("REG B", 5),
+    ("REG A", 5),
+    ("OPCODE", 6),
+  )]
 
   #caption[Immediate Operate]
 ]
 
 #let regOpFormat() = [
-  #bitfield((
-    (name: "FUNCT", bits: 4),
-    (name: "SHF", bits: 2),
-    (name: "SHAMT", bits: 5),
-    (name: "REG C", bits: 5),
-    (name: "REG B", bits: 5),
-    (name: "REG A", bits: 5),
-    (name: "OPCODE", bits: 6),
-  ))
+  #box[#format(
+    ("FUNCT", 4),
+    ("SHF", 2),
+    ("SHAMT", 5),
+    ("REG C", 5),
+    ("REG B", 5),
+    ("REG A", 5),
+    ("OPCODE", 6),
+  )]
 
   #caption[Register Operate]
 ]
@@ -47,7 +49,7 @@
 #let jumpFormatTable() = [
   #roundedTable(
     columns: (auto, auto, 1fr),
-    [Opcode], [Mnemonic], [Function],
+    [Opcode], [Mnemonic], [Name],
     [`0x6`], [`J IMM29`], [Jump],
     [`0x7`], [`JAL IMM29`], [Jump And Link],
   )
@@ -56,7 +58,7 @@
 #let branchFormatTable() = [
   #roundedTable(
     columns: (auto, auto, 1fr),
-    [Opcode], [Mnemonic], [Function],
+    [Opcode], [Mnemonic], [Name],
     [`0x3D`], [`BEQ RA, IMM21`], [Branch Equal],
     [`0x35`], [`BNE RA, IMM21`], [Branch Not Equal],
     [`0x2D`], [`BLT RA, IMM21`], [Branch Less Than],
@@ -71,7 +73,7 @@
 #let immOpTable() = [
   #roundedTable(
     columns: (auto, auto, 1fr),
-    [Opcode], [Mnemonic], [Function],
+    [Opcode], [Mnemonic], [Name],
     [`0x3C`], [`ADDI RA, RB, IMM16`], [Add Immediate],
     [`0x34`], [`SUBI RA, RB, IMM16`], [Subtract Immediate],
     [`0x2C`], [`SLTI RA, RB, IMM16`], [Set Less Than Immediate],
@@ -94,68 +96,6 @@
   )
 ]
 
-#let regOpTable() = [
-  #aGroup[
-    #microHeading("Major Opcode 111001 (0x39)")
-
-    #roundedTable(
-      columns: (auto, auto, 1fr),
-      [Funct], [Mnemonic], [Function],
-      [`0xF`], [`MOV RA, BYTE [RB + RC xSH IMM5]`], [Load Byte, Register Offset],
-      [`0xE`], [`MOV RA, INT [RB + RC xSH IMM5]`], [Load Int, Register Offset],
-      [`0xD`], [`MOV RA, LONG [RB + RC xSH IMM5]`], [Load Long, Register Offset],
-      [`0xB`], [`MOV BYTE [RB + RC xSH IMM5], RA`], [Store Byte, Register Offset],
-      [`0xA`], [`MOV INT [RB + RC xSH IMM5], RA`], [Store Int, Register Offset],
-      [`0x9`], [`MOV LONG [RB + RC xSH IMM5], RA`], [Store Long, Register Offset],
-      [`0x8`], [`LSH RA, RC, RB`], [Left Shift By Register Amount],
-      [`0x8`], [`RSH RA, RC, RB`], [Logical Right Shift By Register Amount],
-      [`0x8`], [`ASH RA, RC, RB`], [Arithmetic Right Shift By Register Amount],
-      [`0x8`], [`ROR RA, RC, RB`], [Rotate Right By Register Amount],
-      [`0x7`], [`ADD RA, RB, RC xSH IMM5`], [Add Register],
-      [`0x6`], [`SUB RA, RB, RC xSH IMM5`], [Subtract Register],
-      [`0x5`], [`SLT RA, RB, RC xSH IMM5`], [Set Less Than Register],
-      [`0x4`], [`SLT SIGNED RA, RB, RC xSH IMM5`], [Set Less Than Register, Signed],
-      [`0x3`], [`AND RA, RB, RC xSH IMM5`], [And Register],
-      [`0x2`], [`XOR RA, RB, RC xSH IMM5`], [Xor Register],
-      [`0x1`], [`OR RA, RB, RC xSH IMM5`], [Or Register],
-      [`0x0`], [`NOR RA, RB, RC xSH IMM5`], [Nor Register],
-    )
-  ]
-
-  #aGroup[
-    #microHeading("Major Opcode 110001 (0x31)")
-
-    #roundedTable(
-      columns: (auto, auto, 1fr),
-      [Funct], [Mnemonic], [Function],
-      [`0xF`], [`MUL RA, RB, RC`], [Multiply],
-      [`0xD`], [`DIV RA, RB, RC`], [Divide],
-      [`0xC`], [`DIV SIGNED RA, RB, RC`], [Divide, Signed],
-      [`0xB`], [`MOD RA, RB, RC`], [Modulo],
-      [`0x9`], [`LL RA, RB`], [Load Locked],
-      [`0x8`], [`SC RA, RB, RC`], [Store Conditional],
-      [`0x6`], [`PAUSE`], [Pause],
-      [`0x3`], [`MB`], [Memory Barrier],
-      [`0x2`], [`WMB`], [Write Memory Barrier],
-      [`0x1`], [`BRK`], [Breakpoint],
-      [`0x0`], [`SYS`], [System Service],
-    )
-  ]
-
-  #aGroup[
-    #microHeading("Major Opcode 101001 (0x29, Privileged)")
-
-    #roundedTable(
-      columns: (auto, auto, 1fr),
-      [Funct], [Mnemonic], [Function],
-      [`0xF`], [`MFCR RA, CR`], [Move From Control Register],
-      [`0xE`], [`MTCR CR, RA`], [Move To Control Register],
-      [`0xC`], [`HLT`], [Halt Until Next Interrupt],
-      [`0xB`], [`RFE`], [Return From Exception],
-    )
-  ]
-]
-
 #let instructionDetailsTable(
   longName,
   opcodeName,
@@ -165,8 +105,8 @@
   #aGroup[
     #roundedTable(
       columns: (auto, auto, 1fr),
-      [Mnemonic], [#opcodeName], [Name],
-      [#mnemonic], [#opcode], [#longName],
+      [#opcodeName], [Mnemonic], [Name],
+      [#opcode], [#mnemonic], [#longName],
     )
   ]
 ]
@@ -232,16 +172,12 @@ The format for the absolute jump instructions consists of a 3-bit opcode and a 2
 
 Note that this opcode field is unique; all other formats have a 6-bit opcode field. This small opcode is to allow the jump target to cover a 2GB range. This is accomplished by shifting the jump target left by 2, which produces a 31-bit address, and then taking the uppermost bit from that of the current program counter. This allows jumping anywhere within a 2GB userspace or kernel space in a single instruction.
 
-#pagebreak(weak: true)
-
-=== Listing
-
 #instructionDetails(
   [Jump And Link],
   [Opcode],
-  [111 (0x07)],
+  [`111/0x07`],
   [`JAL IMM29`],
-  [```
+  [```pas
 Reg[31] = PC + 4
 PC = (IMM29 << 2) | (PC & 0x80000000)
 ```],
@@ -253,14 +189,14 @@ Note that if the called function needs to call another function, it must be sure
   ]
 )
 
-#pagebreak(weak: true)
+#separator
 
 #instructionDetails(
   [Jump],
   [Opcode],
-  [110 (0x06)],
+  [`110/0x06`],
   [`J IMM29`],
-  [```
+  [```pas
 PC = (IMM29 << 2) | (PC & 0x80000000)
 ```],
   [None.],
@@ -282,54 +218,23 @@ The format for the branch instructions consists of a 6-bit opcode, a 5-bit regis
 
 There is only one register field in order to maximize the size of the branch offset. This register is compared against zero in various ways. If the branch is taken, then the branch offset is shifted left by two, sign extended, and added to the current program counter. This gives a range of $plus.minus$1M instructions, or $plus.minus$4MB. As this covers the entire text section of most programs, and certainly covers any individual routine you're likely to find, this alleviates some burden that afflicts most RISC toolchains, as cross-procedure jumps will usually be done with absolute jumps anyway.
 
-#pagebreak(weak: true)
+#v(1fr)
 
-=== Listing
-
-#instructionDetailsTable(
-  [Branch Equal],
-  [Opcode],
-  [111101 (0x3D)],
-  [`BEQ RA, IMM21`]
-)
-
-#instructionDetailsTable(
-  [Branch Not Equal],
-  [Opcode],
-  [110101 (0x35)],
-  [`BNE RA, IMM21`]
-)
-
-#instructionDetailsTable(
-  [Branch Less Than],
-  [Opcode],
-  [101101 (0x2D)],
-  [`BLT RA, IMM21`]
-)
-
-#instructionDetailsTable(
-  [Branch Greater Than],
-  [Opcode],
-  [100101 (0x25)],
-  [`BGT RA, IMM21`]
-)
-
-#instructionDetailsTable(
-  [Branch Less Than Or Equal],
-  [Opcode],
-  [011101 (0x1D)],
-  [`BLE RA, IMM21`]
-)
-
-#instructionDetailsTable(
-  [Branch Greater Than Or Equal],
-  [Opcode],
-  [010101 (0x15)],
-  [`BGE RA, IMM21`]
-)
+#aGroup[
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Opcode], [Mnemonic], [Name],
+    [`111101/0x3D`], [`BEQ RA, IMM21`], [Branch Equal],
+    [`110101/0x35`], [`BNE RA, IMM21`], [Branch Not Equal],
+    [`101101/0x2D`], [`BLT RA, IMM21`], [Branch Less Than],
+    [`100101/0x25`], [`BGT RA, IMM21`], [Branch Greater Than],
+    [`011101/0x1D`], [`BLE RA, IMM21`], [Branch Less Than Or Equal],
+    [`010101/0x15`], [`BGE RA, IMM21`], [Branch Greater Than Or Equal],
+  )
+]
 
 #instructionDetailsSecondPart(
-  [```
+  [```pas
 IF Reg[RA] COND 0 THEN
   PC += SignExtend(IMM21) << 2
 END
@@ -340,24 +245,23 @@ The conditional branch instructions perform a relative jump if the given signed 
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
 
-#instructionDetailsTable(
-  [Branch Parity Even],
-  [Opcode],
-  [001101 (0x0D)],
-  [`BPE RA, IMM21`]
-)
+#v(1fr)
 
-#instructionDetailsTable(
-  [Branch Parity Odd],
-  [Opcode],
-  [000101 (0x05)],
-  [`BPO RA, IMM21`]
-)
+#aGroup[
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Opcode], [Mnemonic], [Name],
+    [`001101/0x0D`], [`BPE RA, IMM21`], [Branch Parity Even],
+    [`000101/0x05`], [`BPO RA, IMM21`], [Branch Parity Odd],
+  )
+]
 
 #instructionDetailsSecondPart(
-  [```
+  [```pas
 IF Reg[RA] & 0x1 == ? THEN
   PC += SignExtend(IMM21) << 2
 END
@@ -367,6 +271,8 @@ END
 The branch on parity instructions perform a relative jump if Register A has the given parity. That is, for BPE, a test is made whether the low bit is clear. For BPO, a test is made whether the low bit is set.
   ]
 )
+
+#v(1fr)
 
 #pagebreak(weak: true)
 
@@ -378,61 +284,25 @@ The format for the immediate operate instructions consists of a 6-bit opcode, tw
 
 Note that the immediate value may or may not be sign extended, depending on the instruction.
 
-#pagebreak(weak: true)
+#v(1fr)
 
-=== Listing, 100 Group
-
-#instructionDetailsTable(
-  [Add Immediate],
-  [Opcode],
-  [111100 (0x3C)],
-  [`ADDI RA, RB, IMM16`],
-)
-
-#instructionDetailsTable(
-  [Subtract Immediate],
-  [Opcode],
-  [110100 (0x34)],
-  [`SUBI RA, RB, IMM16`],
-)
-
-#instructionDetailsTable(
-  [Set Less Than Immediate],
-  [Opcode],
-  [101100 (0x2C)],
-  [`SLTI RA, RB, IMM16`],
-)
-
-#instructionDetailsTable(
-  [Set Less Than Immediate, Signed],
-  [Opcode],
-  [100100 (0x24)],
-  [`SLTI SIGNED RA, RB, IMM16`],
-)
-
-#instructionDetailsTable(
-  [And Immediate],
-  [Opcode],
-  [011100 (0x1C)],
-  [`ANDI RA, RB, IMM16`],
-)
-
-#instructionDetailsTable(
-  [Xor Immediate],
-  [Opcode],
-  [010100 (0x14)],
-  [`XORI RA, RB, IMM16`],
-)
-
-#instructionDetailsTable(
-  [Or Immediate],
-  [Opcode],
-  [001100 (0x0C)],
-  [`ORI RA, RB, IMM16`],
-)
+#aGroup[
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Opcode], [Mnemonic], [Name],
+    [`111100/0x3C`], [`ADDI RA, RB, IMM16`], [Add Immediate],
+    [`110100/0x34`], [`SUBI RA, RB, IMM16`], [Subtract Immediate],
+    [`101100/0x2C`], [`SLTI RA, RB, IMM16`], [Set Less Than Immediate],
+    [`100100/0x24`], [`SLTI SIGNED RA, RB, IMM16`], [Set Less Than Immediate, Signed],
+    [`011100/0x1C`], [`ANDI RA, RB, IMM16`], [And Immediate],
+    [`010100/0x14`], [`XORI RA, RB, IMM16`], [Xor Immediate],
+    [`001100/0x0C`], [`ORI RA, RB, IMM16`], [Or Immediate],
+    [`000100/0x04`], [`LUI RA, RB, IMM16`], [Load Upper Immediate],
+  )
+]
 
 #instructionDetailsSecondPart(
-  [```
+  [```pas
 Reg[RA] = Reg[RB] OP IMM16
   ```],
   [None.],
@@ -440,52 +310,29 @@ Reg[RA] = Reg[RB] OP IMM16
 The immediate operate instructions perform the given operation between the contents of Register B and a 16-bit immediate value, which is zero-extended, except for `SLTI SIGNED` where it is sign-extended. The result is stored in Register A.
 
 In the case of the comparison instructions, a 1 is stored if the comparison is true, and a 0 otherwise.
+
+In the case of LUI, the operation performed is a bitwise OR. However, the immediate is first shifted 16 bits to the left, enabling the loading of large constants whose low 16 bits are clear. LUI also enables the synthesis of pseudo-instructions for loading arbitrary large constants.
   ]
 )
 
-#pagebreak(weak: true)
-
-#instructionDetails(
-  [Load Upper Immediate],
-  [Opcode],
-  [000100 (0x04)],
-  [`LUI RA, RB, IMM16`],
-  [```
-Reg[RA] = Reg[RB] | (IMM16 << 16)
-```],
-  [None.],
-  [
-The LUI instruction performs a bitwise OR between the contents of Register B and a zero-extended 16-bit immediate value which is shifted 16 bits to the left, storing the result in Register A.
-  ]
-)
+#v(1fr)
 
 #pagebreak(weak: true)
 
-=== Listing, 011 Group
+#v(1fr)
 
-#instructionDetailsTable(
-  [Load Byte, Immediate Offset],
-  [Opcode],
-  [111011 (0x3B)],
-  [`MOV RA, BYTE [RB + IMM16]`],
-)
-
-#instructionDetailsTable(
-  [Load Int, Immediate Offset],
-  [Opcode],
-  [110011 (0x33)],
-  [`MOV RA, INT [RB + IMM16]`],
-)
-
-#instructionDetailsTable(
-  [Load Long, Immediate Offset],
-  [Opcode],
-  [101011 (0x2B)],
-  [`MOV RA, LONG [RB + IMM16]`],
-)
+#aGroup[
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Opcode], [Mnemonic], [Name],
+    [`111011/0x3B`], [`MOV RA, BYTE [RB + IMM16]`], [Load Byte, Immediate Offset],
+    [`110011/0x33`], [`MOV RA, INT [RB + IMM16]`], [Load Int, Immediate Offset],
+    [`101011/0x2B`], [`MOV RA, LONG [RB + IMM16]`], [Load Long, Immediate Offset],
+  )
+]
 
 #instructionDetailsSecondPart(
-  [```
+  [```pas
 Reg[RA] = Load(Reg[RB] + (IMM16 * width), width)
   ```],
   [#box[
@@ -499,33 +346,24 @@ The load instructions read a value into Register A from the address stored withi
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
 
-=== Listing, 010 Group
+#v(1fr)
 
-#instructionDetailsTable(
-  [Store Byte, Immediate Offset],
-  [Opcode],
-  [111010 (0x3A)],
-  [`MOV BYTE [RA + IMM16], RB`],
-)
-
-#instructionDetailsTable(
-  [Store Int, Immediate Offset],
-  [Opcode],
-  [110010 (0x32)],
-  [`MOV INT [RA + IMM16], RB`],
-)
-
-#instructionDetailsTable(
-  [Store Long, Immediate Offset],
-  [Opcode],
-  [101010 (0x2A)],
-  [`MOV LONG [RA + IMM16], RB`],
-)
+#aGroup[
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Opcode], [Mnemonic], [Name],
+    [`111010/0x3A`], [`MOV BYTE [RA + IMM16], RB`], [Store Byte, Immediate Offset],
+    [`110010/0x32`], [`MOV INT [RA + IMM16], RB`], [Store Int, Immediate Offset],
+    [`101010/0x2A`], [`MOV LONG [RA + IMM16], RB`], [Store Long, Immediate Offset],
+  )
+]
 
 #instructionDetailsSecondPart(
-  [```
+  [```pas
 Store(Reg[RA] + (IMM16 * width), Reg[RB], width)
   ```],
   [#box[
@@ -539,31 +377,24 @@ The store register instructions store the value contained with Register B to the
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
 
-#instructionDetailsTable(
-  [Store Byte, Small Immediate],
-  [Opcode],
-  [011010 (0x1A)],
-  [`MOV BYTE [RA + IMM16], IMM5`],
-)
+#v(1fr)
 
-#instructionDetailsTable(
-  [Store Int, Small Immediate],
-  [Opcode],
-  [010010 (0x12)],
-  [`MOV INT [RA + IMM16], IMM5`],
-)
-
-#instructionDetailsTable(
-  [Store Long, Small Immediate],
-  [Opcode],
-  [001010 (0x0A)],
-  [`MOV LONG [RA + IMM16], IMM5`],
-)
+#aGroup[
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Opcode], [Mnemonic], [Name],
+    [`011010/0x1A`], [`MOV BYTE [RA + IMM16], IMM5`], [Store Byte, Small Immediate],
+    [`010010/0x12`], [`MOV INT [RA + IMM16], IMM5`], [Store Int, Small Immediate],
+    [`001010/0x0A`], [`MOV LONG [RA + IMM16], IMM5`], [Store Long, Small Immediate],
+  )
+]
 
 #instructionDetailsSecondPart(
-  [```
+  [```pas
 Store(Reg[RA] + (IMM16 * width), SignExt5(IMM5), width)
   ```],
   [#box[
@@ -577,16 +408,18 @@ The store small immediate instructions store a sign-extended 5-bit immediate to 
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
 
-=== Listing, 000 Group
+#v(1fr)
 
 #instructionDetails(
   [Jump And Link, Register],
   [Opcode],
-  [111000 (0x38)],
+  [`111000/0x38`],
   [`JALR RA, RB, IMM16`],
-  [```
+  [```pas
 Reg[RA] = PC + 4
 PC = Reg[RB] + (IMM16 << 2)
 ```],
@@ -598,14 +431,16 @@ This instruction can also be used as an indirect jump to an address stored in a 
   ]
 )
 
-#pagebreak(weak: true)
+#separator
+
+#v(1fr)
 
 #instructionDetails(
   [Compute Relative Address],
   [Opcode],
-  [110000 (0x30)],
+  [`110000/0x30`],
   [`ADR RA, IMM16`],
-  [```
+  [```pas
 Reg[RA] = PC + (IMM16 << 16)
 ```],
   [None.],
@@ -615,6 +450,8 @@ The ADR instruction adds the current program counter and a 16-bit immediate valu
 Unlike other immediate operate format instructions, this instruction's Register B field must be zero.
   ]
 )
+
+#v(1fr)
 
 #pagebreak(weak: true)
 
@@ -659,39 +496,25 @@ The value of Register C is shifted in the manner specified by the shift type, by
   [*ROR* Rotate right.],
 )
 ]
-#caption[The 2-bit shift type codes.]
+#caption[The 2-bit shift type codes (SHF field).]
 
 #aGroup[
 
+=== Register Operate, Opcode 111001
+
+#aGroup[
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Function], [Mnemonic], [Name],
+    [`1111/0xF`], [`MOV RA, BYTE [RB + RC xSH IMM5]`], [Load Byte, Register Offset],
+    [`1110/0xE`], [`MOV RA, INT [RB + RC xSH IMM5]`], [Load Int, Register Offset],
+    [`1101/0xD`], [`MOV RA, LONG [RB + RC xSH IMM5]`], [Load Long, Register Offset],
+
+  )
 ]
 
-#pagebreak(weak: true)
-
-=== Listing, Opcode 111001
-
-#instructionDetailsTable(
-  [Load Byte, Register Offset],
-  [Funct],
-  [1111 (0xF)],
-  [`MOV RA, BYTE [RB + RC xSH IMM5]`],
-)
-
-#instructionDetailsTable(
-  [Load Int, Register Offset],
-  [Funct],
-  [1110 (0xE)],
-  [`MOV RA, INT [RB + RC xSH IMM5]`],
-)
-
-#instructionDetailsTable(
-  [Load Long, Register Offset],
-  [Funct],
-  [1101 (0xD)],
-  [`MOV RA, LONG [RB + RC xSH IMM5]`],
-)
-
 #instructionDetailsSecondPart(
-  [```
+  [```pas
 Reg[RA] = Load(Reg[RB] + (Reg[RC] xSH IMM5), width)
   ```],
   [#box[
@@ -705,31 +528,24 @@ These instructions perform a load with an offset contained within a register. A 
   ]
 )
 
+]
+
 #pagebreak(weak: true)
 
-#instructionDetailsTable(
-  [Store Byte, Register Offset],
-  [Funct],
-  [1011 (0xB)],
-  [`MOV BYTE [RB + RC xSH IMM5], RA`],
-)
+#v(1fr)
 
-#instructionDetailsTable(
-  [Store Int, Register Offset],
-  [Funct],
-  [1010 (0xA)],
-  [`MOV INT [RB + RC xSH IMM5], RA`],
-)
-
-#instructionDetailsTable(
-  [Store Long, Register Offset],
-  [Funct],
-  [1001 (0x9)],
-  [`MOV LONG [RB + RC xSH IMM5], RA`],
-)
+#aGroup[
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Function], [Mnemonic], [Name],
+    [`1011/0xB`], [`MOV BYTE [RB + RC xSH IMM5], RA`], [Store Byte, Register Offset],
+    [`1010/0xA`], [`MOV INT [RB + RC xSH IMM5], RA`], [Store Int, Register Offset],
+    [`1001/0x9`], [`MOV LONG [RB + RC xSH IMM5], RA`], [Store Long, Register Offset],
+  )
+]
 
 #instructionDetailsSecondPart(
-  [```
+  [```pas
 Store(Reg[RB] + (Reg[RC] xSH IMM5), Reg[RA], width)
   ```],
   [#box[
@@ -743,14 +559,18 @@ These instructions perform a store with an offset contained within a register. T
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
 
+#v(1fr)
+
 #instructionDetails(
-  [Various Shift By Register Amount],
-  [Funct],
+  [Various Shift By Register],
+  [Function],
   [1000 (0x8)],
   [`LSH/RSH/ASH/ROR RA, RC, RB`],
-  [```
+  [```pas
 Reg[RA] = Reg[RC] xSH (Reg[RB] & 31)
 ```],
   [None.],
@@ -759,66 +579,27 @@ This instruction shifts the contents of Register C by the contents of Register B
   ]
 )
 
-#pagebreak(weak: true)
+#separator
 
-#instructionDetailsTable(
-  [Add Register],
-  [Funct],
-  [0111 (0x7)],
-  [`ADD RA, RB, RC xSH IMM5`],
-)
+#v(1fr)
 
-#instructionDetailsTable(
-  [Subtract Register],
-  [Funct],
-  [0110 (0x6)],
-  [`SUB RA, RB, RC xSH IMM5`],
-)
-
-#instructionDetailsTable(
-  [Set Less Than Register],
-  [Funct],
-  [0101 (0x5)],
-  [`SLT RA, RB, RC xSH IMM5`],
-)
-
-#instructionDetailsTable(
-  [Set Less Than Register, Signed],
-  [Funct],
-  [0100 (0x4)],
-  [`SLT SIGNED RA, RB, RC xSH IMM5`],
-)
-
-#instructionDetailsTable(
-  [And Register],
-  [Funct],
-  [0011 (0x3)],
-  [`AND RA, RB, RC xSH IMM5`],
-)
-
-#instructionDetailsTable(
-  [Xor Register],
-  [Funct],
-  [0010 (0x2)],
-  [`XOR RA, RB, RC xSH IMM5`],
-)
-
-#instructionDetailsTable(
-  [Or Register],
-  [Funct],
-  [0001 (0x1)],
-  [`OR RA, RB, RC xSH IMM5`],
-)
-
-#instructionDetailsTable(
-  [Nor Register],
-  [Funct],
-  [0000 (0x0)],
-  [`NOR RA, RB, RC xSH IMM5`],
-)
+#aGroup[
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Function], [Mnemonic], [Name],
+    [`0111/0x7`], [`ADD RA, RB, RC xSH IMM5`], [Add Register],
+    [`0110/0x6`], [`SUB RA, RB, RC xSH IMM5`], [Subtract Register],
+    [`0101/0x5`], [`SLT RA, RB, RC xSH IMM5`], [Set Less Than Register],
+    [`0100/0x4`], [`SLT SIGNED RA, RB, RC xSH IMM5`], [Set Less Than Register, Signed],
+    [`0011/0x3`], [`AND RA, RB, RC xSH IMM5`], [And Register],
+    [`0010/0x2`], [`XOR RA, RB, RC xSH IMM5`], [Xor Register],
+    [`0001/0x1`], [`OR RA, RB, RC xSH IMM5`], [Or Register],
+    [`0000/0x0`], [`NOR RA, RB, RC xSH IMM5`], [Nor Register],
+  )
+]
 
 #instructionDetailsSecondPart(
-  [```
+  [```pas
 Reg[RA] = Reg[RB] OP (Reg[RC] xSH IMM5)
   ```],
   [#box[
@@ -831,40 +612,27 @@ In the case of the comparison instructions, a 1 is stored if the comparison is t
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
 
-=== Listing, Opcode 110001
+=== Register Operate, Opcode 110001
 
-#instructionDetailsTable(
-  [Multiply],
-  [Funct],
-  [1111 (0xF)],
-  [`MUL RA, RB, RC xSH IMM5`],
-)
+#v(1fr)
 
-#instructionDetailsTable(
-  [Divide],
-  [Funct],
-  [1101 (0xD)],
-  [`DIV RA, RB, RC xSH IMM5`],
-)
-
-#instructionDetailsTable(
-  [Divide, Signed],
-  [Funct],
-  [1100 (0xC)],
-  [`DIV SIGNED RA, RB, RC xSH IMM5`],
-)
-
-#instructionDetailsTable(
-  [Modulo],
-  [Funct],
-  [1011 (0xB)],
-  [`MOD RA, RB, RC xSH IMM5`],
-)
+#aGroup[
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Function], [Mnemonic], [Name],
+    [`1111/0xF`], [`MUL RA, RB, RC xSH IMM5`], [Multiply],
+    [`1101/0xD`], [`DIV RA, RB, RC xSH IMM5`], [Divide],
+    [`1100/0xC`], [`DIV SIGNED RA, RB, RC xSH IMM5`], [Divide, Signed],
+    [`1011/0xB`], [`MOD RA, RB, RC xSH IMM5`], [Modulo],
+  )
+]
 
 #instructionDetailsSecondPart(
-  [```
+  [```pas
 Reg[RA] = Reg[RB] OP (Reg[RC] xSH IMM5)
   ```],
   [#box[
@@ -877,14 +645,18 @@ The result of division is rounded toward zero, to a whole integer.
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
+
+#v(1fr)
 
 #instructionDetails(
   [Load Locked],
-  [Funct],
-  [1001 (0x9)],
+  [Function],
+  [`1001/0x9`],
   [`LL RA, RB`],
-  [```
+  [```pas
 Locked = TRUE
 LockedAddress = Translate(Reg[RB])
 Reg[RA] = Load32(Reg[RB])
@@ -896,22 +668,26 @@ Reg[RA] = Load32(Reg[RB])
   - UNA (Unaligned Access) if the referenced address is not naturally aligned.
   ]],
   [
-This instruction is used to implement atomic sequences. It loads the 32-bit contents of a naturally-aligned memory address contained within Register B into Register A. It also sets two "registers" associated with the current processor: a "locked" flag is set to TRUE, and a "locked address" is set to the physical address being accessed. Though it is implementation-dependent, these "registers" likely do not reside on the processor itself, and may be implemented in any way as long as it provides the same semantics.
+This instruction is used to implement atomic sequences. It loads the 32-bit contents of a naturally-aligned memory address contained within Register B into Register A. The "locked" flag is set to TRUE, and the "locked address" is set to the physical address being accessed.
 
-If the RFE (Return From Exception) instruction is executed on the processor, the "locked" flag is cleared, causing a future SC instruction on the same processor to fail. This is the only required behavior in a uniprocessor system.
+If an RFE (Return From Exception) instruction is executed, the "locked" flag is cleared, causing a future SC instruction on the same processor to fail. This can be used to implement atomic sequences in non-privileged code.
 
-In a multiprocessor system, if any other processor performs a store instruction to this processor's "locked address", this processor's "locked" flag is cleared. This can be used to implement atomic sequences in non-privileged (i.e. usermode) code.
+In a multiprocessor system, if any other processor performs a store to this processor's "locked address", this processor's "locked" flag is cleared.
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
+
+#v(1fr)
 
 #instructionDetails(
   [Store Conditional],
-  [Funct],
-  [1000 (0x8)],
+  [Function],
+  [`1000/0x8`],
   [`SC RA, RB, RC`],
-  [```
+  [```pas
 IF Locked THEN
   Store32(Reg[RB], Reg[RC])
 END
@@ -928,53 +704,57 @@ This instruction stores the current value of the processor's "locked" flag to Re
   ]
 )
 
-#pagebreak(weak: true)
+#v(1fr)
 
 #instructionDetails(
   [Pause],
-  [Funct],
-  [0110 (0x6)],
+  [Function],
+  [`0110/0x6`],
   [`PAUSE`],
-  [```
+  [```pas
 // Possible implementation.
-PauseCount += 1
-IF PauseCount >= 256 THEN
-  PauseCount = 0
+IF PauseCount++ & 255 == 0 THEN
   Yield()
 END
 ```],
   [None.],
   [
-On multiprocessor systems, this instruction should be executed on each iteration of a spin-wait loop for another processor to do something (release a spinlock, acknowledge an IPI, etc). It serves as a hint that the processor isn't doing useful work, which can be used to optimize emulation software among other things.
+On multiprocessor systems, this instruction should be executed on each iteration of a spin-wait for another processor to do something (e.g. release a spinlock, respond to IPI). It is a hint that the processor isn't doing useful work.
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
+
+#v(1fr)
 
 #instructionDetails(
   [Memory Barrier],
-  [Funct],
-  [0011 (0x3)],
+  [Function],
+  [`0011/0x3`],
   [`MB`],
-  [```
+  [```pas
 // Possible implementation.
 FlushWriteBuffer()
 SynchronizeLoads()
 ```],
   [None.],
   [
-This instruction ensures that, from the perspective of all processors and I/O devices in the system, no reads or writes performed by this processor are reordered across the *MB* instruction in either direction. This is sometimes necessary for proper multiprocessor memory ordering.
+This instruction ensures that, from the perspective of all processors and I/O devices in the system, no reads or writes performed by this processor are reordered across the MB instruction in either direction. This is sometimes necessary for proper multiprocessor memory ordering.
   ]
 )
 
-#pagebreak(weak: true)
+#separator
+
+#v(1fr)
 
 #instructionDetails(
   [Write Memory Barrier],
-  [Funct],
-  [0010 (0x2)],
+  [Function],
+  [`0010/0x2`],
   [`WMB`],
-  [```
+  [```pas
 // Possible implementation.
 FlushWriteBuffer()
 ```],
@@ -984,14 +764,18 @@ This instruction ensures that, from the perspective of all processors and I/O de
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
+
+#v(1fr)
 
 #instructionDetails(
   [Breakpoint],
-  [Funct],
-  [0001 (0x1)],
+  [Function],
+  [`0001/0x1`],
   [`BRK`],
-  [```
+  [```pas
 Exception(BRK)
 ```],
   [#box[
@@ -1002,14 +786,16 @@ This instruction causes a breakpoint exception. Its intended use is for debuggin
   ]
 )
 
-#pagebreak(weak: true)
+#separator
+
+#v(1fr)
 
 #instructionDetails(
   [System Service],
-  [Funct],
-  [0000 (0x0)],
+  [Function],
+  [`0000/0x0`],
   [`SYS`],
-  [```
+  [```pas
 Exception(SYS)
 ```],
   [#box[
@@ -1020,20 +806,20 @@ This instruction causes a system service exception. It is useful for usermode to
   ]
 )
 
-#pagebreak(weak: true)
-
-=== Listing, Opcode 101001 (Privileged Instructions)
-
-Opcode 101001 is the major opcode for all currently defined privileged instructions. That is, all function codes of opcode 101001 will produce a *PRV* exception when executed while usermode is active. See @exceptionblock for more information on exceptions.
+#v(1fr)
 
 #pagebreak(weak: true)
+
+=== Register Operate, Opcode 101001 (Privileged)
+
+#v(1fr)
 
 #instructionDetails(
   [Move From Control Register],
-  [Funct],
-  [1111 (0xF)],
+  [Function],
+  [`1111/0xF`],
   [`MFCR RA, CR`],
-  [```
+  [```pas
 Reg[RA] = ControlReg[CR]
 ```],
   [#box[
@@ -1046,14 +832,16 @@ Note that not all control registers are simple memory-like repositories of bits,
   ]
 )
 
-#pagebreak(weak: true)
+#separator
+
+#v(1fr)
 
 #instructionDetails(
   [Move To Control Register],
-  [Funct],
-  [1110 (0xE)],
+  [Function],
+  [`1110/0xE`],
   [`MTCR CR, RB`],
-  [```
+  [```pas
 ControlReg[CR] = Reg[RB]
 ```],
   [#box[
@@ -1066,14 +854,18 @@ Note that not all control registers are simple memory-like repositories of bits,
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
+
+#v(1fr)
 
 #instructionDetails(
   [Halt Until Next Interrupt],
-  [Funct],
-  [1100 (0xC)],
+  [Function],
+  [`1100/0xC`],
   [`HLT`],
-  [```
+  [```pas
 HaltUntilInterrupt()
 ```],
   [#box[
@@ -1084,14 +876,16 @@ This instruction pauses execution of the processor until the next external inter
   ]
 )
 
-#pagebreak(weak: true)
+#separator
+
+#v(1fr)
 
 #instructionDetails(
   [Return From Exception],
-  [Funct],
-  [1011 (0xB)],
+  [Function],
+  [`1011/0xB`],
   [`RFE`],
-  [```
+  [```pas
 Locked = FALSE
 IF ControlReg[RS].ModeStack & T THEN
   PC = ControlReg[TBPC]
@@ -1108,20 +902,22 @@ This instruction "pops" the "mode stack" of the RS control register (see @rs), a
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
 
 == Pseudo-Instructions <pseudoinstructions>
 
 Some operations are synthesized out of simpler instructions, but are common or inconvenient enough to warrant a "pseudo-instruction", a fake instruction that the assembler converts into a corresponding hardware instruction sequence. The following is a (not necessarily exhaustive, depending on the assembler) list of common pseudo-instructions.
 
-#pagebreak(weak: true)
+#v(1fr)
 
 #instructionDetails(
   [Unconditional Relative Branch],
   [],
   [],
   [`B IMM21`],
-  [```
+  [```pas
 BEQ ZERO, IMM21
 ```],
   [None.],
@@ -1130,14 +926,16 @@ This pseudo-instruction performs an unconditional relative branch. This is synth
   ]
 )
 
-#pagebreak(weak: true)
+#separator
+
+#v(1fr)
 
 #instructionDetails(
   [Return],
   [],
   [],
   [`RET`],
-  [```
+  [```pas
 JALR ZERO, LR, 0
 ```],
   [None.],
@@ -1146,14 +944,18 @@ This pseudo-instruction performs a common return-from-subroutine operation. This
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
+
+#v(1fr)
 
 #instructionDetails(
   [Jump to Register],
   [],
   [],
   [`JR RA`],
-  [```
+  [```pas
 JALR ZERO, RA, 0
 ```],
   [None.],
@@ -1162,14 +964,16 @@ This pseudo-instruction performs a jump to the contents of Register A. This is s
   ]
 )
 
-#pagebreak(weak: true)
+#separator
+
+#v(1fr)
 
 #instructionDetails(
   [Move Register],
   [],
   [],
   [`MOV RA, RB`],
-  [```
+  [```pas
 ADD RA, RB, ZERO LSH 0
 ```],
   [None.],
@@ -1178,14 +982,18 @@ This pseudo-instruction copies the contents of Register B into Register A. It is
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
+
+#v(1fr)
 
 #instructionDetails(
   [Load 16-bit Immediate],
   [],
   [],
   [`LI RA, IMM16`],
-  [```
+  [```pas
 ADDI RA, ZERO, IMM16
 ```],
   [None.],
@@ -1194,14 +1002,16 @@ This pseudo-instruction loads a 16-bit immediate into Register A. It is synthesi
   ]
 )
 
-#pagebreak(weak: true)
+#separator
+
+#v(1fr)
 
 #instructionDetails(
   [Load 32-bit Immediate],
   [],
   [],
   [`LA RA, IMM32`],
-  [```
+  [```pas
 LUI RA, ZERO, (IMM32 >> 16)
 ORI RA, RA, (IMM32 & 0xFFFF)
 ```],
@@ -1211,14 +1021,18 @@ This pseudo-instruction loads a 32-bit immediate into Register A. It is synthesi
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
+
+#v(1fr)
 
 #instructionDetails(
   [No Operation],
   [],
   [],
   [`NOP`],
-  [```
+  [```pas
 ADDI ZERO, ZERO, 0
 ```],
   [None.],
@@ -1229,14 +1043,16 @@ Note that the instruction of all zeroes is _not_ a no-op. The instruction set wa
   ]
 )
 
-#pagebreak(weak: true)
+#separator
+
+#v(1fr)
 
 #instructionDetails(
-  [Various Shift By Immediate Amount],
+  [Various Shift By Immediate],
   [],
   [],
   [`LSHI/RSHI/ASHI/RORI RA, RB, IMM5`],
-  [```
+  [```pas
 ADD RA, ZERO, RB xSH IMM5
 ```],
   [None.],
@@ -1245,14 +1061,18 @@ These pseudo-instructions shift the contents of Register B by the 5-bit immediat
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
+
+#v(1fr)
 
 #instructionDetails(
   [Load from 32-bit Address],
   [],
   [],
   [`MOV RA, BYTE/INT/LONG [IMM32]`],
-  [```
+  [```pas
 LUI RA, ZERO, (IMM32 >> 16)
 MOV RA, BYTE/INT/LONG [RA + (IMM32 & 0xFFFF)]
 ```],
@@ -1262,14 +1082,16 @@ These pseudo-instructions load a value into Register A from a full 32-bit addres
   ]
 )
 
-#pagebreak(weak: true)
+#separator
+
+#v(1fr)
 
 #instructionDetails(
   [Store to 32-bit Address],
   [],
   [],
   [`MOV BYTE/INT/LONG [IMM32], RA, TMP=RB`],
-  [```
+  [```pas
 LUI RB, ZERO, (IMM32 >> 16)
 MOV BYTE/INT/LONG [RB + (IMM32 & 0xFFFF)], RA
 ```],
@@ -1279,36 +1101,108 @@ These pseudo-instructions store a value into a full 32-bit address. They are syn
   ]
 )
 
+#v(1fr)
+
 #pagebreak(weak: true)
 
 == Instruction Summary
 
-=== Jump Format
+#v(1fr)
 
 #jumpFormat()
 
 #jumpFormatTable()
 
-#pagebreak(weak: true)
-
-=== Branch Format
+#v(1fr)
 
 #branchFormat()
 
 #branchFormatTable()
 
+#v(1fr)
+
 #pagebreak(weak: true)
 
-=== Immediate Operate Format
+#v(1fr)
 
 #immOpFormat()
 
 #immOpTable()
 
+#v(1fr)
+
 #pagebreak(weak: true)
 
-=== Register Operate Format
+#v(1fr)
 
 #regOpFormat()
 
-#regOpTable()
+#aGroup[
+  #microHeading("Major Opcode 111001 (0x39)")
+
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Function], [Mnemonic], [Name],
+    [`0xF`], [`MOV RA, BYTE [RB + RC xSH IMM5]`], [Load Byte, Register Offset],
+    [`0xE`], [`MOV RA, INT [RB + RC xSH IMM5]`], [Load Int, Register Offset],
+    [`0xD`], [`MOV RA, LONG [RB + RC xSH IMM5]`], [Load Long, Register Offset],
+    [`0xB`], [`MOV BYTE [RB + RC xSH IMM5], RA`], [Store Byte, Register Offset],
+    [`0xA`], [`MOV INT [RB + RC xSH IMM5], RA`], [Store Int, Register Offset],
+    [`0x9`], [`MOV LONG [RB + RC xSH IMM5], RA`], [Store Long, Register Offset],
+    [`0x8`], [`LSH RA, RC, RB`], [Left Shift By Register],
+    [`0x8`], [`RSH RA, RC, RB`], [Logical Right Shift By Register],
+    [`0x8`], [`ASH RA, RC, RB`], [Arithmetic Right Shift By Register],
+    [`0x8`], [`ROR RA, RC, RB`], [Rotate Right By Register],
+    [`0x7`], [`ADD RA, RB, RC xSH IMM5`], [Add Register],
+    [`0x6`], [`SUB RA, RB, RC xSH IMM5`], [Subtract Register],
+    [`0x5`], [`SLT RA, RB, RC xSH IMM5`], [Set Less Than Register],
+    [`0x4`], [`SLT SIGNED RA, RB, RC xSH IMM5`], [Set Less Than Register, Signed],
+    [`0x3`], [`AND RA, RB, RC xSH IMM5`], [And Register],
+    [`0x2`], [`XOR RA, RB, RC xSH IMM5`], [Xor Register],
+    [`0x1`], [`OR RA, RB, RC xSH IMM5`], [Or Register],
+    [`0x0`], [`NOR RA, RB, RC xSH IMM5`], [Nor Register],
+  )
+]
+
+#v(1fr)
+
+#pagebreak(weak: true)
+
+#v(1fr)
+
+#aGroup[
+  #microHeading("Major Opcode 110001 (0x31)")
+
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Function], [Mnemonic], [Name],
+    [`0xF`], [`MUL RA, RB, RC`], [Multiply],
+    [`0xD`], [`DIV RA, RB, RC`], [Divide],
+    [`0xC`], [`DIV SIGNED RA, RB, RC`], [Divide, Signed],
+    [`0xB`], [`MOD RA, RB, RC`], [Modulo],
+    [`0x9`], [`LL RA, RB`], [Load Locked],
+    [`0x8`], [`SC RA, RB, RC`], [Store Conditional],
+    [`0x6`], [`PAUSE`], [Pause],
+    [`0x3`], [`MB`], [Memory Barrier],
+    [`0x2`], [`WMB`], [Write Memory Barrier],
+    [`0x1`], [`BRK`], [Breakpoint],
+    [`0x0`], [`SYS`], [System Service],
+  )
+]
+
+#v(1fr)
+
+#aGroup[
+  #microHeading("Major Opcode 101001 (0x29, Privileged)")
+
+  #roundedTable(
+    columns: (auto, auto, 1fr),
+    [Function], [Mnemonic], [Name],
+    [`0xF`], [`MFCR RA, CR`], [Move From Control Register],
+    [`0xE`], [`MTCR CR, RA`], [Move To Control Register],
+    [`0xC`], [`HLT`], [Halt Until Next Interrupt],
+    [`0xB`], [`RFE`], [Return From Exception],
+  )
+]
+
+#v(1fr)

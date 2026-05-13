@@ -16,13 +16,13 @@ The mechanism that the XR/17032 architecture uses for this is _paged_ virtual ad
 
 There is now a question of how to achieve this translation. If the translation of the virtual page to the physical page is performed by looking up a physically linear page table, with 32-bit table entries, it would therefore consume 4MB of memory per process, which is obviously unacceptable overhead.
 
-In many architectures, such as fox32 and i386, the virtual address space is therefore managed by a two-level page table. The indices into the two levels of the page table are usually extracted from bit fields of the 32-bit virtual address in the manner shown:
+In many architectures, such as fox32 and i386, the virtual address space is therefore managed by a two-level page table. The indices into the two levels of the page table are extracted from bit fields of the 32-bit virtual address.
 
-#bitfield((
-  (name: "LEVEL 2 INDEX", bits: 10),
-  (name: "LEVEL 1 INDEX", bits: 10),
-  (name: "BYTE OFFSET", bits: 12),
-))
+#box[#format(
+  ("LEVEL 2 INDEX", 10),
+  ("LEVEL 1 INDEX", 10),
+  ("BYTE OFFSET", 12),
+)]
 
 The two 10-bit fields [22:31] and [12:21] contain the index into the level 2 table and the level 1 table, respectively.
 
@@ -127,11 +127,11 @@ At a mere four instructions, with zero branches, this is fairly close to optimal
 
 To begin, we have to understand the concept of a "virtually linear page table". It turns out that placing the level 2 page table as an entry into itself creates a region of virtual address space which maps the two-level page tables as if they were a linear array indexed by virtual page number.#footnote([This is also sometimes referred to as "recursive mapping" or "recursive paging".])  The reason for this is that accessing memory within this region causes the level 2 page table to be treated as a level 1 page table, and so all of its entries directly map the level 1 page tables. The level 2 page table itself can also be found within this region.
 
-```
+```pas
 // Assume INDEX is a constant containing the index of the level 2 page
 // table that has been set to create the virtually linear page table
-// mapping. Any index can be chosen to place the linear page table within
-// the address space as desired.
+// mapping. Any index can be chosen, to place the linear page table
+// within the address space as desired.
 
 // Since each level 1 page table maps 1024 pages of 4096 bytes each,
 // the following formula can be used to find the base address. Note that
@@ -163,7 +163,9 @@ Careful readers will now understand how the four instruction TB miss routine fro
 
 There is one small snag, which is the second concerning case from earlier. If the level 1 page table does not actually exist, then the nested DTB miss will load an invalid level 2 page table entry into the DTB. In this case, a page fault will occur in the TB miss handler when it attempts to load the PTE from the level 1 page table again. The special cased page fault behavior listed earlier addresses this case, by clearing the T bit and setting EBADADDR to the value of TBMISSADDR. It also keeps the exception state intact in a similar manner to the nested TB miss special case. The page fault exception handler is thereby "fooled" into thinking that the original instruction caused a page fault on the original missed address.#footnote([Note that a processor implementation must keep a latch somewhere that remembers whether the last non-nested TB miss (the last one that occurred while the T bit was clear) was caused by a read or write instruction, so that this page fault case will result in the appropriate page fault exception.])
 
-#aGroup[
+#pagebreak(weak: true)
+
+#v(1fr)
 
 #roundedTable(
   columns: (1fr, 1fr),
@@ -204,6 +206,8 @@ There is one small snag, which is the second concerning case from earlier. If th
 
 #caption[The effect that the T bit in the RS control register has on the behavior of a TB miss exception.]
 
+#v(1fr)
+
 #roundedTable(
   columns: (1fr, 1fr),
   align: horizon + left,
@@ -241,4 +245,4 @@ There is one small snag, which is the second concerning case from earlier. If th
 
 #caption[The effect that the T bit in the RS control register has on the behavior of a page fault exception.]
 
-]
+#v(1fr)
