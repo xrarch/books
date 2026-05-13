@@ -36,7 +36,7 @@ However, there is one major problem: you now have to perform two extra memory ac
 
 In the case that a needed virtual page translation is not cached in the TB, a "TB miss" occurs. On architectures like fox32 and i386, this results in a page table walk done automatically by the hardware, which then inserts the page table entry in the TB. The instruction is then transparently re-executed and hopefully succeeds this time.
 
-This, still, has two major problems:
+Two major problems remain:
 
 #box[
 1. Complicated: The logic to perform a page table lookup in hardware is quite complex; it takes up many extra gates on the chip and can be difficult to debug during the development of prototype hardware.
@@ -49,11 +49,15 @@ In a software refill scheme, the system software has the ability to implement an
 
 You can see this as the previously mentioned paging scheme "flipped on its head" -- instead of a two-level page table being the primary governor of paging and the TB existing only as a nearly-transparent cache for it, the fixed-size TB is the first class citizen. The TB contains all of the currently valid mappings, and needs to be manually refilled from some other paging structure (such as a two-level page table).
 
+#aGroup[
+
 #box[
 #image("tbexample.svg")
 ]
 
 In the example above, there is a 4-entry TB, containing entries for the virtual page numbers `00AA5`, `00B36`, `00CCD`, and `003C4`. The program references a virtual address `00B36499`, which is provided as the input to the TB. The page number, `00B36`, is compared with all entries in the TB simultaneously. Luckily, one of the entries matches, and produces the physical page number `3045A`. The byte offset from the original virtual address is appended to this physical page number, producing the final physical address with which the processor will perform the memory access.
+
+]
 
 Had there not been a matching entry in the TB, a TB miss exception would have occurred. The TB miss handler would have inserted the correct entry into the TB, and the original instruction would have re-executed; beginning this process again, but matching in the TB this time and succeeding.
 
@@ -199,10 +203,6 @@ There is one small snag, which is the second concerning case from earlier. If th
 )
 
 #caption[The effect that the T bit in the RS control register has on the behavior of a TB miss exception.]
-
-]
-
-#aGroup[
 
 #roundedTable(
   columns: (1fr, 1fr),
