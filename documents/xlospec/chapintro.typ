@@ -403,7 +403,10 @@ STRUCT XloSectionHeader
     RelocTableOffset : ULONG,
     RelocCount : ULONG,
     Flags : ULONG,
-    Reserved2 : ULONG,
+    Alignment : UBYTE,
+    Reserved1 : UBYTE,
+    Reserved2 : UBYTE,
+    Reserved3 : UBYTE,
 END
 ```
 
@@ -458,6 +461,12 @@ Flags contains up to 32 bit flags that indicate characteristics of the section.
 )
 
 #caption[Currently defined section flag bits.]
+
+]
+
+#aGroup[
+#microHeading("Alignment")
+Alignment contains an 8 bit value representing the binary logarithm of the section's minimum base alignment. For example, if this value contains 5, then the alignment is 2\^5 = 32 bytes. This alignment must be respected and maintained by the linker as it merges sections together. Alignment padding should be added where necessary to ensure that the appended section's contents remain aligned, and the new merged section should inherit the greater of the two original sections' alignment values.
 
 ]
 
